@@ -10,6 +10,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 RUN pip install --no-cache-dir paramiko
 
 WORKDIR /opt/oraculo
-COPY oraculo.py ./
+COPY oraculo.py entrypoint.sh ./
+RUN chmod +x entrypoint.sh
 
-CMD ["/bin/bash"]
+CMD ["./entrypoint.sh"]

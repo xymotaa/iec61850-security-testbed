@@ -24,12 +24,10 @@ RUN useradd -m -s /bin/bash usuario_IED && \
 
 EXPOSE 22
 
-# O console do GNS3 se conecta diretamente ao processo principal (PID 1) do
-# container — por isso o PID 1 precisa ser um shell interativo, não o sshd
-# (foi isso que causou o console "mudo" na primeira tentativa). Este script
-# sobe o sshd em segundo plano (pro Oráculo conseguir conectar) e entrega o
-# terminal pra um bash interativo (pro console do GNS3 funcionar normal).
-RUN printf '#!/bin/bash\n/usr/sbin/sshd\nexec /bin/bash\n' > /entrypoint.sh && \
-    chmod +x /entrypoint.sh
+# Ver entrypoint.sh: sobe o sshd em background, configura o IP sozinho
+# com base no hostname (que o GNS3 já define = nome do nó), e entrega o
+# terminal pro bash (o console do GNS3 se conecta ao PID 1 do container).
+COPY entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
 
 CMD ["/entrypoint.sh"]
