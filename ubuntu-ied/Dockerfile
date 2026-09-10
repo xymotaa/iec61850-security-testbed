@@ -9,7 +9,7 @@
 FROM ubuntu:24.04
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
-        openssh-server iproute2 iputils-ping net-tools nano \
+        openssh-server iproute2 iputils-ping net-tools nano libpam-pwquality \
     && rm -rf /var/lib/apt/lists/*
 
 RUN mkdir -p /var/run/sshd
