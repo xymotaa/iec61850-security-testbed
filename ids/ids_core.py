@@ -29,6 +29,8 @@ class GooseMonitor:
         self._last = {}
         # gocbRef -> deque de timestamps recentes (pra taxa de pacotes)
         self._recent_times = defaultdict(deque)
+        # gocbRef -> estado do flood em andamento (pra só alertar na borda)
+        self._flood_state = {}
 
     def process(self, gocb_ref, src_mac, st_num, sq_num, timestamp):
         """Processa um frame GOOSE (já parseado) e retorna uma lista de
@@ -59,15 +61,64 @@ class GooseMonitor:
         return alerts
 
     def _check_flood(self, gocb_ref, timestamp):
+        """Só gera alerta na BORDA (início e fim do flood), não a cada
+        pacote — enquanto o flood continua sustentado, fica em silêncio
+        e só acompanha o pico de taxa internamente."""
         times = self._recent_times[gocb_ref]
         times.append(timestamp)
         while times and timestamp - times[0] > self.flood_window:
             times.popleft()
         pps = len(times) / self.flood_window
+
+        state = self._flood_state.setdefault(
+            gocb_ref, {"active": False, "start_time": None, "peak_pps": 0.0}
+        )
+
         if pps > self.flood_pps_threshold:
-            return [{"type": "flood", "gocb_ref": gocb_ref,
-                     "detail": f"{pps:.1f} pkts/s (limite: {self.flood_pps_threshold})"}]
-        return []
+            if not state["active"]:
+                state["active"] = True
+                state["start_time"] = timestamp
+                state["peak_pps"] = pps
+                return [{"type": "flood_start", "gocb_ref": gocb_ref,
+                         "detail": f"{pps:.1f} pkts/s (limite: {self.flood_pps_threshold})"}]
+            state["peak_pps"] = max(state["peak_pps"], pps)
+            return []
+        else:
+            alert = self._close_flood(gocb_ref, state, timestamp)
+            return [alert] if alert else []
+
+    def _close_flood(self, gocb_ref, state, timestamp):
+        """Encerra um flood em andamento (usado tanto quando um pacote
+        chega com taxa já normalizada quanto pelo tick() por tempo)."""
+        if not state["active"]:
+            return None
+        duration = timestamp - state["start_time"]
+        detail = (f"encerrado após {duration:.1f}s, "
+                  f"pico de {state['peak_pps']:.1f} pkts/s")
+        state["active"] = False
+        state["start_time"] = None
+        state["peak_pps"] = 0.0
+        return {"type": "flood_end", "gocb_ref": gocb_ref, "detail": detail}
+
+    def tick(self, timestamp):
+        """Reavalia o estado de flood mesmo sem nenhum pacote novo chegar.
+        Necessário porque, sem tráfego de fundo legítimo (heartbeat GOOSE
+        contínuo), o fim de um flood nunca teria um 'próximo pacote' pra
+        disparar a checagem — chame isso periodicamente (ex: a cada 1s)
+        no loop principal do IDS."""
+        alerts = []
+        for gocb_ref, state in self._flood_state.items():
+            if not state["active"]:
+                continue
+            times = self._recent_times[gocb_ref]
+            while times and timestamp - times[0] > self.flood_window:
+                times.popleft()
+            pps = len(times) / self.flood_window
+            if pps <= self.flood_pps_threshold:
+                alert = self._close_flood(gocb_ref, state, timestamp)
+                if alert:
+                    alerts.append(alert)
+        return alerts
 
     def _check_masquerade(self, gocb_ref, src_mac, last):
         if src_mac != last["src_mac"]:

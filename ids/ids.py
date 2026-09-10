@@ -38,13 +38,17 @@ def make_handler(monitor, log_fh):
             timestamp=time.time(),
         )
         for alert in alerts:
-            record = {"ts": time.time(), **alert}
-            print(f"[ALERTA] {alert['type'].upper():<12} "
-                  f"{alert['gocb_ref']}: {alert['detail']}")
-            if log_fh:
-                log_fh.write(json.dumps(record) + "\n")
-                log_fh.flush()
+            emit(alert, log_fh)
     return handle
+
+
+def emit(alert, log_fh):
+    record = {"ts": time.time(), **alert}
+    print(f"[ALERTA] {alert['type'].upper():<12} "
+          f"{alert['gocb_ref']}: {alert['detail']}")
+    if log_fh:
+        log_fh.write(json.dumps(record) + "\n")
+        log_fh.flush()
 
 
 def main():
@@ -58,10 +62,20 @@ def main():
     monitor = GooseMonitor(flood_pps_threshold=args.flood_pps,
                             suppression_jump=args.suppression_jump)
     log_fh = open(args.log, "a") if args.log else None
+    handler = make_handler(monitor, log_fh)
 
     print(f"[*] Monitorando GOOSE em {args.iface}... (Ctrl+C para parar)")
-    sniff(iface=args.iface, prn=make_handler(monitor, log_fh), store=False,
-          lfilter=lambda p: bytes(p)[12:14] == b"\x88\xb8")
+    try:
+        while True:
+            # sniff por até 1s de cada vez; entre uma rodada e outra, dá um
+            # "tick" pro monitor — é isso que detecta o FIM de um flood
+            # mesmo quando nenhum pacote novo chega depois do ataque parar.
+            sniff(iface=args.iface, prn=handler, store=False, timeout=1,
+                  lfilter=lambda p: bytes(p)[12:14] == b"\x88\xb8")
+            for alert in monitor.tick(time.time()):
+                emit(alert, log_fh)
+    except KeyboardInterrupt:
+        print("\n[*] Encerrando.")
 
 
 if __name__ == "__main__":

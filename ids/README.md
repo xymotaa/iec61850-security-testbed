@@ -40,7 +40,8 @@ Deixa rodando numa janela de console enquanto roda os ataques do
 
 | Tipo | Como é detectado |
 |---|---|
-| `flood` | Taxa de pacotes por segundo, por `gocbRef`, acima do limiar |
+| `flood_start` | Taxa de pacotes/segundo, por `gocbRef`, cruzou o limiar (alerta uma vez, na borda de subida) |
+| `flood_end` | Taxa voltou ao normal — inclui duração e pico de pps do episódio |
 | `replay` | `(stNum, sqNum)` recebido é menor ou igual ao último já visto |
 | `masquerade` | O MAC de origem muda para um `gocbRef` já conhecido |
 | `suppression` | `stNum` salta um valor implausivelmente alto de uma vez |
