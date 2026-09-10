@@ -14,6 +14,11 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 
 RUN mkdir -p /var/run/sshd
 
+# Política de senha fixa no build (via COPY, não docker cp depois) — assim
+# sobrevive a qualquer recriação do container, diferente do que
+# acontecia antes. Valores em pwquality.conf, ao lado deste Dockerfile.
+COPY pwquality.conf /etc/security/pwquality.conf
+
 # Conta que o Oráculo vai auditar. Senha fraca de propósito (ponto de
 # partida "não conforme" — dá pra depois criar uma segunda versão do
 # container com política reforçada, pra comparar "antes/depois" no artigo).
