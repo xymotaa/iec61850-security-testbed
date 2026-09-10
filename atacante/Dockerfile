@@ -8,6 +8,7 @@ RUN pip install --no-cache-dir scapy
 
 WORKDIR /opt/goose-attack
 COPY goose_frame.py goose_attack.py entrypoint.sh ./
+COPY samples/molde.pcap ./molde.pcap
 RUN chmod +x entrypoint.sh
 
 CMD ["./entrypoint.sh"]
