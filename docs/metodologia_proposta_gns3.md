@@ -68,7 +68,18 @@ Aqui entra o container `atacante-1`, usando Scapy (mesma lib usada no precedente
 
 ## 5. Módulo de Detecção — container `ids-1`
 
-Novo módulo: um container com Suricata (ou Zeek/Snort) monitorando a rede simulada, com regras específicas para tráfego GOOSE/SV anômalo (há precedente na literatura de usar Snort para detectar ataques GOOSE em testbeds híbridos RTDS).
+**Atualização (correção de rota):** a proposta inicial era usar o Suricata. Na prática, o Suricata é construído em cima de IP/TCP/UDP, e o GOOSE é um protocolo puramente Ethernet (EtherType `0x88B8`, sem cabeçalho IP) — confirmamos junto à comunidade do próprio Suricata que regras `alert ip ...` simplesmente não capturam tráfego GOOSE. Existe trabalho em andamento no Suricata para suporte a protocolos não-IP (`alert ether`), mas está mirando a próxima versão principal, sem confirmação de disponibilidade estável.
+
+Em vez de depender de um suporte experimental de terceiros, o `ids-1` usa um detector próprio em Python (`ids_core.py` + `ids.py`), reaproveitando o mesmo parser GOOSE já validado do `atacante-1` (`goose_frame.py`). A lógica de detecção é feita sob medida para os 4 ataques da Seção 4:
+
+| Ataque | Como é detectado |
+|---|---|
+| Flooding | Taxa de pacotes/segundo por `gocbRef` acima de um limiar |
+| Replay | `(stNum, sqNum)` recebido é menor ou igual ao último já visto |
+| Masquerade | O MAC de origem muda para um `gocbRef` já conhecido |
+| Suppression | `stNum` salta um valor implausivelmente alto de uma vez |
+
+**Validação feita:** núcleo de detecção testado com 6 cenários sintéticos (tráfego normal e mudança de estado legítima geram zero alertas; os 4 ataques são corretamente detectados), além de um teste ponta-a-ponta com tráfego GOOSE real capturado + um pacote de masquerade forjado pelo próprio `atacante-1`, corretamente identificado pelo detector.
 
 **Métrica de sucesso:** taxa de detecção por tipo de ataque (A–D acima), taxa de falso positivo, e tempo entre início do ataque e alerta gerado.
 
@@ -83,8 +94,8 @@ Mantém o mesmo estilo visual da Fig. 3 original, mas agora com três blocos:
 
 ## 7. Ferramentas a adicionar no ambiente GNS3 (containers Docker novos)
 
-- `atacante-1`: Python + Scapy + a lib `goose-IEC61850-scapy` (ou construir manualmente os frames GOOSE com Scapy, seguindo a estrutura do protocolo).
-- `ids-1`: Suricata (mais leve de configurar que Zeek para um primeiro teste) com regras customizadas para o padrão de tráfego GOOSE (multicast, EtherType 0x88B8).
+- `atacante-1`: Python + Scapy, com parser/builder GOOSE próprio (`goose_frame.py`), validado contra captura real (round-trip byte-a-byte).
+- `ids-1`: Python + Scapy, detector próprio (`ids_core.py`) — ver justificativa da troca do Suricata na Seção 5.
 - Continua tudo dentro do GNS3, sem precisar trocar de ferramenta de simulação.
 
 ## 8. Referências novas a incluir na bibliografia

@@ -7,8 +7,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 RUN pip install --no-cache-dir scapy
 
 WORKDIR /opt/goose-attack
-COPY goose_frame.py goose_attack.py ./
+COPY goose_frame.py goose_attack.py entrypoint.sh ./
+RUN chmod +x entrypoint.sh
 
-# Ambiente interativo (não usar ENTRYPOINT fixo) — dentro do GNS3 você
-# normalmente abre um console no container e roda os comandos manualmente.
-CMD ["/bin/bash"]
+CMD ["./entrypoint.sh"]
