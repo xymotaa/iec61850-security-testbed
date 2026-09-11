@@ -1,114 +1,55 @@
-# Metodologia Proposta — Novos Testes de Segurança Cibernética em Ambiente GNS3 (extensão do artigo original)
+# Resultados dos Testes — iec61850-security-testbed
 
-> Correção de rota: mantém o **GNS3** (não NS-3). O documento anterior (`metodologia_proposta_ns3.md`) pode ser ignorado/apagado.
+Dados brutos coletados na campanha de testes (topologia: 4 switches em
+estrela, 5 `ubuntu-ied`, `oraculo-1`, `atacante-1`, `ids-1`). Ver
+`docs/metodologia.md` para o racional de cada teste.
 
-## 1. O que muda em relação ao artigo original
+## 1. Oráculo — conformidade IEC 62443-3-3 (5 IEDs)
 
-O artigo original já tinha a arquitetura certa para isso: GNS3 emula containers Docker com SO real, então dá pra rodar ferramentas de ataque/verificação de verdade dentro da topologia — foi exatamente isso que o "Oráculo" fez, só que limitado a **um único critério**: conformidade de política de senha (IEC 62443-3-3 SR 1.3 e SR 1.7).
+Resultado **idêntico** nos 5 IEDs (192.168.10.11 a .15) — esperado, já
+que todos usam a mesma imagem base (`ubuntu-ied:latest`), sem variação
+de configuração entre eles. Achado em si: reflete um risco real de
+ambientes OT, onde equipamentos do mesmo fabricante/modelo saem de
+fábrica com configuração idêntica (uma vulnerabilidade afeta a frota
+inteira).
 
-O pedido do professor ("novos testes") se encaixa bem em duas frentes que aproveitam 100% da infraestrutura que vocês já construíram:
+**3 de 12 critérios conformes**, em todos os 5 IEDs:
 
-1. **Ampliar a conformidade normativa** do Oráculo para mais requisitos da IEC 62443-3-3 (hoje só cobre 2 de dezenas de SRs).
-2. **Adicionar testes ativos de ataque/detecção** nas mensagens GOOSE/SV, algo que o artigo original não fez — e que é exatamente o tipo de "avaliação de vulnerabilidades" que a Introdução do artigo promete mas não entrega ainda.
-
-Isso também fortalece o artigo: hoje ele testa política de senha (um controle administrativo/host), mas nunca testa o protocolo de comunicação em si (GOOSE/SV), que é o coração da IEC 61850 e o alvo real de ataques em subestações.
-
-## 2. Pipeline (mantém a Fig. 1 do artigo original)
-
-O pipeline não muda estruturalmente — só ganham dois módulos novos dentro do ambiente GNS3:
-
-```
-Subestação Real → Documentos SCL → Arquivo SCD
-        ↓
-[Script Python de Extração]  (igual ao original: IP, máscara, nome do IED)
-        ↓
-[Script Python de Modelagem] (igual ao original: gera .gns3 com switches/hosts/imagens Docker)
-        ↓
-[GNS3: topologia simulada]
-        ├── ubuntu-ied-1..N (como já existe)
-        ├── oraculo-1        (existente — expandir escopo, ver Seção 3)
-        ├── atacante-1       (NOVO — container com toolkit de ataque GOOSE)
-        └── ids-1            (NOVO — container com Suricata/Zeek/Snort)
-```
-
-## 3. Ampliação do Oráculo — mais SRs da IEC 62443-3-3
-
-Hoje o relatório do Oráculo (Fig. 3 do artigo) cobre só SR 1.3 e SR 1.7. Sugestão de expansão, mantendo o mesmo formato de relatório "Conforme / Não conforme":
-
-| SR | Nome | O que testar no IED simulado |
+| SR | Critério | Resultado |
 |---|---|---|
-| SR 1.1 | Identificação e autenticação de usuário humano | Existe conta com credencial padrão/hardcoded? |
-| SR 1.5 | Gerenciamento de autenticadores | Há rotação/expiração real ou senha estática desde o deploy? |
-| SR 2.1 | Aplicação de autorização | Conta usada roda com privilégio mínimo ou root/admin sempre? |
-| SR 3.1 | Integridade da comunicação | Mensagens GOOSE têm alguma verificação de integridade (ex: IEC 62351-6)? |
-| SR 5.1 | Segmentação de rede | Há separação (VLAN/firewall) entre rede de processo (GOOSE/SV) e rede de estação/TI? |
-| SR 7.1 | Disponibilidade de recursos | O IED simulado resiste a um flood de conexões/mensagens sem negar serviço? |
+| 1.1 | Ausência de credencial padrão/hardcoded | ❌ Não conforme |
+| 1.3 | Comprimento mínimo da senha (minlen=8) | ✅ Conforme |
+| 1.3 | Exige dígito (dcredit=0) | ❌ Não conforme |
+| 1.3 | Exige maiúscula (ucredit=-1) | ✅ Conforme |
+| 1.3 | Exige minúscula (lcredit=0) | ❌ Não conforme |
+| 1.3 | Exige caractere especial (ocredit=0) | ❌ Não conforme |
+| 1.5 | Mecanismo de expiração de senha existe | ❌ Não conforme (max_days=99999) |
+| 1.7 | Troca periódica (90-180 dias) | ❌ Não conforme (max_days=99999) |
+| 2.1 | Conta sem privilégios administrativos | ✅ Conforme |
+| 3.1 | Integridade das mensagens GOOSE | ❌ Não conforme (sem IEC 62351-6) |
+| 5.1 | Segmentação de rede (VLAN) | ❌ Não conforme (sem VLAN) |
+| 7.1 | Limitação de taxa de conexões (anti-DoS) | ❌ Não conforme (MaxStartups padrão) |
 
-Isso já é, sozinho, um "novo teste" defensável para o professor: passa de 2 para 6+ critérios avaliados automaticamente.
+## 2. Ataques GOOSE — detecção pelo `ids-1`
 
-## 4. Novos testes ativos — ataques ao protocolo GOOSE/SV
+| Teste | Detectado? | Detalhe |
+|---|---|---|
+| **A — Flooding** | ✅ Sim | `FLOOD_START` a 20.5 pkts/s (limite 20); `FLOOD_END` após 9.6s, pico de 34.0 pkts/s |
+| **B — Replay** | ✅ Sim | Detectado no 2º envio: `(stNum=23, sqNum=521)` idêntico ao já visto |
+| **C1 — Masquerade (MAC falsificado, atacante sofisticado)** | ❌ **Não** | 0 alertas — o ataque passa despercebido |
+| **C2 — Masquerade (MAC próprio, atacante ingênuo)** | ✅ Sim | `MAC mudou de 00:30:a7:01:b3:16 para de:ad:be:ef:00:99` |
+| **D — Suppression** | ✅ Sim | `stNum saltou de 23 para 1023 (salto de 1000)` |
 
-Aqui entra o container `atacante-1`, usando Scapy (mesma lib usada no precedente acadêmico "Geese", testado justamente em GNS3, e na toolkit aberta `goose-IEC61850-scapy` para crafting de pacotes GOOSE). Estrutura os testes pela taxonomia de ataques GOOSE usada na literatura (dataset PowerDuck):
+**Achado central:** 4 de 5 cenários de ataque são detectados pelo
+`ids-1`. O único que passa despercebido (C1) faz isso *porque* também
+falsifica o MAC de origem — evidenciando que detecção por anomalia de
+endereço, sozinha, não é suficiente contra um atacante que também
+falsifica a camada 2. Reforça a necessidade de proteção criptográfica
+nativa (IEC 62351-6) em vez de depender só de heurísticas de rede.
 
-### Teste A — Flooding (negação de serviço)
-**Procedimento:** `atacante-1` envia um volume alto de mensagens GOOSE forjadas na rede.
-**Métrica:** taxa de perda/atraso das mensagens legítimas entre IEDs reais; ponto de saturação da rede.
+## 3. Taxa de detecção (para a Seção de Resultados)
 
-### Teste B — Replay
-**Procedimento:** capturar (Wireshark/tcpdump dentro do container) uma sequência legítima de GOOSE e reenviá-la depois, com `stNum`/`sqNum` desatualizados.
-**Métrica:** o assinante aceita a mensagem repetida como válida? (GOOSE não tem proteção nativa contra isso — é esperado que sim, a menos que IEC 62351 esteja implementado.)
-
-### Teste C — Insertion / Masquerade (falsificação)
-**Procedimento:** `atacante-1` forja uma mensagem GOOSE se passando por um IED legítimo (mesmo `GoCBRef`/MAC multicast), com dado de estado divergente (ex: simular um comando de abertura de disjuntor).
-**Métrica:** o "IED" alvo processa o comando falso? Esse é o ataque mais crítico da literatura (tem potencial de causar ação física indevida).
-
-### Teste D — Suppression
-**Procedimento:** enviar mensagens com número de sequência artificialmente alto para forçar os assinantes a descartar mensagens legítimas subsequentes.
-**Métrica:** mensagens legítimas passam a ser ignoradas após o ataque?
-
-## 5. Módulo de Detecção — container `ids-1`
-
-**Atualização (correção de rota):** a proposta inicial era usar o Suricata. Na prática, o Suricata é construído em cima de IP/TCP/UDP, e o GOOSE é um protocolo puramente Ethernet (EtherType `0x88B8`, sem cabeçalho IP) — confirmamos junto à comunidade do próprio Suricata que regras `alert ip ...` simplesmente não capturam tráfego GOOSE. Existe trabalho em andamento no Suricata para suporte a protocolos não-IP (`alert ether`), mas está mirando a próxima versão principal, sem confirmação de disponibilidade estável.
-
-Em vez de depender de um suporte experimental de terceiros, o `ids-1` usa um detector próprio em Python (`ids_core.py` + `ids.py`), reaproveitando o mesmo parser GOOSE já validado do `atacante-1` (`goose_frame.py`). A lógica de detecção é feita sob medida para os 4 ataques da Seção 4:
-
-| Ataque | Como é detectado |
-|---|---|
-| Flooding | Taxa de pacotes/segundo por `gocbRef` acima de um limiar |
-| Replay | `(stNum, sqNum)` recebido é menor ou igual ao último já visto |
-| Masquerade | O MAC de origem muda para um `gocbRef` já conhecido |
-| Suppression | `stNum` salta um valor implausivelmente alto de uma vez |
-
-**Validação feita:** núcleo de detecção testado com 6 cenários sintéticos (tráfego normal e mudança de estado legítima geram zero alertas; os 4 ataques são corretamente detectados), além de um teste ponta-a-ponta com tráfego GOOSE real capturado + um pacote de masquerade forjado pelo próprio `atacante-1`, corretamente identificado pelo detector.
-
-**Métrica de sucesso:** taxa de detecção por tipo de ataque (A–D acima), taxa de falso positivo, e tempo entre início do ataque e alerta gerado.
-
-Isso fecha o ciclo do artigo: **ataque simulado → efeito medido no protocolo → detecção (ou não) pelo IDS → relatório automatizado**, que é uma contribuição bem mais completa do que só "verificar política de senha".
-
-## 6. Relatório final (Oráculo expandido)
-
-Mantém o mesmo estilo visual da Fig. 3 original, mas agora com três blocos:
-1. Conformidade IEC 62443-3-3 (6 SRs, Seção 3)
-2. Resultado dos testes de ataque A–D (impacto: sim/não, métricas de rede)
-3. Resultado da detecção pelo IDS (detectado: sim/não, tempo de resposta)
-
-## 7. Ferramentas a adicionar no ambiente GNS3 (containers Docker novos)
-
-- `atacante-1`: Python + Scapy, com parser/builder GOOSE próprio (`goose_frame.py`), validado contra captura real (round-trip byte-a-byte).
-- `ids-1`: Python + Scapy, detector próprio (`ids_core.py`) — ver justificativa da troca do Suricata na Seção 5.
-- Continua tudo dentro do GNS3, sem precisar trocar de ferramenta de simulação.
-
-## 8. Referências novas a incluir na bibliografia
-
-- Geese: A Traffic Generator for Performance and Security Evaluation of IEC 61850 Networks — testbed em GNS3 + Scapy, testou ataques Bad ACK-Reset e fragmentação de pacotes. Referência mais próxima do que vocês já fizeram.
-- `goose-IEC61850-scapy` (GitHub, associado a paper do IEEE SmartGridComm) — toolkit para crafting/decoding de GOOSE com Scapy.
-- PowerDuck: A GOOSE Data Set of Cyberattacks in Substations — taxonomia de ataques (replay, insertion, suppression, flooding) usada para estruturar a Seção 4.
-- Trabalho com RTDS + Snort + "sequence content resolver" — precedente de uso de IDS (Snort) para detectar/mitigar ataques GOOSE, referência para a Seção 5.
-
-## 9. Próximos passos possíveis
-
-- Escrever o código Python/Scapy para gerar um frame GOOSE válido (Teste A ou C) a partir dos dados já extraídos do SCD.
-- Escrever as regras Suricata para detectar tráfego GOOSE anômalo.
-- Redigir a nova Seção 5 (Metodologia) e 5.2 (Resultados) do artigo com base neste documento.
-
-Me diz qual desses três você quer que eu faça primeiro.
+- **Taxa de detecção geral:** 4/5 (80%) dos cenários testados.
+- **Taxa de detecção contra atacante "ingênuo"** (não falsifica MAC): 4/4 (100%).
+- **Taxa de detecção contra atacante "sofisticado"** (falsifica MAC): 0/1 (0%).
+- **Falsos positivos:** 0 (nenhum alerta disparado fora dos ataques deliberados, em nenhum dos 5 testes).
