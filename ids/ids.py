@@ -13,12 +13,25 @@ Requer privilégio de root (raw socket).
 """
 import argparse
 import json
+import signal
 import time
 
 from scapy.all import sniff
 
 import goose_frame as gf
 from ids_core import GooseMonitor
+
+_stop = False
+
+
+def _handle_sigint(signum, frame):
+    """Marca a intenção de parar. Não dá pra confiar em KeyboardInterrupt
+    propagando normalmente aqui — o sniff() do Scapy captura o Ctrl+C
+    internamente pra encerrar só a captura em andamento, sem deixar a
+    exceção vazar pro resto do programa. Um handler de sinal roda de
+    qualquer forma, independente disso."""
+    global _stop
+    _stop = True
 
 
 def make_handler(monitor, log_fh):
@@ -63,20 +76,20 @@ def main():
                             suppression_jump=args.suppression_jump)
     log_fh = open(args.log, "a") if args.log else None
     handler = make_handler(monitor, log_fh)
+    signal.signal(signal.SIGINT, _handle_sigint)
 
     print(f"[*] Monitorando GOOSE em {args.iface}... (Ctrl+C para parar)")
-    try:
-        while True:
-            # sniff por até 1s de cada vez; entre uma rodada e outra, dá um
-            # "tick" pro monitor — é isso que detecta o FIM de um flood
-            # mesmo quando nenhum pacote novo chega depois do ataque parar.
-            sniff(iface=args.iface, prn=handler, store=False, timeout=1,
-                  lfilter=lambda p: bytes(p)[12:14] == b"\x88\xb8")
-            for alert in monitor.tick(time.time()):
-                emit(alert, log_fh)
-    except KeyboardInterrupt:
-        print("\n[*] Encerrando.")
+    while not _stop:
+        # sniff por até 1s de cada vez; entre uma rodada e outra, dá um
+        # "tick" pro monitor — é isso que detecta o FIM de um flood
+        # mesmo quando nenhum pacote novo chega depois do ataque parar.
+        sniff(iface=args.iface, prn=handler, store=False, timeout=1,
+              lfilter=lambda p: bytes(p)[12:14] == b"\x88\xb8")
+        for alert in monitor.tick(time.time()):
+            emit(alert, log_fh)
+    print("\n[*] Encerrando.")
 
 
 if __name__ == "__main__":
     main()
+    
