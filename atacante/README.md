@@ -71,8 +71,8 @@ para montar os pacotes sem enviar nada — útil pra validar fora do GNS3 primei
 - **Flood:** taxa de perda/atraso das mensagens GOOSE legítimas dos IEDs
   reais durante o ataque (capturar com Wireshark em um `ubuntu-ied-N` e
   comparar `stNum`/timestamps recebidos vs. esperados).
-- **Replay:** o assinante aceita a mensagem repetida (não deveria, mas
-  GOOSE puro não tem proteção nativa contra isso)?
+- **Replay:** o assinante aceita a mensagem repetida? (não deveria, mas
+  GOOSE puro não tem proteção nativa contra isso)
 - **Masquerade:** o "IED" alvo reage ao valor forjado (ex.: LED de status,
   log de evento)? Esse é o ataque de maior impacto potencial.
 - **Suppression:** mensagens legítimas enviadas pelo IED real após o
