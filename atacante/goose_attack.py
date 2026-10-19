@@ -13,17 +13,18 @@ switch dos IEDs simulados, já que GOOSE é multicast de Camada 2 e não
 é roteável):
 
     # 1) capturar uma mensagem legítima como "molde"
-    sudo python3 goose_attack.py capture --iface eth0 --out molde.pcap
+    python3 goose_attack.py capture --iface eth0 --out molde.pcap
 
     # 2) rodar qualquer um dos ataques usando o molde capturado
-    sudo python3 goose_attack.py flood      --iface eth0 --template molde.pcap --pps 2000 --duration 10
-    sudo python3 goose_attack.py replay     --iface eth0 --template molde.pcap --delay 3
-    sudo python3 goose_attack.py masquerade --iface eth0 --template molde.pcap --occurrence 0
-    sudo python3 goose_attack.py suppress   --iface eth0 --template molde.pcap --jump 1000
+    python3 goose_attack.py flood      --iface eth0 --template molde.pcap --pps 2000 --duration 10
+    python3 goose_attack.py replay     --iface eth0 --template molde.pcap --delay 3
+    python3 goose_attack.py masquerade --iface eth0 --template molde.pcap --occurrence 0
+    python3 goose_attack.py suppress   --iface eth0 --template molde.pcap --jump 1000
 
-Requer privilégio de root (raw socket) e libpcap. Use --dry-run para
-validar a montagem dos pacotes sem enviar nada à rede (útil para testar
-fora do GNS3).
+Requer privilégio de root (raw socket) e libpcap — já é o usuário
+padrão dentro do container `atacante-1` (sem `sudo` na imagem, nem é
+necessário). Use --dry-run para validar a montagem dos pacotes sem
+enviar nada à rede (útil para testar fora do GNS3).
 """
 import argparse
 import sys

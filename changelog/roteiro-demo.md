@@ -65,8 +65,11 @@ python3 oraculo.py 192.168.10.11
 No console do `ids-1`, **antes** de rodar qualquer ataque:
 
 ```bash
-sudo python3 ids.py --iface eth0
+python3 ids.py --iface eth0
 ```
+
+(sem `sudo` — os containers já rodam como root, e a imagem nem
+instala `sudo`; se digitar `sudo` dá `bash: sudo: command not found`.)
 
 Deixa essa janela visível durante toda a Parte 3 — os alertas aparecem
 em tempo real assim que o `atacante-1` dispara cada teste. Para
@@ -74,7 +77,7 @@ registrar os alertas em arquivo (opcional, útil se quiser mostrar o
 log depois):
 
 ```bash
-sudo python3 ids.py --iface eth0 --log /tmp/alertas.jsonl
+python3 ids.py --iface eth0 --log /tmp/alertas.jsonl
 ```
 
 `Ctrl+C` encerra de forma limpa (tem handler de sinal — ver

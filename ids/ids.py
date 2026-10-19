@@ -6,10 +6,11 @@ ids_core.py e o parser validado em goose_frame.py.
 
 Uso típico dentro do container `ids-1` no GNS3 (mesma sub-rede dos IEDs):
 
-    sudo python3 ids.py --iface eth0
-    sudo python3 ids.py --iface eth0 --log alertas.jsonl
+    python3 ids.py --iface eth0
+    python3 ids.py --iface eth0 --log alertas.jsonl
 
-Requer privilégio de root (raw socket).
+Requer privilégio de root (raw socket) — já é o usuário padrão dentro
+do container (não há `sudo` na imagem, nem é necessário).
 """
 import argparse
 import json

@@ -21,10 +21,13 @@ docker build -t ids:latest .
 ## Uso (dentro do container, no GNS3)
 
 ```bash
-sudo python3 ids.py --iface eth0
+python3 ids.py --iface eth0
 # ou, gravando os alertas num arquivo:
-sudo python3 ids.py --iface eth0 --log /tmp/alertas.jsonl
+python3 ids.py --iface eth0 --log /tmp/alertas.jsonl
 ```
+
+(sem `sudo` — o container já roda como root por padrão, e a imagem
+nem instala `sudo`.)
 
 Deixa rodando numa janela de console enquanto roda os ataques do
 `atacante-1` em outra — os alertas aparecem em tempo real.
