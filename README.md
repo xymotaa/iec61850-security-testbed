@@ -35,11 +35,16 @@ Pré-requisitos: **GNS3 estável 2.2.x** + **Docker**.
    GNS3 não roda Spanning Tree — malha completa gera loop) + 5
    `ubuntu-ied` + `oraculo-1` + `ids-1` + `atacante-1`, todos no mesmo
    switch central (GOOSE é multicast de Camada 2).
+   - Essa topologia agora pode ser **gerada automaticamente** a partir
+     de um SCD real, reproduzindo o fluxo completo do artigo original
+     (extração → modelagem → GNS3) — ver `extracao-scd/README.md`
+     (`extrair_scd.py` + `gerar_topologia_gns3.py`). Os templates
+     Docker ainda precisam estar registrados manualmente antes.
 5. Cada container configura o próprio IP sozinho ao iniciar — não
    precisa configurar nada na mão.
 
 Detalhes, troubleshooting e o racional de cada escolha técnica estão em
-`docs/metodologia.md`.
+`docs/metodologia_proposta_gns3.md`.
 
 ## Testes
 
@@ -49,19 +54,24 @@ Detalhes, troubleshooting e o racional de cada escolha técnica estão em
 | `atacante/goose_attack.py {flood,replay,masquerade,suppress}` | Dispara um dos 4 ataques GOOSE |
 | `ids/ids.py --iface eth0 [--log arquivo.jsonl]` | Monitora e alerta sobre os 4 ataques em tempo real |
 | `extracao-scd/extrair_scd.py <arquivo.scd>` | Extrai IPs e blocos GOOSE/SV de um SCD real |
+| `extracao-scd/gerar_topologia_gns3.py <dados.json>` | Gera o `.gns3` da topologia a partir dos dados extraídos |
 
 Resultados já coletados (5 IEDs auditados, 5 cenários de ataque
-testados, 0 falsos positivos) estão em `docs/resultados.md`.
+testados, 0 falsos positivos) estão em
+`docs/metodologia_proposta_gns3.md`. O que falta reproduzir/estender
+em relação ao artigo original, por marco da disciplina, está
+documentado em `changelog/README.md`.
 
 ## Estrutura
 
 ```
-├── docs/           → metodologia.md e resultados.md
+├── docs/           → artigo original, apresentação da disciplina e metodologia/resultados
+├── changelog/       → status atual e planejamento por marco (3º/4º/5º)
 ├── ubuntu-ied/      → imagem dos IEDs simulados
 ├── oraculo/          → verificador de conformidade
 ├── atacante/          → ferramenta de ataque GOOSE
 ├── ids/                → detector de anomalias GOOSE
-└── extracao-scd/        → extração de dados do SCL/SCD
+└── extracao-scd/        → extração de dados do SCL/SCD + geração da topologia GNS3
 ```
 
 ## Referências
