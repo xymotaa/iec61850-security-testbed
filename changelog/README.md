@@ -9,6 +9,10 @@ Artigo sendo reproduzido: Oliveira, L. H. V.; Gurjão, E. C.
 *Analisador Automático de Segurança Cibernética para o Setor Elétrico.*
 SBSeg 2025 — WTICG (`docs/36767-853-29863-1-10-20250831-2.pdf`).
 
+**Vai apresentar/testar o projeto ao vivo?** Os comandos prontos pra
+copiar/colar em cada console do GNS3 (Oráculo, ataques, IDS, geração de
+topologia) estão em [`roteiro-demo.md`](roteiro-demo.md).
+
 ## Status atual (3º Marco — 05/10/2026, apresentado 20/10/2026)
 
 O que o artigo original entregava, e onde o projeto está hoje:
