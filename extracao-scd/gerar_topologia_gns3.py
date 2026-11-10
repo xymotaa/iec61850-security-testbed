@@ -88,7 +88,7 @@ def _make_switch_node(name, x, y):
         ]},
         "symbol": ":/symbols/ethernet_switch.svg",
         "width": 72,
-        "x": x, "y": y, "z": 1,
+        "x": int(round(x)), "y": int(round(y)), "z": 1,
     }
 
 
@@ -131,7 +131,7 @@ def _make_docker_node(name, image, x, y, start_command=None, environment=None):
         "properties": properties,
         "symbol": ":/symbols/docker_guest.svg",
         "width": 45,
-        "x": x, "y": y, "z": 1,
+        "x": int(round(x)), "y": int(round(y)), "z": 1,
     }
 
 
@@ -186,7 +186,13 @@ def build_topology(ieds, project_name,
         slot = idx // n_edge_switches
         x = sw["x"] - 80 + (slot % 2) * 160
         y = HOST_Y_TOP - 80 - (slot // 2) * 120
-        node_name = f"ied-{ied['name']}"
+        # O nome do nó precisa terminar em número e seguir o padrão
+        # "ubuntu-ied-N": é dele que o entrypoint.sh de ubuntu-ied
+        # deriva o IP (hostname "ubuntu-ied-3" -> 192.168.10.13), e
+        # ele ignora as variáveis de ambiente IED_NAME/IED_IP abaixo
+        # (mantidas só como metadado/documentação do nó, não são lidas
+        # pelo container). Ver ubuntu-ied/entrypoint.sh.
+        node_name = f"ubuntu-ied-{idx + 1}"
         node = _make_docker_node(
             node_name, ied_image, x, y,
             environment=(f"IED_NAME={ied['name']}\n"

@@ -1,0 +1,30 @@
+[
+  {
+    "name": "simpleIO",
+    "ip": "10.0.0.2",
+    "subnet": "255.255.255.0",
+    "goose_control_blocks": [
+      {
+        "ld_inst": "GenericIO",
+        "cb_name": "gcbEvents",
+        "dat_set": "Events",
+        "gocb_ref": "simpleIOGenericIO/LLN0$GO$gcbEvents",
+        "mac_address": "01-0c-cd-01-00-01",
+        "appid": "1000",
+        "vlan_id": "111",
+        "vlan_priority": "4"
+      },
+      {
+        "ld_inst": "GenericIO",
+        "cb_name": "gcbAnalogValues",
+        "dat_set": "AnalogValues",
+        "gocb_ref": "simpleIOGenericIO/LLN0$GO$gcbAnalogValues",
+        "mac_address": "01-0c-cd-01-00-02",
+        "appid": "1000",
+        "vlan_id": "111",
+        "vlan_priority": "4"
+      }
+    ],
+    "sv_control_blocks": []
+  }
+]
