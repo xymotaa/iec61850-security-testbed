@@ -107,6 +107,49 @@ Lucas Mota · Matheus · Youri — Unifesspa
 
 ---
 
+## Bloco 3A.1 — Detalhamento dos 4 ataques: funcionamento, estrago, requisitos e engenharia
+
+Todos os ataques são implementados em `atacante/goose_attack.py`, usando o mesmo núcleo de parsing/montagem de `goose_frame.py` descrito no Bloco 2B. **Nenhum deles reconstrói a árvore ASN.1 do zero** — todos partem de um `molde.pcap` (uma captura real de GOOSE) e mutilam apenas os campos necessários, que é exatamente o que um atacante real faria num ambiente de produção.
+
+### Requisitos comuns aos 4 ataques
+
+- **Posição na rede:** estar no mesmo domínio de broadcast/VLAN dos IEDs e do assinante GOOSE — GOOSE é multicast de Camada 2 (EtherType `0x88B8`), não é roteável, então não atravessa um switch L3/roteador. No ambiente do projeto, o `atacante-1` está no switch central, que enxerga todo o tráfego multicast.
+- **Privilégio:** acesso a raw socket (capabilities `NET_ADMIN`/`NET_RAW`) para montar/enviar frames Ethernet crus via Scapy (`sendp`) — dentro do container já concedido pelo GNS3, sem precisar de `sudo`.
+- **Um molde válido:** um `.pcap` com pelo menos um frame GOOSE real, obtido com `goose_attack.py capture` (ou, no caso deste projeto, o `molde.pcap` já embutido na imagem, de um relé SEL-351).
+- **Nenhum deles precisa de credencial, exploit ou acesso ao SSH do IED** — é puramente um ataque de rede na camada de enlace, por isso a auditoria do Oráculo (que audita só SSH) não detecta nenhum destes 4 vetores sozinha. É exatamente a tese da extensão (Bloco 1A).
+
+### Teste A — Flooding (DoS)
+
+- **Como funciona:** `cmd_flood` reenvia o molde em alta taxa (`--pps`, padrão 1000 pkts/s) por uma duração fixa (`--duration`). A cada envio incrementa `sqNum` em 1 e recalcula o timestamp (`t`) via `gf.make_utctime()`, mas **mantém `stNum` fixo** — porque, semanticamente, `stNum` só deveria mudar numa transição de estado real; o flood é só volume de heartbeats forjados.
+- **Estrago real:** satura o barramento Ethernet L2 e a CPU de processamento dos assinantes GOOSE reais (IEDs, relés de proteção) — em hardware OT legado, com recursos de processamento limitados, isso pode causar perda de heartbeats legítimos ou até indisponibilidade do dispositivo de proteção, que é justamente o cenário que a norma tenta evitar com o limite de 4ms de tempo de transferência.
+- **Requisito específico:** nenhum além dos comuns — é o ataque "mais barato" de montar, só precisa de capacidade de enviar pacotes em loop apertado.
+- **Engenharia por trás:** o laço de envio em Python com `time.sleep(1/pps)` é artesanal (não usa nenhuma lib de tráfego sintético), mas suficiente para os `pps` testados na campanha (até 2000 pkts/s). `--dry-run` monta o primeiro pacote sem enviar, útil para validar a construção do frame fora do GNS3.
+
+### Teste B — Replay
+
+- **Como funciona:** `cmd_replay` é o mais simples dos quatro — não toca em nenhum campo do frame. Lê o `.pcap` com `rdpcap`, espera `--delay` segundos e reenvia o frame **byte a byte, idêntico ao capturado**, via `sendp`.
+- **Estrago real:** simula um atacante que gravou um comando legítimo antigo (ex.: um comando de abertura de disjuntor — *trip* — ou um estado de proteção específico) e o reinjeta mais tarde, fora de contexto, pra reproduzir aquela ação ou aquele estado quando não deveria mais ser válido.
+- **Requisito específico:** nenhum — é literalmente "gravar e tocar de novo", não precisa entender a estrutura interna do GOOSE.
+- **Engenharia por trás:** é também o ataque mais fácil de **detectar** (ver Bloco 3A) — porque a norma exige `(stNum, sqNum)` estritamente crescentes por `gocbRef`, e um replay puro sempre reenvia um par já visto. No benchmark (Bloco 3B), foi detectado em 100% dos casos.
+
+### Teste C — Masquerade / Insertion (o achado central do projeto)
+
+- **Como funciona:** `cmd_masquerade` é o mais sofisticado. Usa `gf.flip_boolean_in_data` para localizar, dentro do blob opaco `allData`, a assinatura binária de um valor booleano MMS (`0x83 0x01 <byte>`) via regex binária, e inverte esse bit no offset exato (`v' = 1 − v`) — por exemplo, o estado de um disjuntor (aberto/fechado). Depois, incrementa `stNum` em 1 (simulando uma transição de estado real) e **reinicia `sqNum` para 0** (é assim que a norma espera que uma mudança de estado real se comporte). O MAC de origem é o parâmetro decisivo:
+  - **C1 — atacante sofisticado:** não passa `--src-mac`, então o pacote forjado usa o **mesmo MAC** do IED legítimo (MAC spoofing).
+  - **C2 — atacante ingênuo:** passa `--src-mac` com um valor próprio/diferente.
+- **Estrago real:** é o ataque de **integridade** mais grave da lista — forja uma mudança de estado física que nunca aconteceu (ex.: fazer o sistema supervisório acreditar que um disjuntor abriu/fechou quando não abriu), podendo disparar ações automáticas de proteção incorretas ou mascarar uma condição real de falha.
+- **Requisito específico:** além dos comuns, exige **MAC spoofing** para a variante C1 (trivial em qualquer switch sem port security/802.1X) — e exige conhecer o offset do valor booleano dentro do `allData` do dataset específico do IED alvo (viável porque o `allData` é reaproveitado de uma captura real, não reconstruído do zero).
+- **Engenharia por trás — por que C1 é indetectável:** GOOSE não tem assinatura criptográfica nativa. A única heurística possível para um IDS passivo é comparar o MAC de origem contra o último visto naquele `gocbRef` (`_check_masquerade` em `ids_core.py`). Em C1, como o MAC é idêntico e `stNum`/`sqNum` seguem a gramática esperada de uma transição real, **o frame malicioso é estruturalmente indistinguível de um evento físico real** — daí o resultado de 0% de detecção em C1 no benchmark (Bloco 3B), e a conclusão de que só a camada criptográfica (IEC 62351-6) resolve esse caso.
+
+### Teste D — Suppression
+
+- **Como funciona:** `cmd_suppress` soma um salto artificial grande (`--jump`, padrão 1000) ao `stNum` do molde e zera `sqNum`. Isso produz um frame com `stNum` muito à frente do estado real da rede.
+- **Estrago real:** a norma determina que assinantes descartem qualquer GOOSE com `(stNum, sqNum)` menor ou igual ao último aceito — então, depois desse frame forjado, **todas** as mensagens legítimas subsequentes do IED real (que ainda estão no `stNum` antigo) passam a ser descartadas como "antigas" pelos assinantes. É uma supressão de comunicação sem precisar inundar a rede (ao contrário do flood) — um DoS lógico, não volumétrico.
+- **Requisito específico:** nenhum além dos comuns — só precisa enviar um único frame bem formado.
+- **Engenharia por trás:** detectável por um limiar de plausibilidade (`SUPPRESSION_JUMP_THRESHOLD = 50` em `ids_core.py`) — qualquer salto de `stNum` acima desse valor é tratado como anômalo, já que uma subestação real não teria centenas/milhares de transições de estado genuínas entre dois frames consecutivos.
+
+---
+
 ## Bloco 3B — Benchmark estatístico (N = 600) e o achado central
 
 Campanha automatizada (`benchmark_ids.py`) com N = 100 repetições parametrizadas por cenário:
