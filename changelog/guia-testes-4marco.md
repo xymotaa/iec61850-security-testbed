@@ -29,12 +29,22 @@ python3 ids.py --iface eth0
 
 ## 4. Ataques (console `atacante-1`)
 
+⚠️ Rodar o **replay primeiro, sempre** — é ele que estabelece a baseline
+(MAC/stNum/sqNum) daquele `gocbRef` no `ids-1`. O `GooseMonitor` só
+compara masquerade contra um MAC **já visto antes** no mesmo `gocbRef`;
+se C1/C2 for o primeiro frame daquele `gocbRef` que o IDS processa,
+não há nada pra comparar e o ataque passa sempre, mesmo com MAC
+diferente (C2). Isso também derruba qualquer ataque se o MAC passado
+em `--src-mac` estiver incompleto (o Scapy não valida e completa com
+zeros silenciosamente — confira o MAC tem 6 pares de hex antes de
+rodar).
+
 ```bash
+# B — Replay (rodar primeiro: estabelece a baseline do gocbRef no IDS)
+python3 goose_attack.py replay --iface eth0 --template molde.pcap --delay 3
+
 # A — Flooding
 python3 goose_attack.py flood --iface eth0 --template molde.pcap --pps 2000 --duration 15
-
-# B — Replay
-python3 goose_attack.py replay --iface eth0 --template molde.pcap --delay 3
 
 # C1 — Masquerade, MAC clonado (não detectado)
 python3 goose_attack.py masquerade --iface eth0 --template molde.pcap --occurrence 0
