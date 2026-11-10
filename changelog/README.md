@@ -30,35 +30,41 @@ Resultados já coletados (5 IEDs auditados, 5 cenários de ataque
 testados, 0 falsos positivos) estão em
 `docs/metodologia_proposta_gns3.md`.
 
-## O que falta — 4º Marco (09/11/2026)
+## Status atual (4º Marco — 09/11/2026)
 
-Lacunas identificadas que ainda não foram fechadas:
-
-1. **Validar `gerar_topologia_gns3.py` dentro do GNS3 de verdade.**
-   O script já foi testado e gera um `.gns3` estruturalmente válido
-   (nós, links, IDs — validado programaticamente), mas ainda não foi
-   aberto e executado dentro do GNS3 real neste ambiente. Precisa:
-   abrir o `.gns3` gerado, confirmar que o GNS3 aceita o arquivo sem
-   erros, que os templates Docker (`ubuntu-ied`, `oraculo`,
-   `atacante`, `ids`) conectam corretamente nos nós, e que a rede
-   funciona (IEDs pegam IP, GOOSE multicast circula) do mesmo jeito
-   que na topologia montada manualmente.
-2. **Rodar a extração sobre um SCD real de subestação.** Hoje só
-   existe `exemplo_subestacao.scd`, sintético com 2 IEDs. Conseguir um
-   SCD real (ou mais representativo) e extrair/gerar a topologia a
-   partir dele é o que de fato fecha o ciclo do artigo original —
-   ou, não sendo possível, documentar explicitamente essa limitação
-   assumida no relatório.
-3. **Campanha de testes do IDS com mais repetições.** Os resultados
-   atuais (4/5 detecção, 0 falsos positivos) vêm de execuções pontuais
-   de cada ataque, não de uma campanha estatística (múltiplas
-   repetições por cenário, variação de parâmetros como `--pps` no
-   flood ou `--jump` no suppress). Repetir cada teste algumas vezes
-   fortalece a métrica para o relatório final.
-4. **Ajustar o layout do `.gns3` gerado**, se necessário, depois de
-   abrir no GNS3 (o script usa um layout automático simples em
-   estrela/grade — normal precisar reposicionar nós manualmente para
-   leitura).
+1. ✅ **`gerar_topologia_gns3.py` validado dentro do GNS3 de verdade.**
+   Dois bugs reais foram encontrados e corrigidos nesse processo (ver
+   commit `d898a34` e [`conteudo-apresentacao-4marco.md`](conteudo-apresentacao-4marco.md)):
+   - `x`/`y` dos nós eram `float` (ex. `-530.0`); o schema do GNS3
+     exige `integer` estrito — corrigido com `int(round(...))`.
+   - Nome dos nós IED (`ied-<nome-do-SCD>`) não terminava em número,
+     então o `entrypoint.sh` de `ubuntu-ied` (que deriva o IP do
+     hostname, padrão `ubuntu-ied-N` → `192.168.10.1N`) não configurava
+     nenhum IP — corrigido nomeando os nós sempre `ubuntu-ied-{N}`,
+     mantendo nome/IP reais do SCD como metadado (`IED_NAME`,
+     `IED_IP`) no ambiente do container.
+   Depois das correções: projeto abre sem erro, `ubuntu-ied-1` pega IP
+   automaticamente, `oraculo-1` audita via SSH com sucesso, e
+   `atacante-1`/`ids-1` completam um ciclo de ataque (replay) e
+   detecção real dentro dessa topologia.
+2. ✅ **Extração rodada sobre um SCD real.** Usado
+   `simpleIO_direct_control_goose.scd`, do repositório open-source
+   `mz-automation/libiec61850` (GPL-3.0) — 1 IED real, 2 blocos GOOSE
+   reais (`gcbEvents`, `gcbAnalogValues`) com MAC/APPID/VLAN. Pipeline
+   completo testado ponta a ponta: SCD real → `dados_real.json` →
+   `subestacao_real.gns3` → GNS3 real → Oráculo (3/12 critérios
+   conformes, mesmo padrão do 3º Marco) → ataque replay → detecção
+   pelo `ids-1`. Limitação assumida: esse SCD só descreve 1 IED (vs. 2
+   do sintético usado antes) — ainda assim é dado real, não fictício.
+3. ⏳ **Campanha de testes do IDS com mais repetições — ainda não
+   feita.** Os resultados seguem vindo de execuções pontuais de cada
+   ataque (4/5 detecção, 0 falsos positivos), não de uma campanha
+   estatística (múltiplas repetições por cenário, variação de
+   parâmetros como `--pps` no flood ou `--jump` no suppress). Fica
+   para o relatório final do 5º Marco.
+4. ✅ **Layout do `.gns3` gerado** — não precisou de ajuste manual
+   além do que já foi corrigido (bug de posição float); abriu
+   legível no GNS3 real.
 
 ## O que falta — 5º Marco (23/11/2026, resultados finais)
 
