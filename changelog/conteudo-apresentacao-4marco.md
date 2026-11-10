@@ -3,16 +3,18 @@
 "Apresentar resultados parciais de reprodução" — mesmo enunciado do 3º
 Marco (ver `docs/SRC-Cap0-Apresentação da Disciplina-4.pdf`, slide 18).
 
-Este arquivo funde duas frentes de trabalho do grupo:
+Este arquivo funde duas frentes de material já produzido para este
+marco:
 
 1. **Engenharia de protocolo e detecção** (parsing SCL em 2 passadas,
    codec ASN.1/BER manual, máquina de estados do IDS, benchmark
    estatístico N=600) — nível de implementação, equivalente ao PDF
-   `slidesmarco4v2.pdf` já produzido por parte do grupo.
+   `slidesmarco4v2.pdf` já produzido anteriormente nesta sessão de
+   trabalho.
 2. **Validação real de infraestrutura** (SCD real de fora do projeto,
    topologia aberta e testada dentro do GNS3 de verdade, 2 bugs
    encontrados e corrigidos nesse processo) — trabalho fechado nesta
-   sessão, que o PDF acima ainda não cobre.
+   sessão, que o PDF acima ainda não cobria.
 
 Texto pronto pra colar nos slides. Ajustem a quantidade conforme o
 tempo disponível — os blocos 1/2/3 abaixo mapeiam para os blocos do
@@ -124,7 +126,7 @@ Campanha automatizada (`benchmark_ids.py`) com N = 100 repetições parametrizad
 
 > Esta campanha estatística (N=600) fecha a pendência nº 3 que havia ficado em aberto desde o 3º Marco — antes, as métricas vinham de execuções pontuais de cada ataque, não de uma campanha com repetições.
 >
-> **⚠️ Nota de rastreabilidade:** `benchmark_ids.py` ainda não está commitado neste repositório (só os módulos `goose_frame.py`/`ids_core.py`/`ids.py` estão). Antes de apresentar estes números, confirmem com quem gerou os dados que o script e os resultados brutos serão versionados — sem isso, a tabela acima não é reprodutível por quem olhar o repositório depois.
+> **⚠️ Nota de rastreabilidade:** `benchmark_ids.py` ainda não está commitado neste repositório (só os módulos `goose_frame.py`/`ids_core.py`/`ids.py` que ele usa estão). Antes de apresentar estes números, commitar o script e idealmente os dados brutos da campanha — sem isso, a tabela acima não é reprodutível a partir do repositório.
 
 ---
 
