@@ -1,0 +1,9 @@
+{
+  "semente": 61850,
+  "trials_por_cenario": 100,
+  "jitter_do_intervalo": 0.1,
+  "sobrecarga_do_timer_descontada_us": 1.956,
+  "python": "3.12.11",
+  "plataforma": "Linux-7.3.4-1-cachyos-x86_64-with-glibc2.44",
+  "duracao_s": 70.1
+}

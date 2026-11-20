@@ -16,6 +16,23 @@ mensagem GOOSE real (relé SEL-351) — parse e reconstrução dão
 que identificou corretamente um ataque de masquerade gerado por esta
 ferramenta.
 
+## Opção `--leaked-key-env` (cenário "chave HMAC vazada")
+
+O `ids-1` pode rodar com `--auth` (simulação de autenticação estilo
+IEC 62351-6, ver `ids/README.md`). Por padrão os frames forjados saem
+**sem** HMAC — atacante sem a chave, que o IDS rejeita com `auth_fail`.
+Para mostrar o limite da mitigação, `--leaked-key-env VAR` assina `flood`,
+`masquerade` e `suppress` com a chave-mestra lida da variável de ambiente
+`VAR` (opção global, vem antes do subcomando):
+
+```bash
+GOOSE_HMAC_KEY=chave-de-teste python3 goose_attack.py --leaked-key-env GOOSE_HMAC_KEY \
+    masquerade --iface eth0 --template molde.pcap
+```
+
+Com a chave, o masquerade C1 volta a ser indistinguível de um evento
+real. `replay` reenvia o frame original e não é afetado pela opção.
+
 ## Sobre o `samples/molde.pcap`
 
 A imagem já vem com um molde pronto (`molde.pcap`, um pacote GOOSE real
@@ -93,3 +110,7 @@ métrica de detecção da Seção 5 da metodologia.
 - Cada IED tem seu próprio `gocbRef`/dataset — capture um molde por IED
   que você quiser atacar de verdade (o `molde.pcap` incluso é só um
   exemplo genérico pra testar a ferramenta).
+
+## 802.1X opcional
+
+`AUTH_8021X=1` liga o supplicant EAP-TLS (`8021x-supplicant start`); `ATACANTE_IP` troca o IP (usado pelo `publicador-1`). Desligado por padrão. Ver `autenticador-8021x/README.md`.

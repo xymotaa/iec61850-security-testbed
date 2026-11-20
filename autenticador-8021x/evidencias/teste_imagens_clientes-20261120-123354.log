@@ -1,0 +1,43 @@
+[+] PKI temporária e inventário
+[+] Construindo imagens
+DEPRECATED: The legacy builder is deprecated and will be removed in a future release.
+            Install the buildx component to build images with BuildKit:
+            https://docs.docker.com/go/buildx/
+
+DEPRECATED: The legacy builder is deprecated and will be removed in a future release.
+            Install the buildx component to build images with BuildKit:
+            https://docs.docker.com/go/buildx/
+
+DEPRECATED: The legacy builder is deprecated and will be removed in a future release.
+            Install the buildx component to build images with BuildKit:
+            https://docs.docker.com/go/buildx/
+
+DEPRECATED: The legacy builder is deprecated and will be removed in a future release.
+            Install the buildx component to build images with BuildKit:
+            https://docs.docker.com/go/buildx/
+
+DEPRECATED: The legacy builder is deprecated and will be removed in a future release.
+            Install the buildx component to build images with BuildKit:
+            https://docs.docker.com/go/buildx/
+
+== ubuntu-ied (certificado ubuntu-ied-1)
+  [PASSOU] binários presentes (8021x-supplicant, wpa_supplicant, openssl)
+  [PASSOU] entrypoint com AUTH_8021X=1 invoca o supplicant
+  [PASSOU] ubuntu-ied: porta AUTORIZADA via supplicant da imagem
+  [PASSOU] ubuntu-ied: autenticador registrou auth_aceita para ubuntu-ied-1
+== oraculo (certificado oraculo-1)
+  [PASSOU] binários presentes (8021x-supplicant, wpa_supplicant, openssl)
+  [PASSOU] entrypoint com AUTH_8021X=1 invoca o supplicant
+  [PASSOU] oraculo: porta AUTORIZADA via supplicant da imagem
+  [PASSOU] oraculo: autenticador registrou auth_aceita para oraculo-1
+== ids (certificado ids-1)
+  [PASSOU] binários presentes (8021x-supplicant, wpa_supplicant, openssl)
+  [PASSOU] entrypoint com AUTH_8021X=1 invoca o supplicant
+  [PASSOU] ids: porta AUTORIZADA via supplicant da imagem
+  [PASSOU] ids: autenticador registrou auth_aceita para ids-1
+== atacante (certificado publicador-1)
+  [PASSOU] binários presentes (8021x-supplicant, wpa_supplicant, openssl)
+  [PASSOU] entrypoint com AUTH_8021X=1 invoca o supplicant
+  [PASSOU] atacante: porta AUTORIZADA via supplicant da imagem
+  [PASSOU] atacante: autenticador registrou auth_aceita para publicador-1
+RESUMO: 0 falha(s)

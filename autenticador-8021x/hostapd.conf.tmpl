@@ -1,0 +1,20 @@
+# Gerado por iniciar_autenticador.sh (uma cópia por porta; @VAR@ é substituído).
+# Build de referência: hostapd v2.10 (Debian bookworm), driver `wired`.
+interface=@IFACE@
+driver=wired
+ctrl_interface=/run/hostapd
+
+ieee8021x=1
+eap_server=1
+eap_user_file=@EAP_USER_FILE@
+eap_reauth_period=@REAUTH_PERIODO@
+
+# CA + CRL no mesmo arquivo PEM: é assim que a build com OpenSSL carrega a
+# CRL (verificado em 2.10: não existe diretiva `crl=`). check_crl=1 exige
+# CRL válida para a cadeia do certificado do cliente.
+ca_cert=@CA_COM_CRL@
+check_crl=@CHECK_CRL@
+crl_reload_interval=@CRL_RELOAD@
+
+server_cert=@CERT_DIR@/cert.pem
+private_key=@CERT_DIR@/key.pem

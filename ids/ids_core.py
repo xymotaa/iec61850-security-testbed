@@ -32,13 +32,26 @@ class GooseMonitor:
         # gocbRef -> estado do flood em andamento (pra só alertar na borda)
         self._flood_state = {}
 
-    def process(self, gocb_ref, src_mac, st_num, sq_num, timestamp):
+    def process(self, gocb_ref, src_mac, st_num, sq_num, timestamp,
+                auth_valid=None):
         """Processa um frame GOOSE (já parseado) e retorna uma lista de
         alertas (dicts com 'type', 'gocb_ref', 'detail'). Lista vazia
-        significa que nada suspeito foi detectado neste frame."""
+        significa que nada suspeito foi detectado neste frame.
+
+        auth_valid (opt-in): resultado da verificação de HMAC feita pelo
+        chamador (ver goose_auth.py). None = autenticação desligada (o
+        comportamento de sempre); False = gera 'auth_fail' e o frame é
+        descartado sem alterar o estado, para não deixar um frame não
+        autenticado "validar" (stNum, sqNum) ou MAC; True = segue o
+        fluxo normal, e as demais checagens continuam valendo."""
         alerts = []
 
         alerts += self._check_flood(gocb_ref, timestamp)
+
+        if auth_valid is False:
+            alerts.append({"type": "auth_fail", "gocb_ref": gocb_ref,
+                           "detail": "HMAC ausente ou inválido"})
+            return alerts
 
         last = self._last.get(gocb_ref)
         if last is not None:

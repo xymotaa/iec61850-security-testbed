@@ -54,7 +54,8 @@ Detalhes, troubleshooting e o racional de cada escolha técnica estão em
 | `atacante/goose_attack.py {flood,replay,masquerade,suppress}` | Dispara um dos 4 ataques GOOSE |
 | `ids/ids.py --iface eth0 [--log arquivo.jsonl]` | Monitora e alerta sobre os 4 ataques em tempo real |
 | `extracao-scd/extrair_scd.py <arquivo.scd>` | Extrai IPs e blocos GOOSE/SV de um SCD real |
-| `extracao-scd/gerar_topologia_gns3.py <dados.json>` | Gera o `.gns3` da topologia a partir dos dados extraídos |
+| `extracao-scd/gerar_topologia_gns3.py <dados.json>` | Gera o `.gns3` da topologia a partir dos dados extraídos (`--8021x`: variante com `autenticador-8021x`) |
+| `pki/gerar_pki.sh` / `autenticador-8021x/teste_netns.sh` | PKI de teste / validação local do 802.1X (ver `autenticador-8021x/README.md`) |
 
 Resultados já coletados (5 IEDs auditados, 5 cenários de ataque
 testados, 0 falsos positivos) estão em
@@ -71,6 +72,9 @@ documentado em `changelog/README.md`.
 ├── oraculo/          → verificador de conformidade
 ├── atacante/          → ferramenta de ataque GOOSE
 ├── ids/                → detector de anomalias GOOSE
+├── benchmark/           → campanha offline do IDS (TPR/FPR, latência, HMAC, limiar)
+├── autenticador-8021x/  → switch autenticador IEEE 802.1X (EAP-TLS real: hostapd + nftables) e testes
+├── pki/                 → PKI de TESTE (CA, certificados, CRL) para o 802.1X; chaves não versionadas
 └── extracao-scd/        → extração de dados do SCL/SCD + geração da topologia GNS3
 ```
 

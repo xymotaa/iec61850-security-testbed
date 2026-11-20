@@ -20,6 +20,7 @@ import time
 from scapy.all import sniff
 
 import goose_frame as gf
+from goose_auth import GooseAuthenticator
 from ids_core import GooseMonitor
 
 _stop = False
@@ -35,7 +36,7 @@ def _handle_sigint(signum, frame):
     _stop = True
 
 
-def make_handler(monitor, log_fh):
+def make_handler(monitor, log_fh, authenticator=None):
     def handle(pkt):
         raw = bytes(pkt)
         try:
@@ -44,12 +45,15 @@ def make_handler(monitor, log_fh):
             return  # não é GOOSE válido ou frame malformado — ignora
 
         fields = parsed["fields"]
+        auth_valid = (authenticator.verify(fields, parsed["auth_tag"])
+                      if authenticator else None)
         alerts = monitor.process(
             gocb_ref=fields.get("gocbRef", ""),
             src_mac=parsed["src_mac"],
             st_num=fields.get("stNum", 0),
             sq_num=fields.get("sqNum", 0),
             timestamp=time.time(),
+            auth_valid=auth_valid,
         )
         for alert in alerts:
             emit(alert, log_fh)
@@ -71,12 +75,22 @@ def main():
     ap.add_argument("--log", help="arquivo .jsonl pra gravar os alertas (opcional)")
     ap.add_argument("--flood-pps", type=float, default=20)
     ap.add_argument("--suppression-jump", type=int, default=50)
+    ap.add_argument("--auth", action="store_true",
+                    help="verifica o HMAC (simulação IEC 62351-6) de cada frame; "
+                         "chave-mestra em GOOSE_HMAC_KEY (sem ela, usa a chave "
+                         "pública de teste)")
     args = ap.parse_args()
+
+    authenticator = None
+    if args.auth:
+        authenticator = GooseAuthenticator.from_env()
+        if GooseAuthenticator.uses_test_key():
+            print("[!] GOOSE_HMAC_KEY não definida: usando a chave de TESTE pública.")
 
     monitor = GooseMonitor(flood_pps_threshold=args.flood_pps,
                             suppression_jump=args.suppression_jump)
     log_fh = open(args.log, "a") if args.log else None
-    handler = make_handler(monitor, log_fh)
+    handler = make_handler(monitor, log_fh, authenticator)
     signal.signal(signal.SIGINT, _handle_sigint)
 
     print(f"[*] Monitorando GOOSE em {args.iface}... (Ctrl+C para parar)")

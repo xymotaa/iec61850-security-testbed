@@ -1,0 +1,210 @@
+[p9] p9: CTRL-EVENT-EAP-STARTED 02:00:c0:a8:0a:63
+[p9] p9: CTRL-EVENT-EAP-PROPOSED-METHOD vendor=0 method=1
+[p9] p9: CTRL-EVENT-EAP-PROPOSED-METHOD vendor=0 method=13
+[p9] p9: STA 02:00:c0:a8:0a:63 IEEE 802.1X: received EAP packet (code=2 id=202 len=6) from STA: EAP Response-unknown (3)
+[p9] p9: CTRL-EVENT-EAP-FAILURE 02:00:c0:a8:0a:63
+[p7] p7: CTRL-EVENT-EAP-STARTED 02:00:c0:a8:0a:11
+[p7] p7: CTRL-EVENT-EAP-PROPOSED-METHOD vendor=0 method=1
+[p8] p8: CTRL-EVENT-EAP-STARTED 02:00:c0:a8:0a:12
+[p8] p8: CTRL-EVENT-EAP-PROPOSED-METHOD vendor=0 method=1
+[p5] p5: CTRL-EVENT-EAP-STARTED 02:00:c0:a8:0a:0b
+[p2] p2: CTRL-EVENT-EAP-STARTED 02:00:c0:a8:0a:0c
+[p5] p5: CTRL-EVENT-EAP-PROPOSED-METHOD vendor=0 method=1
+[p4] p4: CTRL-EVENT-EAP-STARTED 02:00:c0:a8:0a:0e
+[p2] p2: CTRL-EVENT-EAP-PROPOSED-METHOD vendor=0 method=1
+[p1] p1: CTRL-EVENT-EAP-STARTED 02:00:c0:a8:0a:0b
+[p1] p1: CTRL-EVENT-EAP-PROPOSED-METHOD vendor=0 method=1
+[p4] p4: CTRL-EVENT-EAP-PROPOSED-METHOD vendor=0 method=1
+[p8] p8: CTRL-EVENT-EAP-PROPOSED-METHOD vendor=0 method=13
+[p5] p5: CTRL-EVENT-EAP-PROPOSED-METHOD vendor=0 method=13
+[p6] p6: CTRL-EVENT-EAP-STARTED 02:00:c0:a8:0a:28
+[p4] p4: CTRL-EVENT-EAP-PROPOSED-METHOD vendor=0 method=13
+[p2] p2: CTRL-EVENT-EAP-PROPOSED-METHOD vendor=0 method=13
+[p6] p6: CTRL-EVENT-EAP-PROPOSED-METHOD vendor=0 method=1
+[p1] p1: CTRL-EVENT-EAP-PROPOSED-METHOD vendor=0 method=13
+[p7] p7: CTRL-EVENT-EAP-PROPOSED-METHOD vendor=0 method=13
+[p6] p6: CTRL-EVENT-EAP-PROPOSED-METHOD vendor=0 method=13
+[p8] authsrv: peer certificate: depth=0 serial_num=77709FF422ACD5087CDD7A21556910E37FA666C8 subject=/CN=ubuntu-ied-5
+[p8] TLS: Certificate verification failed, error 20 (unable to get local issuer certificate) depth 0 for '/CN=ubuntu-ied-5'
+[p8] p8: CTRL-EVENT-EAP-FAILURE 02:00:c0:a8:0a:12
+[p7] authsrv: peer certificate: depth=1 serial_num=20112ED9BDF33D610DFED5E6B440647928E6CE85 subject=/O=Testbed IEC61850 (LAB)/CN=CA Raiz de TESTE 802.1X
+[p5] authsrv: peer certificate: depth=1 serial_num=20112ED9BDF33D610DFED5E6B440647928E6CE85 subject=/O=Testbed IEC61850 (LAB)/CN=CA Raiz de TESTE 802.1X
+[p7] authsrv: peer certificate: depth=0 serial_num=100A subject=/O=Testbed IEC61850 (LAB)/CN=fora-do-inventario-1
+[p1] authsrv: peer certificate: depth=1 serial_num=20112ED9BDF33D610DFED5E6B440647928E6CE85 subject=/O=Testbed IEC61850 (LAB)/CN=CA Raiz de TESTE 802.1X
+[p6] authsrv: peer certificate: depth=1 serial_num=20112ED9BDF33D610DFED5E6B440647928E6CE85 subject=/O=Testbed IEC61850 (LAB)/CN=CA Raiz de TESTE 802.1X
+[p7] p7: CTRL-EVENT-EAP-SUCCESS 02:00:c0:a8:0a:11
+[p2] authsrv: peer certificate: depth=1 serial_num=20112ED9BDF33D610DFED5E6B440647928E6CE85 subject=/O=Testbed IEC61850 (LAB)/CN=CA Raiz de TESTE 802.1X
+[p4] authsrv: peer certificate: depth=0 serial_num=100B subject=/O=Testbed IEC61850 (LAB)/CN=revogado-1
+[p4] TLS: Certificate verification failed, error 23 (certificate revoked) depth 0 for '/O=Testbed IEC61850 (LAB)/CN=revogado-1'
+[p1] authsrv: peer certificate: depth=0 serial_num=1001 subject=/O=Testbed IEC61850 (LAB)/CN=ubuntu-ied-1
+[p7] p7: AP-STA-CONNECTED 02:00:c0:a8:0a:11
+[p4] p4: CTRL-EVENT-EAP-FAILURE 02:00:c0:a8:0a:0e
+[p5] authsrv: peer certificate: depth=0 serial_num=1009 subject=/O=Testbed IEC61850 (LAB)/CN=atacante-comprometido
+[p7] p7: AP-STA-DISCONNECTED 02:00:c0:a8:0a:11
+[p6] authsrv: peer certificate: depth=0 serial_num=1009 subject=/O=Testbed IEC61850 (LAB)/CN=atacante-comprometido
+[p2] authsrv: peer certificate: depth=0 serial_num=1002 subject=/O=Testbed IEC61850 (LAB)/CN=ubuntu-ied-2
+[p1] p1: CTRL-EVENT-EAP-SUCCESS 02:00:c0:a8:0a:0b
+[p5] p5: CTRL-EVENT-EAP-SUCCESS 02:00:c0:a8:0a:0b
+[p6] p6: CTRL-EVENT-EAP-SUCCESS 02:00:c0:a8:0a:28
+[p2] p2: CTRL-EVENT-EAP-SUCCESS 02:00:c0:a8:0a:0c
+[p1] p1: AP-STA-CONNECTED 02:00:c0:a8:0a:0b
+[p5] p5: AP-STA-CONNECTED 02:00:c0:a8:0a:0b
+[p5] p5: AP-STA-DISCONNECTED 02:00:c0:a8:0a:0b
+[p6] p6: AP-STA-CONNECTED 02:00:c0:a8:0a:28
+[p2] p2: AP-STA-CONNECTED 02:00:c0:a8:0a:0c
+[p4] p4: CTRL-EVENT-EAP-STARTED 02:00:c0:a8:0a:0e
+[p4] p4: CTRL-EVENT-EAP-PROPOSED-METHOD vendor=0 method=1
+[p4] p4: CTRL-EVENT-EAP-PROPOSED-METHOD vendor=0 method=13
+[p8] p8: CTRL-EVENT-EAP-STARTED 02:00:c0:a8:0a:12
+[p8] p8: CTRL-EVENT-EAP-PROPOSED-METHOD vendor=0 method=1
+[p8] p8: CTRL-EVENT-EAP-PROPOSED-METHOD vendor=0 method=13
+[p8] authsrv: peer certificate: depth=0 serial_num=77709FF422ACD5087CDD7A21556910E37FA666C8 subject=/CN=ubuntu-ied-5
+[p8] TLS: Certificate verification failed, error 20 (unable to get local issuer certificate) depth 0 for '/CN=ubuntu-ied-5'
+[p8] p8: CTRL-EVENT-EAP-FAILURE 02:00:c0:a8:0a:12
+[p4] authsrv: peer certificate: depth=0 serial_num=100B subject=/O=Testbed IEC61850 (LAB)/CN=revogado-1
+[p4] TLS: Certificate verification failed, error 23 (certificate revoked) depth 0 for '/O=Testbed IEC61850 (LAB)/CN=revogado-1'
+[p4] p4: CTRL-EVENT-EAP-FAILURE 02:00:c0:a8:0a:0e
+[p4] p4: CTRL-EVENT-EAP-STARTED 02:00:c0:a8:0a:0e
+[p4] p4: CTRL-EVENT-EAP-PROPOSED-METHOD vendor=0 method=1
+[p8] p8: CTRL-EVENT-EAP-STARTED 02:00:c0:a8:0a:12
+[p8] p8: CTRL-EVENT-EAP-PROPOSED-METHOD vendor=0 method=1
+[p4] p4: CTRL-EVENT-EAP-PROPOSED-METHOD vendor=0 method=13
+[p8] p8: CTRL-EVENT-EAP-PROPOSED-METHOD vendor=0 method=13
+[p8] authsrv: peer certificate: depth=0 serial_num=77709FF422ACD5087CDD7A21556910E37FA666C8 subject=/CN=ubuntu-ied-5
+[p8] TLS: Certificate verification failed, error 20 (unable to get local issuer certificate) depth 0 for '/CN=ubuntu-ied-5'
+[p8] p8: CTRL-EVENT-EAP-FAILURE 02:00:c0:a8:0a:12
+[p4] authsrv: peer certificate: depth=0 serial_num=100B subject=/O=Testbed IEC61850 (LAB)/CN=revogado-1
+[p4] TLS: Certificate verification failed, error 23 (certificate revoked) depth 0 for '/O=Testbed IEC61850 (LAB)/CN=revogado-1'
+[p4] p4: CTRL-EVENT-EAP-FAILURE 02:00:c0:a8:0a:0e
+[p8] p8: CTRL-EVENT-EAP-STARTED 02:00:c0:a8:0a:12
+[p8] p8: CTRL-EVENT-EAP-PROPOSED-METHOD vendor=0 method=1
+[p4] p4: CTRL-EVENT-EAP-STARTED 02:00:c0:a8:0a:0e
+[p4] p4: CTRL-EVENT-EAP-PROPOSED-METHOD vendor=0 method=1
+[p8] p8: CTRL-EVENT-EAP-PROPOSED-METHOD vendor=0 method=13
+[p4] p4: CTRL-EVENT-EAP-PROPOSED-METHOD vendor=0 method=13
+[p8] authsrv: peer certificate: depth=0 serial_num=77709FF422ACD5087CDD7A21556910E37FA666C8 subject=/CN=ubuntu-ied-5
+[p8] TLS: Certificate verification failed, error 20 (unable to get local issuer certificate) depth 0 for '/CN=ubuntu-ied-5'
+[p8] p8: CTRL-EVENT-EAP-FAILURE 02:00:c0:a8:0a:12
+[p4] authsrv: peer certificate: depth=0 serial_num=100B subject=/O=Testbed IEC61850 (LAB)/CN=revogado-1
+[p4] TLS: Certificate verification failed, error 23 (certificate revoked) depth 0 for '/O=Testbed IEC61850 (LAB)/CN=revogado-1'
+[p4] p4: CTRL-EVENT-EAP-FAILURE 02:00:c0:a8:0a:0e
+[p4] p4: CTRL-EVENT-EAP-STARTED 02:00:c0:a8:0a:0e
+[p4] p4: CTRL-EVENT-EAP-PROPOSED-METHOD vendor=0 method=1
+[p4] p4: CTRL-EVENT-EAP-PROPOSED-METHOD vendor=0 method=13
+[p8] p8: CTRL-EVENT-EAP-STARTED 02:00:c0:a8:0a:12
+[p8] p8: CTRL-EVENT-EAP-PROPOSED-METHOD vendor=0 method=1
+[p8] p8: CTRL-EVENT-EAP-PROPOSED-METHOD vendor=0 method=13
+[p4] authsrv: peer certificate: depth=0 serial_num=100B subject=/O=Testbed IEC61850 (LAB)/CN=revogado-1
+[p4] TLS: Certificate verification failed, error 23 (certificate revoked) depth 0 for '/O=Testbed IEC61850 (LAB)/CN=revogado-1'
+[p4] p4: CTRL-EVENT-EAP-FAILURE 02:00:c0:a8:0a:0e
+[p8] authsrv: peer certificate: depth=0 serial_num=77709FF422ACD5087CDD7A21556910E37FA666C8 subject=/CN=ubuntu-ied-5
+[p8] TLS: Certificate verification failed, error 20 (unable to get local issuer certificate) depth 0 for '/CN=ubuntu-ied-5'
+[p8] p8: CTRL-EVENT-EAP-FAILURE 02:00:c0:a8:0a:12
+[p1] p1: AP-STA-DISCONNECTED 02:00:c0:a8:0a:0b
+[p4] p4: CTRL-EVENT-EAP-STARTED 02:00:c0:a8:0a:0e
+[p4] p4: CTRL-EVENT-EAP-PROPOSED-METHOD vendor=0 method=1
+[p8] p8: CTRL-EVENT-EAP-STARTED 02:00:c0:a8:0a:12
+[p4] p4: CTRL-EVENT-EAP-PROPOSED-METHOD vendor=0 method=13
+[p8] p8: CTRL-EVENT-EAP-PROPOSED-METHOD vendor=0 method=1
+[p8] p8: CTRL-EVENT-EAP-PROPOSED-METHOD vendor=0 method=13
+[p4] authsrv: peer certificate: depth=0 serial_num=100B subject=/O=Testbed IEC61850 (LAB)/CN=revogado-1
+[p4] TLS: Certificate verification failed, error 23 (certificate revoked) depth 0 for '/O=Testbed IEC61850 (LAB)/CN=revogado-1'
+[p8] authsrv: peer certificate: depth=0 serial_num=77709FF422ACD5087CDD7A21556910E37FA666C8 subject=/CN=ubuntu-ied-5
+[p8] TLS: Certificate verification failed, error 20 (unable to get local issuer certificate) depth 0 for '/CN=ubuntu-ied-5'
+[p4] p4: CTRL-EVENT-EAP-FAILURE 02:00:c0:a8:0a:0e
+[p8] p8: CTRL-EVENT-EAP-FAILURE 02:00:c0:a8:0a:12
+[p1] p1: CTRL-EVENT-EAP-STARTED 02:00:c0:a8:0a:0b
+[p1] p1: CTRL-EVENT-EAP-PROPOSED-METHOD vendor=0 method=1
+[p1] p1: CTRL-EVENT-EAP-PROPOSED-METHOD vendor=0 method=13
+[p1] authsrv: peer certificate: depth=1 serial_num=20112ED9BDF33D610DFED5E6B440647928E6CE85 subject=/O=Testbed IEC61850 (LAB)/CN=CA Raiz de TESTE 802.1X
+[p1] authsrv: peer certificate: depth=0 serial_num=1001 subject=/O=Testbed IEC61850 (LAB)/CN=ubuntu-ied-1
+[p1] p1: CTRL-EVENT-EAP-SUCCESS 02:00:c0:a8:0a:0b
+[p1] p1: AP-STA-CONNECTED 02:00:c0:a8:0a:0b
+[p8] p8: CTRL-EVENT-EAP-STARTED 02:00:c0:a8:0a:12
+[p8] p8: CTRL-EVENT-EAP-PROPOSED-METHOD vendor=0 method=1
+[p4] p4: CTRL-EVENT-EAP-STARTED 02:00:c0:a8:0a:0e
+[p8] p8: CTRL-EVENT-EAP-PROPOSED-METHOD vendor=0 method=13
+[p4] p4: CTRL-EVENT-EAP-PROPOSED-METHOD vendor=0 method=1
+[p4] p4: CTRL-EVENT-EAP-PROPOSED-METHOD vendor=0 method=13
+[p8] authsrv: peer certificate: depth=0 serial_num=77709FF422ACD5087CDD7A21556910E37FA666C8 subject=/CN=ubuntu-ied-5
+[p8] TLS: Certificate verification failed, error 20 (unable to get local issuer certificate) depth 0 for '/CN=ubuntu-ied-5'
+[p8] p8: CTRL-EVENT-EAP-FAILURE 02:00:c0:a8:0a:12
+[p4] authsrv: peer certificate: depth=0 serial_num=100B subject=/O=Testbed IEC61850 (LAB)/CN=revogado-1
+[p4] TLS: Certificate verification failed, error 23 (certificate revoked) depth 0 for '/O=Testbed IEC61850 (LAB)/CN=revogado-1'
+[p4] p4: CTRL-EVENT-EAP-FAILURE 02:00:c0:a8:0a:0e
+[p1] p1: CTRL-EVENT-EAP-STARTED 02:00:c0:a8:0a:0b
+[p1] p1: CTRL-EVENT-EAP-PROPOSED-METHOD vendor=0 method=1
+[p1] p1: CTRL-EVENT-EAP-PROPOSED-METHOD vendor=0 method=13
+[p2] p2: CTRL-EVENT-EAP-STARTED 02:00:c0:a8:0a:0c
+[p2] p2: CTRL-EVENT-EAP-PROPOSED-METHOD vendor=0 method=1
+[p2] p2: CTRL-EVENT-EAP-PROPOSED-METHOD vendor=0 method=13
+[p1] authsrv: peer certificate: depth=1 serial_num=20112ED9BDF33D610DFED5E6B440647928E6CE85 subject=/O=Testbed IEC61850 (LAB)/CN=CA Raiz de TESTE 802.1X
+[p1] authsrv: peer certificate: depth=0 serial_num=1001 subject=/O=Testbed IEC61850 (LAB)/CN=ubuntu-ied-1
+[p1] p1: CTRL-EVENT-EAP-SUCCESS 02:00:c0:a8:0a:0b
+[p2] authsrv: peer certificate: depth=0 serial_num=1002 subject=/O=Testbed IEC61850 (LAB)/CN=ubuntu-ied-2
+[p2] TLS: Certificate verification failed, error 23 (certificate revoked) depth 0 for '/O=Testbed IEC61850 (LAB)/CN=ubuntu-ied-2'
+[p2] p2: CTRL-EVENT-EAP-FAILURE 02:00:c0:a8:0a:0c
+[p6] p6: CTRL-EVENT-EAP-STARTED 02:00:c0:a8:0a:28
+[p6] p6: CTRL-EVENT-EAP-PROPOSED-METHOD vendor=0 method=1
+[p6] p6: CTRL-EVENT-EAP-PROPOSED-METHOD vendor=0 method=13
+[p6] authsrv: peer certificate: depth=1 serial_num=20112ED9BDF33D610DFED5E6B440647928E6CE85 subject=/O=Testbed IEC61850 (LAB)/CN=CA Raiz de TESTE 802.1X
+[p6] authsrv: peer certificate: depth=0 serial_num=1009 subject=/O=Testbed IEC61850 (LAB)/CN=atacante-comprometido
+[p6] p6: CTRL-EVENT-EAP-SUCCESS 02:00:c0:a8:0a:28
+[p2] p2: AP-STA-DISCONNECTED 02:00:c0:a8:0a:0c
+[p8] p8: CTRL-EVENT-EAP-STARTED 02:00:c0:a8:0a:12
+[p8] p8: CTRL-EVENT-EAP-PROPOSED-METHOD vendor=0 method=1
+[p8] p8: CTRL-EVENT-EAP-PROPOSED-METHOD vendor=0 method=13
+[p4] p4: CTRL-EVENT-EAP-STARTED 02:00:c0:a8:0a:0e
+[p4] p4: CTRL-EVENT-EAP-PROPOSED-METHOD vendor=0 method=1
+[p4] p4: CTRL-EVENT-EAP-PROPOSED-METHOD vendor=0 method=13
+[p8] authsrv: peer certificate: depth=0 serial_num=77709FF422ACD5087CDD7A21556910E37FA666C8 subject=/CN=ubuntu-ied-5
+[p8] TLS: Certificate verification failed, error 20 (unable to get local issuer certificate) depth 0 for '/CN=ubuntu-ied-5'
+[p8] p8: CTRL-EVENT-EAP-FAILURE 02:00:c0:a8:0a:12
+[p4] authsrv: peer certificate: depth=0 serial_num=100B subject=/O=Testbed IEC61850 (LAB)/CN=revogado-1
+[p4] TLS: Certificate verification failed, error 23 (certificate revoked) depth 0 for '/O=Testbed IEC61850 (LAB)/CN=revogado-1'
+[p4] p4: CTRL-EVENT-EAP-FAILURE 02:00:c0:a8:0a:0e
+[p9] p9: CTRL-EVENT-EAP-STARTED 02:00:c0:a8:0a:63
+[p9] p9: CTRL-EVENT-EAP-PROPOSED-METHOD vendor=0 method=1
+[p9] p9: CTRL-EVENT-EAP-PROPOSED-METHOD vendor=0 method=13
+[p9] p9: STA 02:00:c0:a8:0a:63 IEEE 802.1X: received EAP packet (code=2 id=237 len=6) from STA: EAP Response-unknown (3)
+[p9] p9: CTRL-EVENT-EAP-FAILURE 02:00:c0:a8:0a:63
+[p2] p2: CTRL-EVENT-EAP-STARTED 02:00:c0:a8:0a:0c
+[p2] p2: CTRL-EVENT-EAP-PROPOSED-METHOD vendor=0 method=1
+[p2] p2: CTRL-EVENT-EAP-PROPOSED-METHOD vendor=0 method=13
+[p2] authsrv: peer certificate: depth=0 serial_num=1002 subject=/O=Testbed IEC61850 (LAB)/CN=ubuntu-ied-2
+[p2] TLS: Certificate verification failed, error 23 (certificate revoked) depth 0 for '/O=Testbed IEC61850 (LAB)/CN=ubuntu-ied-2'
+[p2] p2: CTRL-EVENT-EAP-FAILURE 02:00:c0:a8:0a:0c
+[p6] p6: AP-STA-DISCONNECTED 02:00:c0:a8:0a:28
+[p1] p1: AP-STA-DISCONNECTED 02:00:c0:a8:0a:0b
+[p8] p8: CTRL-EVENT-EAP-STARTED 02:00:c0:a8:0a:12
+[p8] p8: CTRL-EVENT-EAP-PROPOSED-METHOD vendor=0 method=1
+[p4] p4: CTRL-EVENT-EAP-STARTED 02:00:c0:a8:0a:0e
+[p4] p4: CTRL-EVENT-EAP-PROPOSED-METHOD vendor=0 method=1
+[p8] p8: CTRL-EVENT-EAP-PROPOSED-METHOD vendor=0 method=13
+[p4] p4: CTRL-EVENT-EAP-PROPOSED-METHOD vendor=0 method=13
+[p4] authsrv: peer certificate: depth=0 serial_num=100B subject=/O=Testbed IEC61850 (LAB)/CN=revogado-1
+[p4] TLS: Certificate verification failed, error 23 (certificate revoked) depth 0 for '/O=Testbed IEC61850 (LAB)/CN=revogado-1'
+[p4] p4: CTRL-EVENT-EAP-FAILURE 02:00:c0:a8:0a:0e
+[p8] authsrv: peer certificate: depth=0 serial_num=77709FF422ACD5087CDD7A21556910E37FA666C8 subject=/CN=ubuntu-ied-5
+[p8] TLS: Certificate verification failed, error 20 (unable to get local issuer certificate) depth 0 for '/CN=ubuntu-ied-5'
+[p8] p8: CTRL-EVENT-EAP-FAILURE 02:00:c0:a8:0a:12
+[p2] p2: CTRL-EVENT-EAP-STARTED 02:00:c0:a8:0a:0c
+[p2] p2: CTRL-EVENT-EAP-PROPOSED-METHOD vendor=0 method=1
+[p2] p2: CTRL-EVENT-EAP-PROPOSED-METHOD vendor=0 method=13
+[p2] authsrv: peer certificate: depth=0 serial_num=1002 subject=/O=Testbed IEC61850 (LAB)/CN=ubuntu-ied-2
+[p2] TLS: Certificate verification failed, error 23 (certificate revoked) depth 0 for '/O=Testbed IEC61850 (LAB)/CN=ubuntu-ied-2'
+[p2] p2: CTRL-EVENT-EAP-FAILURE 02:00:c0:a8:0a:0c
+[p6] p6: CTRL-EVENT-EAP-STARTED 02:00:c0:a8:0a:28
+[p6] p6: CTRL-EVENT-EAP-PROPOSED-METHOD vendor=0 method=1
+[p6] p6: CTRL-EVENT-EAP-PROPOSED-METHOD vendor=0 method=13
+[p1] p1: CTRL-EVENT-EAP-STARTED 02:00:c0:a8:0a:0b
+[p1] p1: CTRL-EVENT-EAP-PROPOSED-METHOD vendor=0 method=1
+[p1] p1: CTRL-EVENT-EAP-PROPOSED-METHOD vendor=0 method=13
+[p6] authsrv: peer certificate: depth=1 serial_num=20112ED9BDF33D610DFED5E6B440647928E6CE85 subject=/O=Testbed IEC61850 (LAB)/CN=CA Raiz de TESTE 802.1X
+[p6] authsrv: peer certificate: depth=0 serial_num=1009 subject=/O=Testbed IEC61850 (LAB)/CN=atacante-comprometido
+[p6] p6: CTRL-EVENT-EAP-SUCCESS 02:00:c0:a8:0a:28
+[p1] authsrv: peer certificate: depth=1 serial_num=20112ED9BDF33D610DFED5E6B440647928E6CE85 subject=/O=Testbed IEC61850 (LAB)/CN=CA Raiz de TESTE 802.1X
+[p1] authsrv: peer certificate: depth=0 serial_num=1001 subject=/O=Testbed IEC61850 (LAB)/CN=ubuntu-ied-1
+[p1] p1: CTRL-EVENT-EAP-SUCCESS 02:00:c0:a8:0a:0b
+[p6] p6: AP-STA-CONNECTED 02:00:c0:a8:0a:28
+[p1] p1: AP-STA-CONNECTED 02:00:c0:a8:0a:0b

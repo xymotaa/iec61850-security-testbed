@@ -1,0 +1,6 @@
+# Imagem SOMENTE para teste_netns.sh: o autenticador + um cliente 802.1X
+# (wpa_supplicant) no mesmo container, com os clientes em network namespaces.
+FROM autenticador-8021x:latest
+RUN apt-get update && apt-get install -y --no-install-recommends \
+        wpasupplicant openssl procps \
+    && rm -rf /var/lib/apt/lists/*

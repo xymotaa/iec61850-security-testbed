@@ -5,6 +5,7 @@ FROM python:3.11-slim
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
         iproute2 iputils-ping openssh-client \
+        wpasupplicant openssl \
     && rm -rf /var/lib/apt/lists/*
 
 RUN pip install --no-cache-dir paramiko
@@ -12,5 +13,9 @@ RUN pip install --no-cache-dir paramiko
 WORKDIR /opt/oraculo
 COPY oraculo.py entrypoint.sh ./
 RUN chmod +x entrypoint.sh
+
+# Cliente 802.1X opcional (AUTH_8021X=1); fonte: autenticador-8021x/supplicant/.
+COPY supplicant_8021x.sh /usr/local/bin/8021x-supplicant
+RUN chmod +x /usr/local/bin/8021x-supplicant
 
 CMD ["./entrypoint.sh"]

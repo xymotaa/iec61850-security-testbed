@@ -1,0 +1,3 @@
+# Qualquer identidade EAP; o que vale é o certificado de cliente (EAP-TLS).
+# O vínculo CN <-> MAC é checado por autenticador.py (inventario.json).
+*	TLS

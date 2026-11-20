@@ -53,3 +53,11 @@ GNS3 antes de gerar o arquivo.
 resultados dos testes (Oráculo, ataques, IDS) — elas só processam
 `.scd`/geram topologia. Os resultados da campanha de testes estão em
 `docs/metodologia_proposta_gns3.md`.
+
+## 3. Variante IEEE 802.1X (`--8021x`)
+
+```bash
+python3 gerar_topologia_gns3.py dados.json --out subestacao_8021x.gns3 --8021x
+```
+
+Substitui os switches por um nó `autenticador-8021x` (IEDs, oráculo, IDS, `publicador-1` e atacante ligados direto nele), fixa o MAC de cada nó e grava `inventario.json` (CN do certificado -> MAC, ver `inventario_8021x.py`). A topologia original não é alterada. Detalhes: `autenticador-8021x/README.md`.

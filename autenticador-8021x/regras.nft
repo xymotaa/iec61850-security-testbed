@@ -1,0 +1,45 @@
+# Controle de acesso do autenticador 802.1X (nftables, família bridge).
+#
+# Política: descartar tudo. Um quadro só é encaminhado se
+#   (1) entrou por uma porta confiável OU o par (porta de entrada, MAC de
+#       origem) está no set `autorizados` (preenchido por autenticador.py
+#       após uma autenticação EAP-TLS aceita), E
+#   (2) vai sair por uma porta confiável OU por uma porta com ao menos um
+#       dispositivo autorizado (um não autenticado não "escuta" a rede).
+# EAPOL (01:80:C2:00:00:03) é link-local: a ponte não o encaminha e o
+# hostapd o recebe direto na porta, então não depende destas regras.
+#
+# Quem tenta enviar sem estar autorizado entra no set dinâmico
+# `descartados` (porta . MAC, com contador): evidência para o relatório.
+table bridge acesso8021x {
+    set autorizados {
+        type ifname . ether_addr
+    }
+    set portas_autorizadas {
+        type ifname
+    }
+    set portas_confiaveis {
+        type ifname
+    }
+    set descartados {
+        type ifname . ether_addr
+        flags dynamic,timeout
+        timeout 120s
+        size 1024
+        counter
+    }
+    counter descartes_saida { }
+
+    chain saida {
+        oifname @portas_confiaveis accept
+        oifname @portas_autorizadas accept
+        counter name descartes_saida drop
+    }
+
+    chain forward {
+        type filter hook forward priority 0; policy drop;
+        iifname @portas_confiaveis goto saida
+        iifname . ether saddr @autorizados goto saida
+        update @descartados { iifname . ether saddr } counter drop
+    }
+}

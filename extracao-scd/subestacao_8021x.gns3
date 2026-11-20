@@ -1,0 +1,525 @@
+{
+  "project_id": "82a34f9f-f0bb-40c9-adef-831b6d85825a",
+  "revision": 9,
+  "version": "2.2.0",
+  "type": "topology",
+  "name": "subestacao_8021x",
+  "auto_start": false,
+  "auto_open": false,
+  "auto_close": true,
+  "scene_height": 1000,
+  "scene_width": 2000,
+  "topology": {
+    "computes": [],
+    "drawings": [],
+    "links": [
+      {
+        "link_id": "58c42fb9-494b-4232-b5bf-8c40e4c8c17c",
+        "link_style": {},
+        "suspend": false,
+        "filters": {},
+        "nodes": [
+          {
+            "adapter_number": 0,
+            "port_number": 0,
+            "node_id": "768feb02-a1ae-452f-b3e2-ea52eba2af51",
+            "label": {
+              "text": "",
+              "x": 0,
+              "y": 0,
+              "rotation": 0
+            }
+          },
+          {
+            "adapter_number": 0,
+            "port_number": 0,
+            "node_id": "33e99935-aeeb-4ef2-9bac-e546593d6cfa",
+            "label": {
+              "text": "",
+              "x": 0,
+              "y": 0,
+              "rotation": 0
+            }
+          }
+        ]
+      },
+      {
+        "link_id": "38b16d3a-05cb-47e3-82d3-fc4903f9a91c",
+        "link_style": {},
+        "suspend": false,
+        "filters": {},
+        "nodes": [
+          {
+            "adapter_number": 1,
+            "port_number": 0,
+            "node_id": "768feb02-a1ae-452f-b3e2-ea52eba2af51",
+            "label": {
+              "text": "",
+              "x": 0,
+              "y": 0,
+              "rotation": 0
+            }
+          },
+          {
+            "adapter_number": 0,
+            "port_number": 0,
+            "node_id": "768a118b-f5da-4daf-9359-6905596d74c4",
+            "label": {
+              "text": "",
+              "x": 0,
+              "y": 0,
+              "rotation": 0
+            }
+          }
+        ]
+      },
+      {
+        "link_id": "de7dbda3-3702-446d-be65-ab52bfb6a4d0",
+        "link_style": {},
+        "suspend": false,
+        "filters": {},
+        "nodes": [
+          {
+            "adapter_number": 2,
+            "port_number": 0,
+            "node_id": "768feb02-a1ae-452f-b3e2-ea52eba2af51",
+            "label": {
+              "text": "",
+              "x": 0,
+              "y": 0,
+              "rotation": 0
+            }
+          },
+          {
+            "adapter_number": 0,
+            "port_number": 0,
+            "node_id": "a2f437da-c12b-453c-b9cb-832d646720ec",
+            "label": {
+              "text": "",
+              "x": 0,
+              "y": 0,
+              "rotation": 0
+            }
+          }
+        ]
+      },
+      {
+        "link_id": "d2bb711f-d032-435e-b3ba-de410e6fc773",
+        "link_style": {},
+        "suspend": false,
+        "filters": {},
+        "nodes": [
+          {
+            "adapter_number": 3,
+            "port_number": 0,
+            "node_id": "768feb02-a1ae-452f-b3e2-ea52eba2af51",
+            "label": {
+              "text": "",
+              "x": 0,
+              "y": 0,
+              "rotation": 0
+            }
+          },
+          {
+            "adapter_number": 0,
+            "port_number": 0,
+            "node_id": "9defe5c3-a0a4-4a65-9918-3d7b844b85c7",
+            "label": {
+              "text": "",
+              "x": 0,
+              "y": 0,
+              "rotation": 0
+            }
+          }
+        ]
+      },
+      {
+        "link_id": "e60d27a6-de21-4b09-9bd6-bb69d4aa8e5f",
+        "link_style": {},
+        "suspend": false,
+        "filters": {},
+        "nodes": [
+          {
+            "adapter_number": 4,
+            "port_number": 0,
+            "node_id": "768feb02-a1ae-452f-b3e2-ea52eba2af51",
+            "label": {
+              "text": "",
+              "x": 0,
+              "y": 0,
+              "rotation": 0
+            }
+          },
+          {
+            "adapter_number": 0,
+            "port_number": 0,
+            "node_id": "3c222614-839f-48cf-a63a-591e35452e78",
+            "label": {
+              "text": "",
+              "x": 0,
+              "y": 0,
+              "rotation": 0
+            }
+          }
+        ]
+      },
+      {
+        "link_id": "7c4783d9-2f72-466a-b26a-fd70bf0b4ad6",
+        "link_style": {},
+        "suspend": false,
+        "filters": {},
+        "nodes": [
+          {
+            "adapter_number": 5,
+            "port_number": 0,
+            "node_id": "768feb02-a1ae-452f-b3e2-ea52eba2af51",
+            "label": {
+              "text": "",
+              "x": 0,
+              "y": 0,
+              "rotation": 0
+            }
+          },
+          {
+            "adapter_number": 0,
+            "port_number": 0,
+            "node_id": "822cecaa-78c4-432c-b489-c37d34453f56",
+            "label": {
+              "text": "",
+              "x": 0,
+              "y": 0,
+              "rotation": 0
+            }
+          }
+        ]
+      }
+    ],
+    "nodes": [
+      {
+        "compute_id": "local",
+        "console": null,
+        "console_type": "telnet",
+        "custom_adapters": [],
+        "first_port_name": null,
+        "height": 45,
+        "label": {
+          "text": "autenticador-8021x",
+          "style": "font-size: 10; font-family: Verdana",
+          "x": null,
+          "y": -25,
+          "rotation": 0
+        },
+        "locked": false,
+        "name": "autenticador-8021x",
+        "node_id": "768feb02-a1ae-452f-b3e2-ea52eba2af51",
+        "node_type": "docker",
+        "port_name_format": "eth{0}",
+        "port_segment_size": 0,
+        "properties": {
+          "image": "autenticador-8021x:latest",
+          "adapters": 6,
+          "start_command": "",
+          "environment": "AUTENTICADOR_MODO=8021x\nAUTENTICADOR_PORTAS=6",
+          "console_type": "telnet",
+          "console_auto_start": false,
+          "console_resolution": "1024x768",
+          "console_http_port": 80,
+          "console_http_path": "/",
+          "extra_hosts": "",
+          "extra_volumes": [
+            "/etc/8021x",
+            "/var/log/8021x"
+          ],
+          "usage": ""
+        },
+        "symbol": ":/symbols/docker_guest.svg",
+        "width": 45,
+        "x": 0,
+        "y": -150,
+        "z": 1
+      },
+      {
+        "compute_id": "local",
+        "console": null,
+        "console_type": "telnet",
+        "custom_adapters": [
+          {
+            "adapter_number": 0,
+            "mac_address": "02:00:c0:a8:0a:0b"
+          }
+        ],
+        "first_port_name": null,
+        "height": 45,
+        "label": {
+          "text": "ubuntu-ied-1",
+          "style": "font-size: 10; font-family: Verdana",
+          "x": null,
+          "y": -25,
+          "rotation": 0
+        },
+        "locked": false,
+        "name": "ubuntu-ied-1",
+        "node_id": "33e99935-aeeb-4ef2-9bac-e546593d6cfa",
+        "node_type": "docker",
+        "port_name_format": "eth{0}",
+        "port_segment_size": 0,
+        "properties": {
+          "image": "ubuntu-ied:latest",
+          "adapters": 1,
+          "start_command": "",
+          "environment": "AUTH_8021X=1\nIED_NAME=SEL_351_1",
+          "console_type": "telnet",
+          "console_auto_start": false,
+          "console_resolution": "1024x768",
+          "console_http_port": 80,
+          "console_http_path": "/",
+          "extra_hosts": "",
+          "extra_volumes": [
+            "/etc/8021x"
+          ],
+          "usage": ""
+        },
+        "symbol": ":/symbols/docker_guest.svg",
+        "width": 45,
+        "x": -80,
+        "y": -350,
+        "z": 1
+      },
+      {
+        "compute_id": "local",
+        "console": null,
+        "console_type": "telnet",
+        "custom_adapters": [
+          {
+            "adapter_number": 0,
+            "mac_address": "02:00:c0:a8:0a:0c"
+          }
+        ],
+        "first_port_name": null,
+        "height": 45,
+        "label": {
+          "text": "ubuntu-ied-2",
+          "style": "font-size: 10; font-family: Verdana",
+          "x": null,
+          "y": -25,
+          "rotation": 0
+        },
+        "locked": false,
+        "name": "ubuntu-ied-2",
+        "node_id": "768a118b-f5da-4daf-9359-6905596d74c4",
+        "node_type": "docker",
+        "port_name_format": "eth{0}",
+        "port_segment_size": 0,
+        "properties": {
+          "image": "ubuntu-ied:latest",
+          "adapters": 1,
+          "start_command": "",
+          "environment": "AUTH_8021X=1\nIED_NAME=SEL_351_2",
+          "console_type": "telnet",
+          "console_auto_start": false,
+          "console_resolution": "1024x768",
+          "console_http_port": 80,
+          "console_http_path": "/",
+          "extra_hosts": "",
+          "extra_volumes": [
+            "/etc/8021x"
+          ],
+          "usage": ""
+        },
+        "symbol": ":/symbols/docker_guest.svg",
+        "width": 45,
+        "x": 80,
+        "y": -350,
+        "z": 1
+      },
+      {
+        "compute_id": "local",
+        "console": null,
+        "console_type": "telnet",
+        "custom_adapters": [
+          {
+            "adapter_number": 0,
+            "mac_address": "02:00:c0:a8:0a:14"
+          }
+        ],
+        "first_port_name": null,
+        "height": 45,
+        "label": {
+          "text": "oraculo-1",
+          "style": "font-size: 10; font-family: Verdana",
+          "x": null,
+          "y": -25,
+          "rotation": 0
+        },
+        "locked": false,
+        "name": "oraculo-1",
+        "node_id": "a2f437da-c12b-453c-b9cb-832d646720ec",
+        "node_type": "docker",
+        "port_name_format": "eth{0}",
+        "port_segment_size": 0,
+        "properties": {
+          "image": "oraculo:latest",
+          "adapters": 1,
+          "start_command": "",
+          "environment": "AUTH_8021X=1",
+          "console_type": "telnet",
+          "console_auto_start": false,
+          "console_resolution": "1024x768",
+          "console_http_port": 80,
+          "console_http_path": "/",
+          "extra_hosts": "",
+          "extra_volumes": [
+            "/etc/8021x"
+          ],
+          "usage": ""
+        },
+        "symbol": ":/symbols/docker_guest.svg",
+        "width": 45,
+        "x": -240,
+        "y": 150,
+        "z": 1
+      },
+      {
+        "compute_id": "local",
+        "console": null,
+        "console_type": "telnet",
+        "custom_adapters": [
+          {
+            "adapter_number": 0,
+            "mac_address": "02:00:c0:a8:0a:1e"
+          }
+        ],
+        "first_port_name": null,
+        "height": 45,
+        "label": {
+          "text": "ids-1",
+          "style": "font-size: 10; font-family: Verdana",
+          "x": null,
+          "y": -25,
+          "rotation": 0
+        },
+        "locked": false,
+        "name": "ids-1",
+        "node_id": "9defe5c3-a0a4-4a65-9918-3d7b844b85c7",
+        "node_type": "docker",
+        "port_name_format": "eth{0}",
+        "port_segment_size": 0,
+        "properties": {
+          "image": "ids:latest",
+          "adapters": 1,
+          "start_command": "",
+          "environment": "AUTH_8021X=1",
+          "console_type": "telnet",
+          "console_auto_start": false,
+          "console_resolution": "1024x768",
+          "console_http_port": 80,
+          "console_http_path": "/",
+          "extra_hosts": "",
+          "extra_volumes": [
+            "/etc/8021x"
+          ],
+          "usage": ""
+        },
+        "symbol": ":/symbols/docker_guest.svg",
+        "width": 45,
+        "x": -80,
+        "y": 150,
+        "z": 1
+      },
+      {
+        "compute_id": "local",
+        "console": null,
+        "console_type": "telnet",
+        "custom_adapters": [
+          {
+            "adapter_number": 0,
+            "mac_address": "00:30:a7:01:b3:16"
+          }
+        ],
+        "first_port_name": null,
+        "height": 45,
+        "label": {
+          "text": "publicador-1",
+          "style": "font-size: 10; font-family: Verdana",
+          "x": null,
+          "y": -25,
+          "rotation": 0
+        },
+        "locked": false,
+        "name": "publicador-1",
+        "node_id": "3c222614-839f-48cf-a63a-591e35452e78",
+        "node_type": "docker",
+        "port_name_format": "eth{0}",
+        "port_segment_size": 0,
+        "properties": {
+          "image": "atacante:latest",
+          "adapters": 1,
+          "start_command": "",
+          "environment": "AUTH_8021X=1\nATACANTE_IP=192.168.10.50",
+          "console_type": "telnet",
+          "console_auto_start": false,
+          "console_resolution": "1024x768",
+          "console_http_port": 80,
+          "console_http_path": "/",
+          "extra_hosts": "",
+          "extra_volumes": [
+            "/etc/8021x"
+          ],
+          "usage": ""
+        },
+        "symbol": ":/symbols/docker_guest.svg",
+        "width": 45,
+        "x": 80,
+        "y": 150,
+        "z": 1
+      },
+      {
+        "compute_id": "local",
+        "console": null,
+        "console_type": "telnet",
+        "custom_adapters": [
+          {
+            "adapter_number": 0,
+            "mac_address": "02:00:c0:a8:0a:28"
+          }
+        ],
+        "first_port_name": null,
+        "height": 45,
+        "label": {
+          "text": "atacante-1",
+          "style": "font-size: 10; font-family: Verdana",
+          "x": null,
+          "y": -25,
+          "rotation": 0
+        },
+        "locked": false,
+        "name": "atacante-1",
+        "node_id": "822cecaa-78c4-432c-b489-c37d34453f56",
+        "node_type": "docker",
+        "port_name_format": "eth{0}",
+        "port_segment_size": 0,
+        "properties": {
+          "image": "atacante:latest",
+          "adapters": 1,
+          "start_command": "",
+          "environment": "AUTH_8021X=0",
+          "console_type": "telnet",
+          "console_auto_start": false,
+          "console_resolution": "1024x768",
+          "console_http_port": 80,
+          "console_http_path": "/",
+          "extra_hosts": "",
+          "extra_volumes": [
+            "/etc/8021x"
+          ],
+          "usage": ""
+        },
+        "symbol": ":/symbols/docker_guest.svg",
+        "width": 45,
+        "x": 240,
+        "y": 150,
+        "z": 1
+      }
+    ]
+  }
+}

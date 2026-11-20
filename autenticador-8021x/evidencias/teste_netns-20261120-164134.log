@@ -1,0 +1,219 @@
+== Preparação
+== Subindo o autenticador
+[autenticador] supervisor iniciado (pid 128); eventos em /var/log/8021x/eventos.jsonl
+[autenticador] MODO 802.1X: portas p1 p2 p3 p4 p5 p6 p7 p8 p9 | confiáveis: nenhuma
+cat: /var/log/8021x/eventos.jsonl: No such file or directory
+  [PASSOU] hostapd e supervisor no ar
+== Referência: antes de autenticar, nada passa
+  [PASSOU] c1 (ainda não autenticado) não alcança c2
+== Autenticando clientes (em paralelo)
+[8021x-supplicant] supplicant iniciado em eth0 (cert: /pki/nos/ubuntu-ied-1); aguardando autorização
+[8021x-supplicant] supplicant iniciado em eth0 (cert: /work/ca_falsa); aguardando autorização
+[8021x-supplicant] supplicant iniciado em eth0 (cert: /pki/nos/revogado-1); aguardando autorização
+[8021x-supplicant] supplicant iniciado em eth0 (cert: /pki/nos/atacante-comprometido); aguardando autorização
+[8021x-supplicant] supplicant iniciado em eth0 (cert: /pki/nos/fora-do-inventario-1); aguardando autorização
+[8021x-supplicant] supplicant iniciado em eth0 (cert: /pki/nos/ubuntu-ied-2); aguardando autorização
+[8021x-supplicant] supplicant iniciado em eth0 (cert: /pki/nos/atacante-comprometido); aguardando autorização
+[8021x-supplicant] porta AUTORIZADA em eth0 (identidade: atacante-comprometido)
+[8021x-supplicant] porta AUTORIZADA em eth0 (identidade: fora-do-inventario-1)
+[8021x-supplicant] porta AUTORIZADA em eth0 (identidade: ubuntu-ied-2)
+[8021x-supplicant] porta AUTORIZADA em eth0 (identidade: ubuntu-ied-1)
+[8021x-supplicant] porta AUTORIZADA em eth0 (identidade: atacante-comprometido)
+[8021x-supplicant] porta NÃO autorizada após 15s em eth0; o supplicant continua tentando
+[8021x-supplicant] porta NÃO autorizada após 15s em eth0; o supplicant continua tentando
+== Resultados esperados
+  [PASSOU] c1 autenticado (ubuntu-ied-1)
+  [PASSOU] c2 autenticado (ubuntu-ied-2)
+  [PASSOU] c1 alcança c2 após autenticar
+  [PASSOU] c2 alcança c1 após autenticar
+-- E1: sem 802.1X + MAC clonado do IED 1
+  [PASSOU] c3 não alcança c2
+  [PASSOU] c2 não alcança c3 (porta não autorizada não recebe)
+  [PASSOU] descarte de c3 registrado (quadro_descartado)
+-- E2: certificado revogado
+  [PASSOU] c4 rejeitado: certificado_revogado
+  [PASSOU] c4 não alcança c2
+-- E3: cert válido de outro dispositivo + MAC do IED 1
+  [PASSOU] c5 rejeitado: mac_divergente
+  [PASSOU] c5 não alcança c2
+  [PASSOU] p5 (MAC clonado) nunca chegou a ser autorizado
+-- E4: cert válido + MAC próprio (limite do 802.1X)
+  [PASSOU] c6 autenticado (atacante-comprometido)
+  [PASSOU] c6 alcança c2
+  [PASSOU] c6 com MAC forjado pós-autenticação não alcança c2 (anti-spoof por porta)
+  [PASSOU] c6 volta a alcançar c2 com o MAC autenticado
+-- Outros motivos
+  [PASSOU] c7 rejeitado: cn_fora_do_inventario
+  [PASSOU] c8 rejeitado: certificado_invalido (CA falsa)
+  [PASSOU] c9 rejeitado: sem_certificado
+  [PASSOU] c8 não alcança c2
+-- Queda de link revoga a sessão e reautenticação restaura
+  [PASSOU] sessão de p1 encerrada ao cair o link
+  [PASSOU] c1 reautentica sozinho e volta a alcançar c2
+-- CRL: revogar com o autenticador em operação
+  [PASSOU] ubuntu-ied-2 revogado em operação: rejeitado na reautenticação
+  [PASSOU] c1 não alcança mais c2 (sessão revogada)
+  [PASSOU] c1 (não revogado) segue alcançando c6
+-- E0: sem 802.1X (autenticador-ctl desativar) e reativação
+  [PASSOU] sem 802.1X: c3 (sem credencial, MAC clonado) alcança c6
+  [PASSOU] reativado: c3 volta a ser bloqueado
+  [PASSOU] reativado: c1 e c6 reautenticam (supplicant reiniciado) e c6 alcança c1
+
+== Estado final do nftables
+table bridge acesso8021x {
+	counter descartes_saida {
+		packets 7 bytes 196
+	}
+
+	set autorizados {
+		type ifname . ether_addr
+		elements = { "p1" . 02:00:c0:a8:0a:0b,
+			     "p6" . 02:00:c0:a8:0a:28 }
+	}
+
+	set portas_autorizadas {
+		type ifname
+		elements = { "p1",
+			     "p6" }
+	}
+
+	set portas_confiaveis {
+		type ifname
+	}
+
+	set descartados {
+		type ifname . ether_addr
+		size 1024
+		flags dynamic,timeout
+		counter
+		timeout 2m
+		elements = { "p3" . 02:00:c0:a8:0a:0b counter packets 2 bytes 168 expires 1m53s725ms,
+			     "p6" . 02:00:c0:a8:0a:28 counter packets 6 bytes 168 expires 1m55s581ms }
+	}
+
+	chain saida {
+		oifname @portas_confiaveis accept
+		oifname @portas_autorizadas accept
+		counter name "descartes_saida" drop
+	}
+
+	chain forward {
+		type filter hook forward priority 0; policy drop;
+		iifname @portas_confiaveis goto saida
+		iifname . ether saddr @autorizados goto saida
+		update @descartados { iifname . ether saddr } counter packets 8 bytes 336 drop
+	}
+}
+== Eventos (JSON lines)
+{"ts": "2026-11-20T19:41:35.596+00:00", "evento": "autenticador_iniciado", "portas": "p1,p2,p3,p4,p5,p6,p7,p8,p9", "pid_hostapd": "134,135,136,137,138,139,140,141,142"}
+{"ts": "2026-11-20T19:41:36.605+00:00", "evento": "quadro_descartado", "iface": "p1", "mac": "02:00:c0:a8:0a:0b", "pacotes": 8, "motivo": "origem_nao_autorizada"}
+{"ts": "2026-11-20T19:41:36.605+00:00", "evento": "quadro_descartado", "iface": "p3", "mac": "02:00:c0:a8:0a:0b", "pacotes": 16, "motivo": "origem_nao_autorizada"}
+{"ts": "2026-11-20T19:41:36.606+00:00", "evento": "quadro_descartado", "iface": "p5", "mac": "02:00:c0:a8:0a:0b", "pacotes": 24, "motivo": "origem_nao_autorizada"}
+{"ts": "2026-11-20T19:41:36.606+00:00", "evento": "quadro_descartado", "iface": "p2", "mac": "02:00:c0:a8:0a:0c", "pacotes": 37, "motivo": "origem_nao_autorizada"}
+{"ts": "2026-11-20T19:41:36.606+00:00", "evento": "quadro_descartado", "iface": "p4", "mac": "02:00:c0:a8:0a:0e", "pacotes": 20, "motivo": "origem_nao_autorizada"}
+{"ts": "2026-11-20T19:41:36.606+00:00", "evento": "quadro_descartado", "iface": "p7", "mac": "02:00:c0:a8:0a:11", "pacotes": 16, "motivo": "origem_nao_autorizada"}
+{"ts": "2026-11-20T19:41:36.606+00:00", "evento": "quadro_descartado", "iface": "p8", "mac": "02:00:c0:a8:0a:12", "pacotes": 24, "motivo": "origem_nao_autorizada"}
+{"ts": "2026-11-20T19:41:36.606+00:00", "evento": "quadro_descartado", "iface": "p6", "mac": "02:00:c0:a8:0a:28", "pacotes": 16, "motivo": "origem_nao_autorizada"}
+{"ts": "2026-11-20T19:41:36.606+00:00", "evento": "quadro_descartado", "iface": "p9", "mac": "02:00:c0:a8:0a:63", "pacotes": 16, "motivo": "origem_nao_autorizada"}
+{"ts": "2026-11-20T19:41:37.614+00:00", "evento": "quadro_descartado", "iface": "p1", "mac": "02:00:c0:a8:0a:0b", "pacotes": 32, "motivo": "origem_nao_autorizada"}
+{"ts": "2026-11-20T19:41:37.614+00:00", "evento": "quadro_descartado", "iface": "p3", "mac": "02:00:c0:a8:0a:0b", "pacotes": 40, "motivo": "origem_nao_autorizada"}
+{"ts": "2026-11-20T19:41:37.614+00:00", "evento": "quadro_descartado", "iface": "p5", "mac": "02:00:c0:a8:0a:0b", "pacotes": 32, "motivo": "origem_nao_autorizada"}
+{"ts": "2026-11-20T19:41:37.614+00:00", "evento": "quadro_descartado", "iface": "p4", "mac": "02:00:c0:a8:0a:0e", "pacotes": 28, "motivo": "origem_nao_autorizada"}
+{"ts": "2026-11-20T19:41:37.614+00:00", "evento": "quadro_descartado", "iface": "p7", "mac": "02:00:c0:a8:0a:11", "pacotes": 40, "motivo": "origem_nao_autorizada"}
+{"ts": "2026-11-20T19:41:37.614+00:00", "evento": "quadro_descartado", "iface": "p8", "mac": "02:00:c0:a8:0a:12", "pacotes": 32, "motivo": "origem_nao_autorizada"}
+{"ts": "2026-11-20T19:41:37.614+00:00", "evento": "quadro_descartado", "iface": "p6", "mac": "02:00:c0:a8:0a:28", "pacotes": 24, "motivo": "origem_nao_autorizada"}
+{"ts": "2026-11-20T19:41:37.614+00:00", "evento": "quadro_descartado", "iface": "p9", "mac": "02:00:c0:a8:0a:63", "pacotes": 40, "motivo": "origem_nao_autorizada"}
+{"ts": "2026-11-20T19:41:38.622+00:00", "evento": "quadro_descartado", "iface": "p1", "mac": "02:00:c0:a8:0a:0b", "pacotes": 40, "motivo": "origem_nao_autorizada"}
+{"ts": "2026-11-20T19:41:39.627+00:00", "evento": "quadro_descartado", "iface": "p1", "mac": "02:00:c0:a8:0a:0b", "pacotes": 48, "motivo": "origem_nao_autorizada"}
+{"ts": "2026-11-20T19:41:40.635+00:00", "evento": "quadro_descartado", "iface": "p1", "mac": "02:00:c0:a8:0a:0b", "pacotes": 56, "motivo": "origem_nao_autorizada"}
+{"ts": "2026-11-20T19:41:40.635+00:00", "evento": "quadro_descartado", "iface": "p5", "mac": "02:00:c0:a8:0a:0b", "pacotes": 40, "motivo": "origem_nao_autorizada"}
+{"ts": "2026-11-20T19:41:40.635+00:00", "evento": "quadro_descartado", "iface": "p4", "mac": "02:00:c0:a8:0a:0e", "pacotes": 36, "motivo": "origem_nao_autorizada"}
+{"ts": "2026-11-20T19:41:40.635+00:00", "evento": "quadro_descartado", "iface": "p8", "mac": "02:00:c0:a8:0a:12", "pacotes": 40, "motivo": "origem_nao_autorizada"}
+{"ts": "2026-11-20T19:41:40.635+00:00", "evento": "quadro_descartado", "iface": "p6", "mac": "02:00:c0:a8:0a:28", "pacotes": 32, "motivo": "origem_nao_autorizada"}
+{"ts": "2026-11-20T19:41:41.643+00:00", "evento": "quadro_descartado", "iface": "p1", "mac": "02:00:c0:a8:0a:0b", "pacotes": 64, "motivo": "origem_nao_autorizada"}
+{"ts": "2026-11-20T19:41:41.643+00:00", "evento": "quadro_descartado", "iface": "p3", "mac": "02:00:c0:a8:0a:0b", "pacotes": 48, "motivo": "origem_nao_autorizada"}
+{"ts": "2026-11-20T19:41:41.643+00:00", "evento": "quadro_descartado", "iface": "p2", "mac": "02:00:c0:a8:0a:0c", "pacotes": 45, "motivo": "origem_nao_autorizada"}
+{"ts": "2026-11-20T19:41:41.643+00:00", "evento": "quadro_descartado", "iface": "p7", "mac": "02:00:c0:a8:0a:11", "pacotes": 48, "motivo": "origem_nao_autorizada"}
+{"ts": "2026-11-20T19:41:41.643+00:00", "evento": "quadro_descartado", "iface": "p9", "mac": "02:00:c0:a8:0a:63", "pacotes": 48, "motivo": "origem_nao_autorizada"}
+{"ts": "2026-11-20T19:41:43.115+00:00", "evento": "auth_rejeitada", "iface": "p9", "mac": "02:00:c0:a8:0a:63", "motivo": "sem_certificado", "detalhe": "cliente recusou EAP-TLS (sem credencial configurada)"}
+{"ts": "2026-11-20T19:41:43.232+00:00", "evento": "auth_rejeitada", "iface": "p8", "mac": "02:00:c0:a8:0a:12", "cn": "ubuntu-ied-5", "serial": "16687B90401C274F65932C91F68F72C49A1BB5C4", "motivo": "certificado_invalido", "detalhe": "unable to get local issuer certificate"}
+{"ts": "2026-11-20T19:41:43.246+00:00", "evento": "auth_rejeitada", "iface": "p4", "mac": "02:00:c0:a8:0a:0e", "cn": "revogado-1", "serial": "100B", "motivo": "certificado_revogado", "detalhe": "certificate revoked"}
+{"ts": "2026-11-20T19:41:43.257+00:00", "evento": "auth_aceita", "iface": "p2", "mac": "02:00:c0:a8:0a:0c", "cn": "ubuntu-ied-2", "serial": "1002"}
+{"ts": "2026-11-20T19:41:43.260+00:00", "evento": "auth_rejeitada", "iface": "p5", "mac": "02:00:c0:a8:0a:0b", "cn": "atacante-comprometido", "serial": "1009", "motivo": "mac_divergente", "detalhe": "MAC 02:00:c0:a8:0a:0b não pertence a atacante-comprometido (esperado: 02:00:c0:a8:0a:28)"}
+{"ts": "2026-11-20T19:41:43.267+00:00", "evento": "auth_aceita", "iface": "p6", "mac": "02:00:c0:a8:0a:28", "cn": "atacante-comprometido", "serial": "1009"}
+{"ts": "2026-11-20T19:41:43.270+00:00", "evento": "auth_rejeitada", "iface": "p7", "mac": "02:00:c0:a8:0a:11", "cn": "fora-do-inventario-1", "serial": "100A", "motivo": "cn_fora_do_inventario", "detalhe": "CN 'fora-do-inventario-1' ausente do inventário"}
+{"ts": "2026-11-20T19:41:43.274+00:00", "evento": "auth_aceita", "iface": "p1", "mac": "02:00:c0:a8:0a:0b", "cn": "ubuntu-ied-1", "serial": "1001"}
+{"ts": "2026-11-20T19:41:47.685+00:00", "evento": "quadro_descartado", "iface": "p5", "mac": "02:00:c0:a8:0a:0b", "pacotes": 48, "motivo": "origem_nao_autorizada"}
+{"ts": "2026-11-20T19:41:48.692+00:00", "evento": "quadro_descartado", "iface": "p4", "mac": "02:00:c0:a8:0a:0e", "pacotes": 44, "motivo": "origem_nao_autorizada"}
+{"ts": "2026-11-20T19:41:48.692+00:00", "evento": "quadro_descartado", "iface": "p7", "mac": "02:00:c0:a8:0a:11", "pacotes": 56, "motivo": "origem_nao_autorizada"}
+{"ts": "2026-11-20T19:41:48.693+00:00", "evento": "quadro_descartado", "iface": "p8", "mac": "02:00:c0:a8:0a:12", "pacotes": 48, "motivo": "origem_nao_autorizada"}
+{"ts": "2026-11-20T19:41:49.700+00:00", "evento": "quadro_descartado", "iface": "p3", "mac": "02:00:c0:a8:0a:0b", "pacotes": 56, "motivo": "origem_nao_autorizada"}
+{"ts": "2026-11-20T19:41:50.708+00:00", "evento": "quadro_descartado", "iface": "p9", "mac": "02:00:c0:a8:0a:63", "pacotes": 56, "motivo": "origem_nao_autorizada"}
+{"ts": "2026-11-20T19:41:51.439+00:00", "evento": "auth_rejeitada", "iface": "p4", "mac": "02:00:c0:a8:0a:0e", "cn": "revogado-1", "serial": "100B", "motivo": "certificado_revogado", "detalhe": "certificate revoked"}
+{"ts": "2026-11-20T19:41:51.454+00:00", "evento": "auth_rejeitada", "iface": "p8", "mac": "02:00:c0:a8:0a:12", "cn": "ubuntu-ied-5", "serial": "16687B90401C274F65932C91F68F72C49A1BB5C4", "motivo": "certificado_invalido", "detalhe": "unable to get local issuer certificate"}
+{"ts": "2026-11-20T19:41:59.675+00:00", "evento": "auth_rejeitada", "iface": "p4", "mac": "02:00:c0:a8:0a:0e", "cn": "revogado-1", "serial": "100B", "motivo": "certificado_revogado", "detalhe": "certificate revoked"}
+{"ts": "2026-11-20T19:41:59.680+00:00", "evento": "auth_rejeitada", "iface": "p8", "mac": "02:00:c0:a8:0a:12", "cn": "ubuntu-ied-5", "serial": "16687B90401C274F65932C91F68F72C49A1BB5C4", "motivo": "certificado_invalido", "detalhe": "unable to get local issuer certificate"}
+{"ts": "2026-11-20T19:42:00.776+00:00", "evento": "quadro_descartado", "iface": "p3", "mac": "02:00:c0:a8:0a:0b", "pacotes": 64, "motivo": "origem_nao_autorizada"}
+{"ts": "2026-11-20T19:42:01.784+00:00", "evento": "quadro_descartado", "iface": "p3", "mac": "02:00:c0:a8:0a:0b", "pacotes": 72, "motivo": "origem_nao_autorizada"}
+{"ts": "2026-11-20T19:42:01.784+00:00", "evento": "quadro_descartado", "iface": "p5", "mac": "02:00:c0:a8:0a:0b", "pacotes": 56, "motivo": "origem_nao_autorizada"}
+{"ts": "2026-11-20T19:42:02.791+00:00", "evento": "quadro_descartado", "iface": "p3", "mac": "02:00:c0:a8:0a:0b", "pacotes": 80, "motivo": "origem_nao_autorizada"}
+{"ts": "2026-11-20T19:42:04.807+00:00", "evento": "quadro_descartado", "iface": "p4", "mac": "02:00:c0:a8:0a:0e", "pacotes": 52, "motivo": "origem_nao_autorizada"}
+{"ts": "2026-11-20T19:42:04.807+00:00", "evento": "quadro_descartado", "iface": "p7", "mac": "02:00:c0:a8:0a:11", "pacotes": 64, "motivo": "origem_nao_autorizada"}
+{"ts": "2026-11-20T19:42:04.807+00:00", "evento": "quadro_descartado", "iface": "p8", "mac": "02:00:c0:a8:0a:12", "pacotes": 56, "motivo": "origem_nao_autorizada"}
+{"ts": "2026-11-20T19:42:06.819+00:00", "evento": "quadro_descartado", "iface": "p3", "mac": "02:00:c0:a8:0a:0b", "pacotes": 88, "motivo": "origem_nao_autorizada"}
+{"ts": "2026-11-20T19:42:06.819+00:00", "evento": "quadro_descartado", "iface": "p4", "mac": "02:00:c0:a8:0a:0e", "pacotes": 60, "motivo": "origem_nao_autorizada"}
+{"ts": "2026-11-20T19:42:07.827+00:00", "evento": "quadro_descartado", "iface": "p4", "mac": "02:00:c0:a8:0a:0e", "pacotes": 68, "motivo": "origem_nao_autorizada"}
+{"ts": "2026-11-20T19:42:07.827+00:00", "evento": "quadro_descartado", "iface": "p9", "mac": "02:00:c0:a8:0a:63", "pacotes": 64, "motivo": "origem_nao_autorizada"}
+{"ts": "2026-11-20T19:42:07.904+00:00", "evento": "auth_rejeitada", "iface": "p8", "mac": "02:00:c0:a8:0a:12", "cn": "ubuntu-ied-5", "serial": "16687B90401C274F65932C91F68F72C49A1BB5C4", "motivo": "certificado_invalido", "detalhe": "unable to get local issuer certificate"}
+{"ts": "2026-11-20T19:42:07.907+00:00", "evento": "auth_rejeitada", "iface": "p4", "mac": "02:00:c0:a8:0a:0e", "cn": "revogado-1", "serial": "100B", "motivo": "certificado_revogado", "detalhe": "certificate revoked"}
+{"ts": "2026-11-20T19:42:08.833+00:00", "evento": "quadro_descartado", "iface": "p4", "mac": "02:00:c0:a8:0a:0e", "pacotes": 76, "motivo": "origem_nao_autorizada"}
+{"ts": "2026-11-20T19:42:09.838+00:00", "evento": "quadro_descartado", "iface": "p5", "mac": "02:00:c0:a8:0a:0b", "pacotes": 64, "motivo": "origem_nao_autorizada"}
+{"ts": "2026-11-20T19:42:10.844+00:00", "evento": "quadro_descartado", "iface": "p5", "mac": "02:00:c0:a8:0a:0b", "pacotes": 72, "motivo": "origem_nao_autorizada"}
+{"ts": "2026-11-20T19:42:11.850+00:00", "evento": "quadro_descartado", "iface": "p5", "mac": "02:00:c0:a8:0a:0b", "pacotes": 80, "motivo": "origem_nao_autorizada"}
+{"ts": "2026-11-20T19:42:13.866+00:00", "evento": "quadro_descartado", "iface": "p6", "mac": "02:00:00:00:00:99", "pacotes": 8, "motivo": "origem_nao_autorizada"}
+{"ts": "2026-11-20T19:42:14.873+00:00", "evento": "quadro_descartado", "iface": "p6", "mac": "02:00:00:00:00:99", "pacotes": 16, "motivo": "origem_nao_autorizada"}
+{"ts": "2026-11-20T19:42:15.878+00:00", "evento": "quadro_descartado", "iface": "p6", "mac": "02:00:00:00:00:99", "pacotes": 24, "motivo": "origem_nao_autorizada"}
+{"ts": "2026-11-20T19:42:16.130+00:00", "evento": "auth_rejeitada", "iface": "p8", "mac": "02:00:c0:a8:0a:12", "cn": "ubuntu-ied-5", "serial": "16687B90401C274F65932C91F68F72C49A1BB5C4", "motivo": "certificado_invalido", "detalhe": "unable to get local issuer certificate"}
+{"ts": "2026-11-20T19:42:16.132+00:00", "evento": "auth_rejeitada", "iface": "p4", "mac": "02:00:c0:a8:0a:0e", "cn": "revogado-1", "serial": "100B", "motivo": "certificado_revogado", "detalhe": "certificate revoked"}
+{"ts": "2026-11-20T19:42:17.892+00:00", "evento": "quadro_descartado", "iface": "p8", "mac": "02:00:c0:a8:0a:12", "pacotes": 64, "motivo": "origem_nao_autorizada"}
+{"ts": "2026-11-20T19:42:18.899+00:00", "evento": "quadro_descartado", "iface": "p8", "mac": "02:00:c0:a8:0a:12", "pacotes": 72, "motivo": "origem_nao_autorizada"}
+{"ts": "2026-11-20T19:42:19.903+00:00", "evento": "quadro_descartado", "iface": "p8", "mac": "02:00:c0:a8:0a:12", "pacotes": 80, "motivo": "origem_nao_autorizada"}
+{"ts": "2026-11-20T19:42:20.929+00:00", "evento": "sessao_encerrada", "iface": "p1", "mac": "02:00:c0:a8:0a:0b", "motivo": "link_down"}
+{"ts": "2026-11-20T19:42:23.958+00:00", "evento": "quadro_descartado", "iface": "p1", "mac": "02:00:c0:a8:0a:0b", "pacotes": 88, "motivo": "origem_nao_autorizada"}
+{"ts": "2026-11-20T19:42:24.363+00:00", "evento": "auth_rejeitada", "iface": "p8", "mac": "02:00:c0:a8:0a:12", "cn": "ubuntu-ied-5", "serial": "16687B90401C274F65932C91F68F72C49A1BB5C4", "motivo": "certificado_invalido", "detalhe": "unable to get local issuer certificate"}
+{"ts": "2026-11-20T19:42:24.364+00:00", "evento": "auth_rejeitada", "iface": "p4", "mac": "02:00:c0:a8:0a:0e", "cn": "revogado-1", "serial": "100B", "motivo": "certificado_revogado", "detalhe": "certificate revoked"}
+{"ts": "2026-11-20T19:42:24.965+00:00", "evento": "quadro_descartado", "iface": "p1", "mac": "02:00:c0:a8:0a:0b", "pacotes": 96, "motivo": "origem_nao_autorizada"}
+{"ts": "2026-11-20T19:42:25.973+00:00", "evento": "quadro_descartado", "iface": "p1", "mac": "02:00:c0:a8:0a:0b", "pacotes": 104, "motivo": "origem_nao_autorizada"}
+{"ts": "2026-11-20T19:42:26.827+00:00", "evento": "auth_aceita", "iface": "p1", "mac": "02:00:c0:a8:0a:0b", "cn": "ubuntu-ied-1", "serial": "1001"}
+{"ts": "2026-11-20T19:42:31.009+00:00", "evento": "quadro_descartado", "iface": "p5", "mac": "02:00:c0:a8:0a:0b", "pacotes": 88, "motivo": "origem_nao_autorizada"}
+{"ts": "2026-11-20T19:42:32.592+00:00", "evento": "auth_rejeitada", "iface": "p8", "mac": "02:00:c0:a8:0a:12", "cn": "ubuntu-ied-5", "serial": "16687B90401C274F65932C91F68F72C49A1BB5C4", "motivo": "certificado_invalido", "detalhe": "unable to get local issuer certificate"}
+{"ts": "2026-11-20T19:42:32.600+00:00", "evento": "auth_rejeitada", "iface": "p4", "mac": "02:00:c0:a8:0a:0e", "cn": "revogado-1", "serial": "100B", "motivo": "certificado_revogado", "detalhe": "certificate revoked"}
+{"ts": "2026-11-20T19:42:33.951+00:00", "evento": "auth_aceita", "iface": "p1", "mac": "02:00:c0:a8:0a:0b", "cn": "ubuntu-ied-1", "serial": "1001"}
+{"ts": "2026-11-20T19:42:33.970+00:00", "evento": "auth_rejeitada", "iface": "p2", "mac": "02:00:c0:a8:0a:0c", "cn": "ubuntu-ied-2", "serial": "1002", "motivo": "certificado_revogado", "detalhe": "certificate revoked"}
+{"ts": "2026-11-20T19:42:33.977+00:00", "evento": "auth_aceita", "iface": "p6", "mac": "02:00:c0:a8:0a:28", "cn": "atacante-comprometido", "serial": "1009"}
+{"ts": "2026-11-20T19:42:34.032+00:00", "evento": "quadro_descartado", "iface": "p7", "mac": "02:00:c0:a8:0a:11", "pacotes": 72, "motivo": "origem_nao_autorizada"}
+{"ts": "2026-11-20T19:42:37.055+00:00", "evento": "quadro_descartado", "iface": "p4", "mac": "02:00:c0:a8:0a:0e", "pacotes": 84, "motivo": "origem_nao_autorizada"}
+{"ts": "2026-11-20T19:42:39.070+00:00", "evento": "quadro_descartado", "iface": "p3", "mac": "02:00:c0:a8:0a:0b", "pacotes": 96, "motivo": "origem_nao_autorizada"}
+{"ts": "2026-11-20T19:42:40.816+00:00", "evento": "auth_rejeitada", "iface": "p8", "mac": "02:00:c0:a8:0a:12", "cn": "ubuntu-ied-5", "serial": "16687B90401C274F65932C91F68F72C49A1BB5C4", "motivo": "certificado_invalido", "detalhe": "unable to get local issuer certificate"}
+{"ts": "2026-11-20T19:42:40.817+00:00", "evento": "auth_rejeitada", "iface": "p4", "mac": "02:00:c0:a8:0a:0e", "cn": "revogado-1", "serial": "100B", "motivo": "certificado_revogado", "detalhe": "certificate revoked"}
+{"ts": "2026-11-20T19:42:41.085+00:00", "evento": "quadro_descartado", "iface": "p2", "mac": "02:00:c0:a8:0a:0c", "pacotes": 53, "motivo": "origem_nao_autorizada"}
+{"ts": "2026-11-20T19:42:41.085+00:00", "evento": "quadro_descartado", "iface": "p8", "mac": "02:00:c0:a8:0a:12", "pacotes": 88, "motivo": "origem_nao_autorizada"}
+{"ts": "2026-11-20T19:42:41.085+00:00", "evento": "quadro_descartado", "iface": "p9", "mac": "02:00:c0:a8:0a:63", "pacotes": 72, "motivo": "origem_nao_autorizada"}
+{"ts": "2026-11-20T19:42:43.169+00:00", "evento": "auth_rejeitada", "iface": "p9", "mac": "02:00:c0:a8:0a:63", "motivo": "sem_certificado", "detalhe": "cliente recusou EAP-TLS (sem credencial configurada)"}
+{"ts": "2026-11-20T19:42:43.992+00:00", "evento": "auth_rejeitada", "iface": "p2", "mac": "02:00:c0:a8:0a:0c", "cn": "ubuntu-ied-2", "serial": "1002", "motivo": "certificado_revogado", "detalhe": "certificate revoked"}
+{"ts": "2026-11-20T19:42:44.014+00:00", "evento": "autenticador_encerrado", "codigo_hostapd": "0,0,0,0,0,0,0,0,0"}
+{"ts": "2026-11-20T19:42:46.296+00:00", "evento": "autenticador_iniciado", "portas": "p1,p2,p3,p4,p5,p6,p7,p8,p9", "pid_hostapd": "3992,3993,3994,3995,3996,3997,3998,3999,4000"}
+{"ts": "2026-11-20T19:42:48.310+00:00", "evento": "quadro_descartado", "iface": "p6", "mac": "02:00:c0:a8:0a:28", "pacotes": 1, "motivo": "origem_nao_autorizada"}
+{"ts": "2026-11-20T19:42:49.041+00:00", "evento": "auth_rejeitada", "iface": "p8", "mac": "02:00:c0:a8:0a:12", "cn": "ubuntu-ied-5", "serial": "16687B90401C274F65932C91F68F72C49A1BB5C4", "motivo": "certificado_invalido", "detalhe": "unable to get local issuer certificate"}
+{"ts": "2026-11-20T19:42:49.047+00:00", "evento": "auth_rejeitada", "iface": "p4", "mac": "02:00:c0:a8:0a:0e", "cn": "revogado-1", "serial": "100B", "motivo": "certificado_revogado", "detalhe": "certificate revoked"}
+{"ts": "2026-11-20T19:42:49.317+00:00", "evento": "quadro_descartado", "iface": "p3", "mac": "02:00:c0:a8:0a:0b", "pacotes": 1, "motivo": "origem_nao_autorizada"}
+{"ts": "2026-11-20T19:42:49.317+00:00", "evento": "quadro_descartado", "iface": "p6", "mac": "02:00:c0:a8:0a:28", "pacotes": 2, "motivo": "origem_nao_autorizada"}
+{"ts": "2026-11-20T19:42:50.324+00:00", "evento": "quadro_descartado", "iface": "p3", "mac": "02:00:c0:a8:0a:0b", "pacotes": 2, "motivo": "origem_nao_autorizada"}
+{"ts": "2026-11-20T19:42:50.325+00:00", "evento": "quadro_descartado", "iface": "p6", "mac": "02:00:c0:a8:0a:28", "pacotes": 4, "motivo": "origem_nao_autorizada"}
+{"ts": "2026-11-20T19:42:51.332+00:00", "evento": "quadro_descartado", "iface": "p6", "mac": "02:00:c0:a8:0a:28", "pacotes": 5, "motivo": "origem_nao_autorizada"}
+{"ts": "2026-11-20T19:42:52.216+00:00", "evento": "auth_rejeitada", "iface": "p2", "mac": "02:00:c0:a8:0a:0c", "cn": "ubuntu-ied-2", "serial": "1002", "motivo": "certificado_revogado", "detalhe": "certificate revoked"}
+{"ts": "2026-11-20T19:42:52.336+00:00", "evento": "quadro_descartado", "iface": "p6", "mac": "02:00:c0:a8:0a:28", "pacotes": 6, "motivo": "origem_nao_autorizada"}
+{"ts": "2026-11-20T19:42:54.488+00:00", "evento": "auth_aceita", "iface": "p1", "mac": "02:00:c0:a8:0a:0b", "cn": "ubuntu-ied-1", "serial": "1001"}
+{"ts": "2026-11-20T19:42:54.494+00:00", "evento": "auth_aceita", "iface": "p6", "mac": "02:00:c0:a8:0a:28", "cn": "atacante-comprometido", "serial": "1009"}
+
+RESUMO: 30 verificações passaram, 0 falharam
