@@ -82,8 +82,8 @@ Limiar 80 não dá falso positivo até 60 pps, mas só pega ataque acima de ~80 
 
 **Custo do HMAC (ordem de grandeza):** `verify` ~11–13 µs por chamada (mediana
 11,5 µs); ~11–21 µs por frame na campanha. Python, CPU de notebook, desvio alto —
-**não é o custo num IED real**. Latência do IDS por frame ~5–12 µs, três ordens
-de grandeza abaixo do limite de 4000 µs.
+**não é o custo num IED real**. Latência do IDS por frame ~5,6–11,6 µs sem HMAC
+(até 17,9 µs com HMAC), mais de duas ordens de grandeza abaixo do limite de 4000 µs.
 
 Arquivos: `benchmark/resultados/resumo.md`, `benchmark/figuras/`.
 
@@ -119,7 +119,7 @@ direto ao autenticador. **1 execução por cenário.**
 |---|---|---|
 | Base | — | 5 `auth_aceita`; nenhum para o atacante; `ping` ied-1→ied-2 3/3 |
 | E0 — sem 802.1X | nada | `ping` 3/3; **C1 sem alerta no IDS** |
-| E1 — sem certificado, MAC clonado | 802.1X (nftables) | `ping` 0/3; quadros descartados; IDS nem vê |
+| E1 — sem certificado, MAC clonado | 802.1X (nftables) | `ping` 0/3; quadros descartados; nenhum alerta no IDS |
 | E2 — certificado revogado | 802.1X (TLS + CRL) | `auth_rejeitada` `certificado_revogado` |
 | E3 — certificado de outro nó, MAC do IED | 802.1X (vínculo CN↔MAC) | `mac_divergente`; `ping` 0/3 |
 | E4 — certificado válido, MAC próprio | IDS (heurística de MAC) | autentica; alerta `MASQUERADE` |
@@ -129,7 +129,7 @@ direto ao autenticador. **1 execução por cenário.**
 | E5 (iii) — chave vazada, MAC do publicador | 802.1X (par porta+MAC) | 5 pacotes descartados (1930 bytes) |
 
 **Leitura:** o 802.1X barra o atacante **sem credencial** e o **clone de MAC** — o
-mesmo C1 que o IDS não via. Mas **autentica o dispositivo, não a mensagem**: nó com
+mesmo C1 que o IDS não alertava (E0). Mas **autentica o dispositivo, não a mensagem**: nó com
 certificado válido e MAC próprio publica GOOSE forjado (E4). Por isso a
 **defesa em profundidade**: 802.1X + HMAC + IDS.
 

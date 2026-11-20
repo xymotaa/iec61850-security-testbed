@@ -141,9 +141,10 @@ a chave); `hmac_chave_vazada` (atacante **com** a chave-mestra de teste).
 
 **Comparação com a campanha do 4º Marco (3.2).** As **detecções sem HMAC
 coincidem** em todos os cenários (100% em A/B/C2/D, 0% em C1 e em T0). As
-**latências divergem em valor absoluto** (aqui ~5–12 µs no `process`; antes
-4,0–5,8 µs), plausivelmente por hardware, timer e método de medição diferentes;
-ambas ficam três ordens de grandeza abaixo do limite de 4000 µs da IEC 61850.
+**latências divergem em valor absoluto** (aqui ~5,6–11,6 µs no `process` sem HMAC, até
+17,9 µs nos modos com HMAC; antes 4,0–5,8 µs), plausivelmente por hardware, timer e
+método de medição diferentes; ambas ficam mais de duas ordens de grandeza (≥ ~200×)
+abaixo do limite de 4000 µs da IEC 61850.
 As latências não são comparáveis entre as campanhas.
 
 **O que o resultado mostra:**
@@ -279,8 +280,8 @@ instalada por `pki/instalar_no_gns3.py`. **Cada cenário foi executado 1 vez**
 | E5 (iii) — chave vazada, origem do publicador | 802.1X (par porta+MAC) | nenhum alerta novo; `nft`: 5 pacotes, 1930 bytes | `alertas_e5.jsonl` (2 linhas), saída do `nft` |
 
 Leitura: o 802.1X barra o atacante **sem credencial** e o **clone de MAC de
-outra porta**, mesmo quando o IDS não vê nada (E0 e E1 mostram o mesmo C1 em
-dois estados da rede). Mas **autentica o dispositivo, não a mensagem**: um nó
+outra porta**, mesmo quando o IDS não gera alerta (E0 e E1: sem alerta nos dois estados da rede;
+que o frame não chega ao IDS só foi evidenciado indiretamente, pelos contadores `nft` de E4b/E5 (iii)). Mas **autentica o dispositivo, não a mensagem**: um nó
 comprometido com certificado válido e MAC próprio publica GOOSE forjado (E4);
 nesse caso o IDS (heurística de MAC) ou o HMAC (E5 i) é que atuam. Defesa em
 profundidade: 802.1X + HMAC + IDS.
@@ -324,7 +325,7 @@ Gerar a variante `--8021x` a partir do SCD real (`dados_real.json`) funciona
 | Falso positivo (baseline) | 0/100 nos 3 modos | 3.3 |
 | C1 com HMAC, atacante sem chave | 100/100 (`auth_fail`) | 3.3 |
 | C1 com HMAC, chave vazada | 0/100 | 3.3 |
-| Latência do IDS por frame | ~5–12 µs (offline, Python) | 3.3 |
+| Latência do IDS por frame (`process`) | ~5,6–11,6 µs sem HMAC; até 17,9 µs com HMAC (offline, Python) | 3.3 |
 | Custo do `verify` HMAC | ~11–13 µs por chamada (mediana ~11,5 µs) | 5 |
 | 802.1X em `netns` | 10 de 11 execuções sem falha; 1 com 2 falhas | 6.1 |
 | 802.1X no GNS3 | base + 9 cenários (E0 a E5), 1 execução cada | 6.2 |
@@ -339,7 +340,7 @@ artigo propôs vem de `changelog/README.md`).
 | Item | Situação | Onde |
 |---|---|---|
 | Extração do SCD (IP, máscara, nome) | **Reproduzido** | `extracao-scd/extrair_scd.py` |
-| Topologia: 4 switches, 5 IEDs, Oráculo | **Reproduzido** | `subestacao.gns3` |
+| Topologia: 4 switches, 5 IEDs, Oráculo | **Reproduzido** na campanha de 3º Marco (5 IEDs); o `subestacao.gns3` versionado tem só 2 IEDs (SCD sintético) | `subestacao.gns3` |
 | Oráculo: SR 1.3 e 1.7 via SSH | **Reproduzido** | `oraculo/oraculo.py` |
 | Extração de GOOSE/SV (MAC, APPID, VLAN, `gocbRef`) | **Estendido** | `extrair_scd.py` |
 | Geração automática do `.gns3` | **Estendido** (a etapa de modelagem da Fig. 1 era manual neste projeto até o 3º Marco) | `gerar_topologia_gns3.py` |
