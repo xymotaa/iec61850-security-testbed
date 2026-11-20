@@ -1,9 +1,9 @@
 # ids-1 — Detector de Anomalias GOOSE
 
 Detecta os 4 ataques da metodologia (Seção 4), usando um núcleo próprio
-em Python (`ids_core.py`) em vez do Suricata — ver `docs/metodologia.md`
-para o porquê dessa troca (suporte a protocolos não-IP como GOOSE não é
-confiável na versão estável do Suricata).
+em Python (`ids_core.py`) em vez do Suricata, porque o suporte a
+protocolos não-IP como GOOSE não é confiável na versão estável do
+Suricata.
 
 **Validado:** núcleo de detecção testado com 6 cenários sintéticos (zero
 falso positivo em tráfego normal + mudança de estado legítima; os 4
@@ -44,8 +44,8 @@ Deixa rodando numa janela de console enquanto roda os ataques do
 ## O que cada alerta significa
 
 | Tipo | Como é detectado |
-
-| `flood_start`|Taxa de pacotes/segundo, por `gocbRef`, cruzou o limiar (alerta uma vez, na borda de subida)|
+|---|---|
+| `flood_start` | Taxa de pacotes/segundo, por `gocbRef`, cruzou o limiar (alerta uma vez, na borda de subida)|
 | `flood_end` | Taxa voltou ao normal — inclui duração e pico de pps do episódio |
 | `replay` | `(stNum, sqNum)` recebido é menor ou igual ao último já visto |
 | `masquerade` | O MAC de origem muda para um `gocbRef` já conhecido |

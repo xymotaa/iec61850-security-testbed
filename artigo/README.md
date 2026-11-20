@@ -25,24 +25,28 @@ Pacotes exigidos: `babel`, `tikz`, `booktabs`, `tabularx`, `xcolor` (todos TeX L
 
 **Estado da validação:** neste ambiente não há `pdflatex`/`latexmk`, então `main.tex` NÃO foi compilado. Só foi checado o balanceamento de chaves e de `\begin/\end`. Compile no Overleaf antes de confiar.
 
-## Mudanças do 802.1X (esta revisão)
+## Mudanças desta revisão (resultados reais do GNS3)
 
-Novo: subseção "Controle de acesso L2 com IEEE 802.1X (EAP-TLS)" (Seção 4), subseção de validação em netns (Seção 5), Tabela ataque × norma com a coluna 802.1X atualizada, discussão de defesa em profundidade, lições de engenharia, limitações (ix)–(xiv), conclusão e resumo/abstract.
-Números do 802.1X conferidos nos logs: 11 execuções de `teste_netns.sh` em `evidencias/` = 8 com 30/0, 2 com 29/0 (roteiro anterior, sem a verificação "p5 nunca chegou a ser autorizado") e 1 com 28/2; `teste_imagens_clientes` = 16 verificações, 0 falhas (1 log). Atenção: o briefing falava em "11 execuções 30/0 + 1 com 28/2"; os logs não confirmam isso, e o artigo usa o que os logs mostram.
-A frequência "1 em 6" do bug de correlação vem do README do autenticador, não dos logs; a causa do race do supplicant está marcada como hipótese.
+O 802.1X EAP-TLS foi validado no GNS3 real em 20/11/2026. Fonte única: `autenticador-8021x/evidencias/gns3/RESULTADOS_GNS3.md` e os arquivos ao lado (`eventos_gns3_20261120.jsonl`, `alertas_e*.jsonl`, `tcpdump_e4.txt`).
+
+- `main.tex`: resumo/abstract, contribuições, variante `--8021x`, vínculo CN↔MAC, Seção "Validação do 802.1X: GNS3 real e netns", discussão, limitações (ix), (xiv), (xv), "O que foi proposto" e conclusão atualizados. A tabela `tab:gns3pend` foi removida; `tab:8021x` agora cobre base, E0, E1, E2, E3, E4, E4b, E5 (i)(ii)(iii) com a coluna "Ambiente" (GNS3 / netns); E2b, queda de link e CA falsa aparecem como só netns.
+- Ressalvas preservadas: E3 mostra "AUTORIZADA" no supplicant mas a recusa vem do vínculo CN↔MAC (plano de dados); o contador do `nft` é a evidência confiável; 352→386 bytes (34 B) é inferência compatível com o trailer HMAC; E0 prova porta aberta pelo `ping`; cada cenário executado uma vez no GNS3 (sem repetições estatísticas); E2b e overhead de autenticação não medidos no GNS3.
+- `esqueleto.md`: estrutura enxuta para o autor digitar o artigo.
+- Não compilado (sem LaTeX). Conferido por script simples: chaves e `\begin/\end` balanceados, todos os `\ref` com `\label`, todas as `\cite` com entrada no `.bib`.
+
+Números do 802.1X em netns conferidos nos logs: 11 execuções de `teste_netns.sh` em `evidencias/` = 8 com 30/0, 2 com 29/0 (roteiro anterior) e 1 com 28/2; `teste_imagens_clientes` = 16 verificações, 0 falhas. A frequência "1 em 6" do bug de correlação vem do README do autenticador, não dos logs; a causa do race do supplicant é hipótese.
 
 ## Pendências
 
+Marcadas em vermelho no PDF (`\todo{...}`) e em laranja (`\verif`). O macro `\pend` continua definido, mas não é mais usado no texto.
 
-Marcadas em vermelho no PDF (`\todo{...}`, `\pend`) e em laranja (`\verif`).
-
-Resultados: preenchidos com os dados reais de `benchmark/resultados/` (campanha reproduzida offline, N=100 por cenário e modo; sensibilidade do limiar). Tabela 2 = campanha anterior do 4º Marco (rotulada como tal; o script original não foi versionado); Tabela 3 = campanha reproduzida nos 3 modos; Tabela 4 = C1 com HMAC e custo de latência; Tabela 5 = sensibilidade do limiar; Tabela "Defesa em profundidade" = camadas × o que controla/não resolve; Tabela 802.1X = cenários E0–E5 validados em netns (fonte: `autenticador-8021x/evidencias/`); Tabela de pendências do GNS3 (campos `\pend`). Figuras usadas (PDF): `tpr_por_cenario`, `latencia_por_cenario`, `sensibilidade_limiar` (a `custo_hmac` foi removida: o custo está na Tabela 4 e na Figura de latência).
+Resultados: campanha reproduzida offline (`benchmark/resultados/`), N=100 por cenário e modo; Tabela 2 = campanha anterior do 4º Marco (script original não versionado); Tabela "Defesa em profundidade"; Tabela 802.1X = GNS3 + netns. Figuras (PDF): `tpr_por_cenario`, `latencia_por_cenario`, `sensibilidade_limiar`.
 
 Pendências restantes:
-- [ ] **Validação em topologia GNS3 real** (`\todo` na Discussão): repetir C1 sem HMAC / com HMAC / chave vazada e a varredura do limiar no GNS3 e comparar com a campanha offline. Todos os resultados de HMAC e de limiar do artigo são offline.
-- [ ] **Executar E0–E5 no GNS3** (`changelog/guia-testes-5marco.md`, topologia `subestacao_8021x`) e preencher a Tabela "Cenários a executar no GNS3" (campos `\pend`) com `eventos.jsonl`, alertas do IDS e `tcpdump`. Nada do GNS3 foi inventado. Isso inclui o E5 (802.1X + HMAC + IDS), que não tem evidência combinada em nenhum ambiente.
-- [ ] **Latência/overhead de autenticação** em topologia real (não medido em lugar nenhum) e abrir o `.gns3` no GNS3 (nunca aberto).
-- [ ] Confirmar a causa do race do supplicant (hoje só hipótese: EAPOL-Logoff atrasado de daemon antigo; sem captura de pacotes) e, se possível, repetir `teste_netns.sh` mais vezes para quantificar a intermitência do bug de correlação (1/6 é amostra pequena).
+- [ ] **Latência/overhead de autenticação em topologia real** (EAP-TLS): não medido em nenhum ambiente (`\todo` na Discussão).
+- [ ] Não repetido no GNS3 (limitação, não bloqueio): campanha de HMAC (C1 sem/com HMAC/chave vazada), varredura do limiar, E2b, queda de link, CA falsa; cada cenário E0–E5 foi executado uma vez, sem repetições estatísticas.
+- [ ] **Compilar no Overleaf** com o template SBC oficial (nada foi compilado). A figura TikZ do 802.1X nunca foi renderizada: confira sobreposição de nós (`\resizebox{\linewidth}{!}{...}`) e a nova tabela `tab:8021x` (5 colunas, `\scriptsize`), que pode ficar apertada.
+- [ ] Confirmar a causa do race do supplicant (hoje só hipótese: EAPOL-Logoff atrasado de daemon antigo; sem captura de pacotes) e repetir `teste_netns.sh` mais vezes para quantificar a intermitência do bug de correlação (1/6 é amostra pequena).
 - [ ] Citações: `ieee8021x` e `iec62351-6` passaram a ser citadas; conferir edição/ano no `.bib`. Não há referência para EAP-TLS (RFC 5216), `hostapd` ou `nftables`; adicionar se o professor/orientador quiser.
 - [ ] Commitar os scripts de `benchmark/` e citar repositório/commit (hoje não commitados) em "Campanha reproduzida".
 - [ ] Informar o modelo de CPU da máquina da campanha reproduzida (`execucao.json` guarda só Python e SO).
@@ -52,7 +56,5 @@ Pendências restantes:
 - [ ] Edição/ano das normas em `referencias.bib`; páginas do artigo SBSeg 2025; evento/editora do GOOSEIDRS (KIT) e venue do PowerDuck.
 - [ ] Trabalhos relacionados: as frases da Seção 2 se baseiam apenas nos títulos; ler os artigos e comparar método/métricas.
 - [ ] Autores: sobrenome de Matheus e Youri, afiliação completa e e-mails.
-- [ ] Limite de páginas SBC (meta 6–8): conferir após compilar com o template oficial (o artigo cresceu bastante com o 802.1X: nova figura grande, 3 tabelas novas e mais texto; provável estouro). Se estourar, sugestão de cortes, em ordem: (1) Tabela de sensibilidade do limiar (manter só o texto/figura); (2) Tabela anterior do 4º Marco (resumir em uma frase, já que a reproduzida coincide); (3) a Tabela de pendências do GNS3 vira só um `\todo`; (4) encurtar a lista de decisões de projeto do 802.1X; (5) mover limitações (xii)–(xiv) para o repositório. NÃO cortar a tabela E0–E5, a figura 802.1X nem a tabela de camadas, que sustentam a tese.
-- [ ] Compilar: nada foi compilado (sem LaTeX aqui). Checados por script simples (não é compilação): chaves e `\begin/\end` balanceados, todos os `\ref` com `\label` (as figuras do benchmark têm o label dentro de `\figbench`), todas as `\cite` com entrada no `.bib`. A figura TikZ do 802.1X nunca foi renderizada: confira no Overleaf sobreposição de nós (ela usa `\resizebox{\linewidth}{!}{...}`).
-
+- [ ] Limite de páginas SBC (meta 6–8): conferir após compilar com o template oficial (o artigo cresceu bastante com o 802.1X: nova figura grande, 3 tabelas novas e mais texto; provável estouro). Se estourar, sugestão de cortes, em ordem: (1) Tabela de sensibilidade do limiar (manter só o texto/figura); (2) Tabela anterior do 4º Marco (resumir em uma frase, já que a reproduzida coincide); (3) (feito: a Tabela de pendências do GNS3 foi removida; se faltar espaço, enxugar as linhas só-netns da `tab:8021x`); (4) encurtar a lista de decisões de projeto do 802.1X; (5) mover limitações (xii)–(xv) para o repositório. NÃO cortar a tabela E0–E5, a figura 802.1X nem a tabela de camadas, que sustentam a tese.
 Observações sobre a bibliografia: Hussain et al. (Scientific Reports) consta no Crossref como vol. 13, art. 1857, **2023** (o DOI `s41598-022-...` é de submissão em 2022); Auto-SGCR é de 2025; o artigo do SBSeg 2023 (`sol.sbc.org.br/.../27230`) tem DOI `10.5753/sbseg.2023.233109`. Falha de rede impediu abrir a página SOL do artigo SBSeg 2025 (o DOI foi apenas informado, não reconferido).

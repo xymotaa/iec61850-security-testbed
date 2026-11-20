@@ -180,10 +180,12 @@ na ponte do container — sem passar pela ponte do host, que descartaria o EAPOL
   `cd tests && python3 -m unittest discover -p 'test_*.py'`; mais
   `extracao-scd/tests`, `pki/tests`.
 
-**Não validado aqui:** o GNS3 em si (abrir o projeto, ubridge, volumes
-persistentes, MAC por adaptador). O que é específico do GNS3 foi conferido no
-código do `gns3server` 2.2.61 instalado (mesma versão do ambiente), mas a
-execução fim a fim na interface gráfica fica para o primeiro uso.
+* **GNS3 real** (20/11/2026, GNS3 2.2.61): cenários E0 a E5 executados no
+  projeto `subestacao_8021x`, 1 execução por cenário. Resultados e evidências em
+  `evidencias/gns3/RESULTADOS_GNS3.md`.
+
+**Não validado no GNS3:** revogação em operação (E2b, só em `netns`), overhead
+ou latência de autenticação e repetições estatísticas.
 
 ## Limitações e riscos conhecidos
 

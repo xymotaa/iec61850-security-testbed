@@ -1,8 +1,9 @@
 # Resultados dos Testes — iec61850-security-testbed
 
 Dados brutos coletados na campanha de testes (topologia: 4 switches em
-estrela, 5 `ubuntu-ied`, `oraculo-1`, `atacante-1`, `ids-1`). Ver
-`docs/metodologia.md` para o racional de cada teste.
+estrela, 5 `ubuntu-ied`, `oraculo-1`, `atacante-1`, `ids-1`).
+Consolidação final, incluindo HMAC, 802.1X e a campanha offline, em
+`docs/resultados.md`.
 
 ## 1. Oráculo — conformidade IEC 62443-3-3 (5 IEDs)
 

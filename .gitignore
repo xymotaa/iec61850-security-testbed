@@ -1,0 +1,10 @@
+# Python
+__pycache__/
+*.pyc
+.venv/
+.pytest_cache/
+
+# Projeto GNS3 aberto localmente (volumes dos nós, com certificados e chaves de laboratório)
+project-files/
+
+# pki/saida/ (CA, certificados e chaves de TESTE) já é ignorado por pki/.gitignore

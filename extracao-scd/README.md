@@ -9,7 +9,9 @@ topologia manualmente.
 **Arquivos:**
 - `extrair_scd.py` — extração (SCD → JSON).
 - `gerar_topologia_gns3.py` — modelagem (JSON → `.gns3`).
+- `inventario_8021x.py` — inventário CN → MAC para a variante 802.1X (seção 3).
 - `exemplo_subestacao.scd` — SCD sintético (mas estruturalmente válido) usado para testar o script, com 2 IEDs.
+- `scd_real_simpleIO.scd` — SCD real (`mz-automation/libiec61850`, GPL-3.0), 1 IED, 2 blocos GOOSE; saída em `dados_real.json` e `subestacao_real.gns3`.
 
 ## 1. Extração (`extrair_scd.py`)
 
@@ -52,7 +54,7 @@ GNS3 antes de gerar o arquivo.
 **Importante:** estas ferramentas não têm relação direta com os
 resultados dos testes (Oráculo, ataques, IDS) — elas só processam
 `.scd`/geram topologia. Os resultados da campanha de testes estão em
-`docs/metodologia_proposta_gns3.md`.
+`docs/resultados.md`.
 
 ## 3. Variante IEEE 802.1X (`--8021x`)
 

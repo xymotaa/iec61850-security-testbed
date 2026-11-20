@@ -24,7 +24,7 @@ Pré-requisitos: **GNS3 estável 2.2.x** + **Docker**.
 
 1. Instale GNS3 + Docker.
 2. Builda as 4 imagens (uma por pasta — `ubuntu-ied`, `oraculo`,
-   `atacante`, `ids`):
+   `atacante`, `ids`; mais `autenticador-8021x` se for usar o 802.1X):
    ```bash
    cd <pasta> && docker build -t <pasta>:latest . && cd ..
    ```
@@ -57,8 +57,10 @@ Detalhes, troubleshooting e o racional de cada escolha técnica estão em
 | `extracao-scd/gerar_topologia_gns3.py <dados.json>` | Gera o `.gns3` da topologia a partir dos dados extraídos (`--8021x`: variante com `autenticador-8021x`) |
 | `pki/gerar_pki.sh` / `autenticador-8021x/teste_netns.sh` | PKI de teste / validação local do 802.1X (ver `autenticador-8021x/README.md`) |
 
-Resultados já coletados (5 IEDs auditados, 5 cenários de ataque
-testados, 0 falsos positivos) estão em
+Resultados consolidados (Oráculo, ataques GOOSE, campanha offline, HMAC
+simulado, 802.1X real e validação no GNS3) estão em
+`docs/resultados.md`; os dados brutos da 1ª campanha (5 IEDs auditados,
+5 cenários de ataque, 0 falsos positivos), em
 `docs/metodologia_proposta_gns3.md`. O que falta reproduzir/estender
 em relação ao artigo original, por marco da disciplina, está
 documentado em `changelog/README.md`.
@@ -66,7 +68,7 @@ documentado em `changelog/README.md`.
 ## Estrutura
 
 ```
-├── docs/           → artigo original, apresentação da disciplina e metodologia/resultados
+├── docs/           → artigo original, apresentação da disciplina, `resultados.md` (relatório final) e dados da 1ª campanha
 ├── changelog/       → status atual e planejamento por marco (3º/4º/5º)
 ├── ubuntu-ied/      → imagem dos IEDs simulados
 ├── oraculo/          → verificador de conformidade

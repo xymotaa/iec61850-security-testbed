@@ -56,34 +56,46 @@ testados, 0 falsos positivos) estão em
    conformes, mesmo padrão do 3º Marco) → ataque replay → detecção
    pelo `ids-1`. Limitação assumida: esse SCD só descreve 1 IED (vs. 2
    do sintético usado antes) — ainda assim é dado real, não fictício.
-3. ⏳ **Campanha de testes do IDS com mais repetições — ainda não
-   feita.** Os resultados seguem vindo de execuções pontuais de cada
-   ataque (4/5 detecção, 0 falsos positivos), não de uma campanha
-   estatística (múltiplas repetições por cenário, variação de
-   parâmetros como `--pps` no flood ou `--jump` no suppress). Fica
-   para o relatório final do 5º Marco.
+3. ✅ **Campanha de testes do IDS com repetições.** Apresentada no 4º
+   Marco com N=600 (100 repetições × 6 cenários), mas o
+   `benchmark_ids.py` original **nunca foi versionado**; só os slides
+   (`conteudo-apresentacao-4marco.md`, Bloco 3B) a registram. No 5º
+   Marco foi reconstruída e reproduzida em `benchmark/` (ver abaixo).
 4. ✅ **Layout do `.gns3` gerado** — não precisou de ajuste manual
    além do que já foi corrigido (bug de posição float); abriu
    legível no GNS3 real.
 
-## O que falta — 5º Marco (23/11/2026, resultados finais)
+## Status atual (5º Marco — 23/11/2026, resultados finais)
 
-1. **Resumo expandido em formato SBC**, via Overleaf, cobrindo
-   motivação, problemática, metodologia, resultados e comparação
-   explícita com o artigo original — ainda não iniciado no repositório
-   (não há `.tex` nem link de Overleaf registrado).
-2. **Consolidar os resultados finais** (Oráculo + ataques GOOSE +
-   geração automática de topologia) num único relatório de resultados,
-   já citando o SCD usado, a quantidade de repetições por teste e as
-   métricas finais de detecção.
-3. **Seção de limitações e trabalhos futuros própria**, distinguindo
-   claramente o que o artigo original propôs, o que este projeto
-   reproduziu, o que foi estendido além do artigo, e o que ainda fica
-   em aberto (ex.: proteção criptográfica nativa IEC 62351-6 — citada
-   como mitigação definitiva para o caso de masquerade não detectado
-   em `docs/metodologia_proposta_gns3.md`).
-4. Revisão final do README e dos READMEs de cada módulo para garantir
-   que todos os comandos/caminhos citados continuam batendo com o
-   estado real do repositório (ex.: este changelog já corrigiu
-   referências desatualizadas a `docs/metodologia.md` e
-   `docs/resultados.md` que não existiam mais).
+Relatório consolidado: [`docs/resultados.md`](../docs/resultados.md).
+Texto para os slides: [`conteudo-apresentacao-5marco.md`](conteudo-apresentacao-5marco.md).
+Roteiro dos testes 802.1X: [`guia-testes-5marco.md`](guia-testes-5marco.md).
+
+### Feito
+
+| Item | Evidência |
+|---|---|
+| ✅ HMAC opt-in estilo IEC 62351-6 (**simulação**, não conforme) no IDS (`--auth`) e no atacante (`--leaked-key-env`) | `ids/goose_auth.py`, `atacante/goose_auth.py`, `ids/README.md`, `atacante/README.md` |
+| ✅ Campanha offline reproduzida: N=100 por cenário × 6 cenários × 3 modos (sem HMAC, HMAC, chave vazada), IC95% de Wilson, semente 61850 | `benchmark/resultados/resumo.md`, `campanha_trials.csv` (1800 repetições), `benchmark/figuras/` |
+| ✅ Sensibilidade do limiar de flooding (TPR × taxa de ataque; FPR do baseline) | `benchmark/resultados/sensibilidade_*.csv` |
+| ✅ Custo do HMAC (microbenchmark de `sign`/`verify`, 20 000 chamadas) | `benchmark/resultados/latencia_hmac_micro.csv` |
+| ✅ IEEE 802.1X EAP-TLS **real** (`hostapd` + `nftables`), vínculo CN↔MAC, CRL, supplicant nas 4 imagens | `autenticador-8021x/`, `pki/`, `extracao-scd/inventario_8021x.py` |
+| ✅ Variante `--8021x` do gerador de topologia | `extracao-scd/gerar_topologia_gns3.py`, `extracao-scd/subestacao_8021x.gns3` |
+| ✅ Validação do 802.1X em `netns`: 11 execuções registradas em 20/11/2026 (10 sem falha, 1 com 2 falhas) | `autenticador-8021x/evidencias/teste_netns-*.log` |
+| ✅ Validação do 802.1X no **GNS3 real** (20/11/2026): base + cenários E0–E5, 1 execução cada | `autenticador-8021x/evidencias/gns3/RESULTADOS_GNS3.md` |
+| ✅ Relatório final consolidado (Oráculo + ataques + benchmark + 802.1X + topologia, citando o SCD usado e as repetições) | `docs/resultados.md` |
+| ✅ Seção de limitações e trabalhos futuros (proposto / reproduzido / estendido / novo / em aberto) | `docs/resultados.md`, seção 9 |
+| ✅ Revisão dos READMEs (comandos, caminhos e flags conferidos) | READMEs da raiz e de `ids/`, `atacante/`, `extracao-scd/`, `pki/`, `autenticador-8021x/`, `benchmark/` |
+
+### Continua pendente
+
+- ⏳ **Resumo expandido em formato SBC** (`artigo/`): conduzido à parte;
+  o estado do texto não foi verificado ao fechar este item do changelog.
+- ⏳ Medição de overhead/latência de autenticação 802.1X no GNS3.
+- ⏳ Repetições estatísticas no GNS3 (hoje, 1 execução por cenário).
+- ⏳ E2b (revogação em operação) no GNS3 — só validada em `netns`.
+- ⏳ Falha intermitente observada em 1 das 11 execuções de `teste_netns.sh`
+  (etapa de reautenticação após queda de link); causa não investigada.
+- ⏳ IEC 62351-6 conforme (gestão e rotação de chaves), MACsec (802.1AE),
+  RADIUS externo, VLAN dinâmica e publicador comprometido — trabalho
+  futuro, fora do escopo desta entrega.

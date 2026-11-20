@@ -1,0 +1,126 @@
+{"ts": "2026-11-20T20:09:09.555+00:00", "evento": "autenticador_iniciado", "portas": "eth0,eth1,eth2,eth3,eth4,eth5", "pid_hostapd": "485,486,487,488,489,490"}
+{"ts": "2026-11-20T20:09:10.567+00:00", "evento": "quadro_descartado", "iface": "eth0", "mac": "02:00:c0:a8:0a:0b", "pacotes": 10, "motivo": "origem_nao_autorizada"}
+{"ts": "2026-11-20T20:09:10.567+00:00", "evento": "quadro_descartado", "iface": "eth1", "mac": "02:00:c0:a8:0a:0c", "pacotes": 10, "motivo": "origem_nao_autorizada"}
+{"ts": "2026-11-20T20:09:10.567+00:00", "evento": "quadro_descartado", "iface": "eth2", "mac": "02:00:c0:a8:0a:14", "pacotes": 5, "motivo": "origem_nao_autorizada"}
+{"ts": "2026-11-20T20:09:10.567+00:00", "evento": "quadro_descartado", "iface": "eth4", "mac": "00:30:a7:01:b3:16", "pacotes": 10, "motivo": "origem_nao_autorizada"}
+{"ts": "2026-11-20T20:09:10.568+00:00", "evento": "quadro_descartado", "iface": "eth3", "mac": "02:00:c0:a8:0a:1e", "pacotes": 10, "motivo": "origem_nao_autorizada"}
+{"ts": "2026-11-20T20:09:11.204+00:00", "evento": "auth_aceita", "iface": "eth1", "mac": "02:00:c0:a8:0a:0c", "cn": "ubuntu-ied-2", "serial": "1002"}
+{"ts": "2026-11-20T20:09:11.212+00:00", "evento": "auth_aceita", "iface": "eth0", "mac": "02:00:c0:a8:0a:0b", "cn": "ubuntu-ied-1", "serial": "1001"}
+{"ts": "2026-11-20T20:09:11.574+00:00", "evento": "quadro_descartado", "iface": "eth0", "mac": "02:00:c0:a8:0a:0b", "pacotes": 20, "motivo": "origem_nao_autorizada"}
+{"ts": "2026-11-20T20:09:11.574+00:00", "evento": "quadro_descartado", "iface": "eth1", "mac": "02:00:c0:a8:0a:0c", "pacotes": 25, "motivo": "origem_nao_autorizada"}
+{"ts": "2026-11-20T20:09:11.574+00:00", "evento": "quadro_descartado", "iface": "eth2", "mac": "02:00:c0:a8:0a:14", "pacotes": 15, "motivo": "origem_nao_autorizada"}
+{"ts": "2026-11-20T20:09:11.574+00:00", "evento": "quadro_descartado", "iface": "eth4", "mac": "00:30:a7:01:b3:16", "pacotes": 15, "motivo": "origem_nao_autorizada"}
+{"ts": "2026-11-20T20:09:11.574+00:00", "evento": "quadro_descartado", "iface": "eth3", "mac": "02:00:c0:a8:0a:1e", "pacotes": 15, "motivo": "origem_nao_autorizada"}
+{"ts": "2026-11-20T20:09:11.574+00:00", "evento": "quadro_descartado", "iface": "eth5", "mac": "02:00:c0:a8:0a:28", "pacotes": 10, "motivo": "origem_nao_autorizada"}
+{"ts": "2026-11-20T20:09:12.344+00:00", "evento": "auth_aceita", "iface": "eth3", "mac": "02:00:c0:a8:0a:1e", "cn": "ids-1", "serial": "1006"}
+{"ts": "2026-11-20T20:09:12.350+00:00", "evento": "auth_aceita", "iface": "eth2", "mac": "02:00:c0:a8:0a:14", "cn": "oraculo-1", "serial": "1007"}
+{"ts": "2026-11-20T20:09:12.417+00:00", "evento": "auth_aceita", "iface": "eth4", "mac": "00:30:a7:01:b3:16", "cn": "publicador-1", "serial": "1008"}
+{"ts": "2026-11-20T20:09:12.579+00:00", "evento": "quadro_descartado", "iface": "eth2", "mac": "02:00:c0:a8:0a:14", "pacotes": 25, "motivo": "origem_nao_autorizada"}
+{"ts": "2026-11-20T20:09:12.579+00:00", "evento": "quadro_descartado", "iface": "eth4", "mac": "00:30:a7:01:b3:16", "pacotes": 25, "motivo": "origem_nao_autorizada"}
+{"ts": "2026-11-20T20:09:12.579+00:00", "evento": "quadro_descartado", "iface": "eth3", "mac": "02:00:c0:a8:0a:1e", "pacotes": 30, "motivo": "origem_nao_autorizada"}
+{"ts": "2026-11-20T20:09:12.579+00:00", "evento": "quadro_descartado", "iface": "eth5", "mac": "02:00:c0:a8:0a:28", "pacotes": 25, "motivo": "origem_nao_autorizada"}
+{"ts": "2026-11-20T20:09:13.586+00:00", "evento": "quadro_descartado", "iface": "eth5", "mac": "02:00:c0:a8:0a:28", "pacotes": 30, "motivo": "origem_nao_autorizada"}
+{"ts": "2026-11-20T20:09:16.606+00:00", "evento": "quadro_descartado", "iface": "eth5", "mac": "02:00:c0:a8:0a:28", "pacotes": 35, "motivo": "origem_nao_autorizada"}
+{"ts": "2026-11-20T20:09:25.664+00:00", "evento": "quadro_descartado", "iface": "eth5", "mac": "02:00:c0:a8:0a:28", "pacotes": 40, "motivo": "origem_nao_autorizada"}
+{"ts": "2026-11-20T20:09:40.764+00:00", "evento": "quadro_descartado", "iface": "eth5", "mac": "02:00:c0:a8:0a:28", "pacotes": 45, "motivo": "origem_nao_autorizada"}
+{"ts": "2026-11-20T20:10:11.951+00:00", "evento": "quadro_descartado", "iface": "eth5", "mac": "02:00:c0:a8:0a:28", "pacotes": 50, "motivo": "origem_nao_autorizada"}
+{"ts": "2026-11-20T20:11:15.328+00:00", "evento": "quadro_descartado", "iface": "eth5", "mac": "02:00:c0:a8:0a:28", "pacotes": 55, "motivo": "origem_nao_autorizada"}
+{"ts": "2026-11-20T20:13:26.105+00:00", "evento": "quadro_descartado", "iface": "eth5", "mac": "02:00:c0:a8:0a:28", "pacotes": 5, "motivo": "origem_nao_autorizada"}
+{"ts": "2026-11-20T20:15:44.956+00:00", "evento": "sessao_encerrada", "iface": "eth0", "mac": "02:00:c0:a8:0a:0b", "motivo": "link_down"}
+{"ts": "2026-11-20T20:15:44.993+00:00", "evento": "sessao_encerrada", "iface": "eth1", "mac": "02:00:c0:a8:0a:0c", "motivo": "link_down"}
+{"ts": "2026-11-20T20:15:45.025+00:00", "evento": "sessao_encerrada", "iface": "eth2", "mac": "02:00:c0:a8:0a:14", "motivo": "link_down"}
+{"ts": "2026-11-20T20:15:45.053+00:00", "evento": "sessao_encerrada", "iface": "eth3", "mac": "02:00:c0:a8:0a:1e", "motivo": "link_down"}
+{"ts": "2026-11-20T20:15:45.075+00:00", "evento": "sessao_encerrada", "iface": "eth4", "mac": "00:30:a7:01:b3:16", "motivo": "link_down"}
+{"ts": "2026-11-20T20:16:23.591+00:00", "evento": "autenticador_iniciado", "portas": "eth0,eth1,eth2,eth3,eth4,eth5", "pid_hostapd": "124,125,126,127,128,129"}
+{"ts": "2026-11-20T20:16:24.599+00:00", "evento": "quadro_descartado", "iface": "eth0", "mac": "02:00:c0:a8:0a:0b", "pacotes": 15, "motivo": "origem_nao_autorizada"}
+{"ts": "2026-11-20T20:16:24.599+00:00", "evento": "quadro_descartado", "iface": "eth1", "mac": "02:00:c0:a8:0a:0c", "pacotes": 15, "motivo": "origem_nao_autorizada"}
+{"ts": "2026-11-20T20:16:24.599+00:00", "evento": "quadro_descartado", "iface": "eth2", "mac": "02:00:c0:a8:0a:14", "pacotes": 10, "motivo": "origem_nao_autorizada"}
+{"ts": "2026-11-20T20:16:24.599+00:00", "evento": "quadro_descartado", "iface": "eth4", "mac": "00:30:a7:01:b3:16", "pacotes": 10, "motivo": "origem_nao_autorizada"}
+{"ts": "2026-11-20T20:16:24.599+00:00", "evento": "quadro_descartado", "iface": "eth3", "mac": "02:00:c0:a8:0a:1e", "pacotes": 15, "motivo": "origem_nao_autorizada"}
+{"ts": "2026-11-20T20:16:25.514+00:00", "evento": "auth_aceita", "iface": "eth0", "mac": "02:00:c0:a8:0a:0b", "cn": "ubuntu-ied-1", "serial": "1001"}
+{"ts": "2026-11-20T20:16:25.522+00:00", "evento": "auth_aceita", "iface": "eth1", "mac": "02:00:c0:a8:0a:0c", "cn": "ubuntu-ied-2", "serial": "1002"}
+{"ts": "2026-11-20T20:16:25.603+00:00", "evento": "quadro_descartado", "iface": "eth0", "mac": "02:00:c0:a8:0a:0b", "pacotes": 20, "motivo": "origem_nao_autorizada"}
+{"ts": "2026-11-20T20:16:25.603+00:00", "evento": "quadro_descartado", "iface": "eth1", "mac": "02:00:c0:a8:0a:0c", "pacotes": 20, "motivo": "origem_nao_autorizada"}
+{"ts": "2026-11-20T20:16:25.604+00:00", "evento": "quadro_descartado", "iface": "eth2", "mac": "02:00:c0:a8:0a:14", "pacotes": 15, "motivo": "origem_nao_autorizada"}
+{"ts": "2026-11-20T20:16:25.604+00:00", "evento": "quadro_descartado", "iface": "eth4", "mac": "00:30:a7:01:b3:16", "pacotes": 15, "motivo": "origem_nao_autorizada"}
+{"ts": "2026-11-20T20:16:25.604+00:00", "evento": "quadro_descartado", "iface": "eth5", "mac": "02:00:c0:a8:0a:28", "pacotes": 5, "motivo": "origem_nao_autorizada"}
+{"ts": "2026-11-20T20:16:26.406+00:00", "evento": "auth_aceita", "iface": "eth2", "mac": "02:00:c0:a8:0a:14", "cn": "oraculo-1", "serial": "1007"}
+{"ts": "2026-11-20T20:16:26.481+00:00", "evento": "auth_aceita", "iface": "eth3", "mac": "02:00:c0:a8:0a:1e", "cn": "ids-1", "serial": "1006"}
+{"ts": "2026-11-20T20:16:26.578+00:00", "evento": "auth_aceita", "iface": "eth4", "mac": "00:30:a7:01:b3:16", "cn": "publicador-1", "serial": "1008"}
+{"ts": "2026-11-20T20:16:26.608+00:00", "evento": "quadro_descartado", "iface": "eth2", "mac": "02:00:c0:a8:0a:14", "pacotes": 30, "motivo": "origem_nao_autorizada"}
+{"ts": "2026-11-20T20:16:26.608+00:00", "evento": "quadro_descartado", "iface": "eth4", "mac": "00:30:a7:01:b3:16", "pacotes": 25, "motivo": "origem_nao_autorizada"}
+{"ts": "2026-11-20T20:16:26.608+00:00", "evento": "quadro_descartado", "iface": "eth3", "mac": "02:00:c0:a8:0a:1e", "pacotes": 30, "motivo": "origem_nao_autorizada"}
+{"ts": "2026-11-20T20:16:26.608+00:00", "evento": "quadro_descartado", "iface": "eth5", "mac": "02:00:c0:a8:0a:28", "pacotes": 15, "motivo": "origem_nao_autorizada"}
+{"ts": "2026-11-20T20:16:27.612+00:00", "evento": "quadro_descartado", "iface": "eth5", "mac": "02:00:c0:a8:0a:28", "pacotes": 25, "motivo": "origem_nao_autorizada"}
+{"ts": "2026-11-20T20:16:28.617+00:00", "evento": "quadro_descartado", "iface": "eth5", "mac": "02:00:c0:a8:0a:28", "pacotes": 30, "motivo": "origem_nao_autorizada"}
+{"ts": "2026-11-20T20:16:32.642+00:00", "evento": "quadro_descartado", "iface": "eth5", "mac": "02:00:c0:a8:0a:28", "pacotes": 35, "motivo": "origem_nao_autorizada"}
+{"ts": "2026-11-20T20:16:40.685+00:00", "evento": "quadro_descartado", "iface": "eth5", "mac": "02:00:c0:a8:0a:28", "pacotes": 40, "motivo": "origem_nao_autorizada"}
+{"ts": "2026-11-20T20:16:56.764+00:00", "evento": "quadro_descartado", "iface": "eth5", "mac": "02:00:c0:a8:0a:28", "pacotes": 45, "motivo": "origem_nao_autorizada"}
+{"ts": "2026-11-20T20:17:28.955+00:00", "evento": "quadro_descartado", "iface": "eth5", "mac": "02:00:c0:a8:0a:28", "pacotes": 50, "motivo": "origem_nao_autorizada"}
+{"ts": "2026-11-20T20:18:33.358+00:00", "evento": "quadro_descartado", "iface": "eth5", "mac": "02:00:c0:a8:0a:28", "pacotes": 55, "motivo": "origem_nao_autorizada"}
+{"ts": "2026-11-20T20:18:43.420+00:00", "evento": "quadro_descartado", "iface": "eth5", "mac": "00:30:a7:01:b3:16", "pacotes": 20, "motivo": "origem_nao_autorizada"}
+{"ts": "2026-11-20T20:18:44.427+00:00", "evento": "quadro_descartado", "iface": "eth5", "mac": "00:30:a7:01:b3:16", "pacotes": 35, "motivo": "origem_nao_autorizada"}
+{"ts": "2026-11-20T20:18:45.434+00:00", "evento": "quadro_descartado", "iface": "eth5", "mac": "00:30:a7:01:b3:16", "pacotes": 45, "motivo": "origem_nao_autorizada"}
+{"ts": "2026-11-20T20:18:46.439+00:00", "evento": "quadro_descartado", "iface": "eth5", "mac": "00:30:a7:01:b3:16", "pacotes": 50, "motivo": "origem_nao_autorizada"}
+{"ts": "2026-11-20T20:18:48.452+00:00", "evento": "quadro_descartado", "iface": "eth5", "mac": "00:30:a7:01:b3:16", "pacotes": 55, "motivo": "origem_nao_autorizada"}
+{"ts": "2026-11-20T20:18:57.512+00:00", "evento": "quadro_descartado", "iface": "eth5", "mac": "00:30:a7:01:b3:16", "pacotes": 60, "motivo": "origem_nao_autorizada"}
+{"ts": "2026-11-20T20:19:13.617+00:00", "evento": "quadro_descartado", "iface": "eth5", "mac": "00:30:a7:01:b3:16", "pacotes": 65, "motivo": "origem_nao_autorizada"}
+{"ts": "2026-11-20T20:19:46.828+00:00", "evento": "quadro_descartado", "iface": "eth5", "mac": "00:30:a7:01:b3:16", "pacotes": 70, "motivo": "origem_nao_autorizada"}
+{"ts": "2026-11-20T20:20:57.219+00:00", "evento": "quadro_descartado", "iface": "eth5", "mac": "00:30:a7:01:b3:16", "pacotes": 75, "motivo": "origem_nao_autorizada"}
+{"ts": "2026-11-20T20:23:11.988+00:00", "evento": "quadro_descartado", "iface": "eth5", "mac": "00:30:a7:01:b3:16", "pacotes": 5, "motivo": "origem_nao_autorizada"}
+{"ts": "2026-11-20T20:23:19.036+00:00", "evento": "quadro_descartado", "iface": "eth5", "mac": "02:00:c0:a8:0a:0b", "pacotes": 15, "motivo": "origem_nao_autorizada"}
+{"ts": "2026-11-20T20:23:20.043+00:00", "evento": "quadro_descartado", "iface": "eth5", "mac": "02:00:c0:a8:0a:0b", "pacotes": 25, "motivo": "origem_nao_autorizada"}
+{"ts": "2026-11-20T20:23:20.202+00:00", "evento": "auth_rejeitada", "iface": "eth5", "mac": "02:00:c0:a8:0a:0b", "cn": "atacante-comprometido", "serial": "1009", "motivo": "mac_divergente", "detalhe": "MAC 02:00:c0:a8:0a:0b não pertence a atacante-comprometido (esperado: 02:00:c0:a8:0a:28)"}
+{"ts": "2026-11-20T20:23:21.047+00:00", "evento": "quadro_descartado", "iface": "eth5", "mac": "02:00:c0:a8:0a:0b", "pacotes": 30, "motivo": "origem_nao_autorizada"}
+{"ts": "2026-11-20T20:23:22.052+00:00", "evento": "quadro_descartado", "iface": "eth5", "mac": "02:00:c0:a8:0a:0b", "pacotes": 35, "motivo": "origem_nao_autorizada"}
+{"ts": "2026-11-20T20:23:23.058+00:00", "evento": "quadro_descartado", "iface": "eth5", "mac": "02:00:c0:a8:0a:0b", "pacotes": 40, "motivo": "origem_nao_autorizada"}
+{"ts": "2026-11-20T20:23:24.064+00:00", "evento": "quadro_descartado", "iface": "eth5", "mac": "02:00:c0:a8:0a:0b", "pacotes": 50, "motivo": "origem_nao_autorizada"}
+{"ts": "2026-11-20T20:23:25.069+00:00", "evento": "quadro_descartado", "iface": "eth5", "mac": "02:00:c0:a8:0a:28", "pacotes": 10, "motivo": "origem_nao_autorizada"}
+{"ts": "2026-11-20T20:23:26.076+00:00", "evento": "quadro_descartado", "iface": "eth5", "mac": "02:00:c0:a8:0a:28", "pacotes": 15, "motivo": "origem_nao_autorizada"}
+{"ts": "2026-11-20T20:23:27.083+00:00", "evento": "quadro_descartado", "iface": "eth5", "mac": "02:00:c0:a8:0a:28", "pacotes": 25, "motivo": "origem_nao_autorizada"}
+{"ts": "2026-11-20T20:23:28.089+00:00", "evento": "quadro_descartado", "iface": "eth5", "mac": "02:00:c0:a8:0a:28", "pacotes": 30, "motivo": "origem_nao_autorizada"}
+{"ts": "2026-11-20T20:23:30.098+00:00", "evento": "quadro_descartado", "iface": "eth5", "mac": "02:00:c0:a8:0a:28", "pacotes": 35, "motivo": "origem_nao_autorizada"}
+{"ts": "2026-11-20T20:23:38.144+00:00", "evento": "quadro_descartado", "iface": "eth5", "mac": "02:00:c0:a8:0a:28", "pacotes": 40, "motivo": "origem_nao_autorizada"}
+{"ts": "2026-11-20T20:23:51.231+00:00", "evento": "quadro_descartado", "iface": "eth5", "mac": "02:00:c0:a8:0a:28", "pacotes": 45, "motivo": "origem_nao_autorizada"}
+{"ts": "2026-11-20T20:24:18.387+00:00", "evento": "quadro_descartado", "iface": "eth5", "mac": "02:00:c0:a8:0a:28", "pacotes": 50, "motivo": "origem_nao_autorizada"}
+{"ts": "2026-11-20T20:25:14.729+00:00", "evento": "quadro_descartado", "iface": "eth5", "mac": "02:00:c0:a8:0a:28", "pacotes": 55, "motivo": "origem_nao_autorizada"}
+{"ts": "2026-11-20T20:26:26.059+00:00", "evento": "auth_aceita", "iface": "eth0", "mac": "02:00:c0:a8:0a:0b", "cn": "ubuntu-ied-1", "serial": "1001"}
+{"ts": "2026-11-20T20:26:26.066+00:00", "evento": "auth_aceita", "iface": "eth1", "mac": "02:00:c0:a8:0a:0c", "cn": "ubuntu-ied-2", "serial": "1002"}
+{"ts": "2026-11-20T20:26:26.942+00:00", "evento": "auth_aceita", "iface": "eth2", "mac": "02:00:c0:a8:0a:14", "cn": "oraculo-1", "serial": "1007"}
+{"ts": "2026-11-20T20:26:27.020+00:00", "evento": "auth_aceita", "iface": "eth3", "mac": "02:00:c0:a8:0a:1e", "cn": "ids-1", "serial": "1006"}
+{"ts": "2026-11-20T20:26:27.121+00:00", "evento": "auth_aceita", "iface": "eth4", "mac": "00:30:a7:01:b3:16", "cn": "publicador-1", "serial": "1008"}
+{"ts": "2026-11-20T20:27:05.387+00:00", "evento": "quadro_descartado", "iface": "eth5", "mac": "02:00:c0:a8:0a:28", "pacotes": 60, "motivo": "origem_nao_autorizada"}
+{"ts": "2026-11-20T20:30:41.061+00:00", "evento": "auth_aceita", "iface": "eth5", "mac": "02:00:c0:a8:0a:28", "cn": "atacante-comprometido", "serial": "1009"}
+{"ts": "2026-11-20T20:36:26.593+00:00", "evento": "auth_aceita", "iface": "eth1", "mac": "02:00:c0:a8:0a:0c", "cn": "ubuntu-ied-2", "serial": "1002"}
+{"ts": "2026-11-20T20:36:26.606+00:00", "evento": "auth_aceita", "iface": "eth0", "mac": "02:00:c0:a8:0a:0b", "cn": "ubuntu-ied-1", "serial": "1001"}
+{"ts": "2026-11-20T20:36:27.484+00:00", "evento": "auth_aceita", "iface": "eth2", "mac": "02:00:c0:a8:0a:14", "cn": "oraculo-1", "serial": "1007"}
+{"ts": "2026-11-20T20:36:27.554+00:00", "evento": "auth_aceita", "iface": "eth3", "mac": "02:00:c0:a8:0a:1e", "cn": "ids-1", "serial": "1006"}
+{"ts": "2026-11-20T20:36:27.667+00:00", "evento": "auth_aceita", "iface": "eth4", "mac": "00:30:a7:01:b3:16", "cn": "publicador-1", "serial": "1008"}
+{"ts": "2026-11-20T20:40:41.603+00:00", "evento": "auth_aceita", "iface": "eth5", "mac": "02:00:c0:a8:0a:28", "cn": "atacante-comprometido", "serial": "1009"}
+{"ts": "2026-11-20T20:46:27.136+00:00", "evento": "auth_aceita", "iface": "eth1", "mac": "02:00:c0:a8:0a:0c", "cn": "ubuntu-ied-2", "serial": "1002"}
+{"ts": "2026-11-20T20:46:27.146+00:00", "evento": "auth_aceita", "iface": "eth0", "mac": "02:00:c0:a8:0a:0b", "cn": "ubuntu-ied-1", "serial": "1001"}
+{"ts": "2026-11-20T20:46:28.026+00:00", "evento": "auth_aceita", "iface": "eth2", "mac": "02:00:c0:a8:0a:14", "cn": "oraculo-1", "serial": "1007"}
+{"ts": "2026-11-20T20:46:28.104+00:00", "evento": "auth_aceita", "iface": "eth3", "mac": "02:00:c0:a8:0a:1e", "cn": "ids-1", "serial": "1006"}
+{"ts": "2026-11-20T20:46:28.215+00:00", "evento": "auth_aceita", "iface": "eth4", "mac": "00:30:a7:01:b3:16", "cn": "publicador-1", "serial": "1008"}
+{"ts": "2026-11-20T20:48:22.434+00:00", "evento": "auth_rejeitada", "iface": "eth5", "mac": "02:00:c0:a8:0a:28", "cn": "revogado-1", "serial": "100B", "motivo": "certificado_revogado", "detalhe": "certificate revoked"}
+{"ts": "2026-11-20T20:48:35.941+00:00", "evento": "quadro_descartado", "iface": "eth5", "mac": "02:00:c0:a8:0a:28", "pacotes": 5, "motivo": "origem_nao_autorizada"}
+{"ts": "2026-11-20T20:48:36.948+00:00", "evento": "quadro_descartado", "iface": "eth5", "mac": "02:00:c0:a8:0a:28", "pacotes": 10, "motivo": "origem_nao_autorizada"}
+{"ts": "2026-11-20T20:48:37.956+00:00", "evento": "quadro_descartado", "iface": "eth5", "mac": "02:00:c0:a8:0a:28", "pacotes": 15, "motivo": "origem_nao_autorizada"}
+{"ts": "2026-11-20T20:50:10.870+00:00", "evento": "autenticador_encerrado", "codigo_hostapd": "0,0,0,0,0,0"}
+{"ts": "2026-11-20T20:52:14.227+00:00", "evento": "autenticador_iniciado", "portas": "eth0,eth1,eth2,eth3,eth4,eth5", "pid_hostapd": "2281,2282,2283,2284,2285,2286"}
+{"ts": "2026-11-20T20:53:03.899+00:00", "evento": "auth_aceita", "iface": "eth0", "mac": "02:00:c0:a8:0a:0b", "cn": "ubuntu-ied-1", "serial": "1001"}
+{"ts": "2026-11-20T20:53:20.105+00:00", "evento": "auth_aceita", "iface": "eth1", "mac": "02:00:c0:a8:0a:0c", "cn": "ubuntu-ied-2", "serial": "1002"}
+{"ts": "2026-11-20T20:53:29.832+00:00", "evento": "auth_aceita", "iface": "eth2", "mac": "02:00:c0:a8:0a:14", "cn": "oraculo-1", "serial": "1007"}
+{"ts": "2026-11-20T20:53:43.436+00:00", "evento": "auth_aceita", "iface": "eth3", "mac": "02:00:c0:a8:0a:1e", "cn": "ids-1", "serial": "1006"}
+{"ts": "2026-11-20T20:53:50.607+00:00", "evento": "auth_aceita", "iface": "eth4", "mac": "00:30:a7:01:b3:16", "cn": "publicador-1", "serial": "1008"}
+{"ts": "2026-11-20T20:54:04.883+00:00", "evento": "quadro_descartado", "iface": "eth5", "mac": "02:00:c0:a8:0a:28", "pacotes": 15, "motivo": "origem_nao_autorizada"}
+{"ts": "2026-11-20T20:54:05.890+00:00", "evento": "quadro_descartado", "iface": "eth5", "mac": "02:00:c0:a8:0a:28", "pacotes": 30, "motivo": "origem_nao_autorizada"}
+{"ts": "2026-11-20T20:54:09.913+00:00", "evento": "quadro_descartado", "iface": "eth5", "mac": "02:00:c0:a8:0a:28", "pacotes": 35, "motivo": "origem_nao_autorizada"}
+{"ts": "2026-11-20T20:54:12.931+00:00", "evento": "quadro_descartado", "iface": "eth5", "mac": "02:00:c0:a8:0a:28", "pacotes": 45, "motivo": "origem_nao_autorizada"}
+{"ts": "2026-11-20T20:54:13.938+00:00", "evento": "quadro_descartado", "iface": "eth5", "mac": "02:00:c0:a8:0a:28", "pacotes": 50, "motivo": "origem_nao_autorizada"}
+{"ts": "2026-11-20T20:54:14.944+00:00", "evento": "quadro_descartado", "iface": "eth5", "mac": "02:00:c0:a8:0a:28", "pacotes": 65, "motivo": "origem_nao_autorizada"}
+{"ts": "2026-11-20T20:54:18.970+00:00", "evento": "quadro_descartado", "iface": "eth5", "mac": "02:00:c0:a8:0a:28", "pacotes": 70, "motivo": "origem_nao_autorizada"}
+{"ts": "2026-11-20T20:54:29.019+00:00", "evento": "quadro_descartado", "iface": "eth5", "mac": "02:00:c0:a8:0a:28", "pacotes": 75, "motivo": "origem_nao_autorizada"}
+{"ts": "2026-11-20T20:54:46.119+00:00", "evento": "quadro_descartado", "iface": "eth5", "mac": "02:00:c0:a8:0a:28", "pacotes": 80, "motivo": "origem_nao_autorizada"}
+{"ts": "2026-11-20T20:55:25.343+00:00", "evento": "quadro_descartado", "iface": "eth5", "mac": "02:00:c0:a8:0a:28", "pacotes": 85, "motivo": "origem_nao_autorizada"}
+{"ts": "2026-11-20T20:56:38.765+00:00", "evento": "quadro_descartado", "iface": "eth5", "mac": "02:00:c0:a8:0a:28", "pacotes": 90, "motivo": "origem_nao_autorizada"}

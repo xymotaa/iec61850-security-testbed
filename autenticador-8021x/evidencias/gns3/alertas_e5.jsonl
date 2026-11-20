@@ -1,0 +1,2 @@
+{"ts": 1795207585.1298478, "type": "auth_fail", "gocb_ref": "SEL_351_1CFG/LLN0$GO$NewGOOSEMessage", "detail": "HMAC ausente ou inv\u00e1lido"}
+{"ts": 1795207598.4280412, "type": "masquerade", "gocb_ref": "SEL_351_1CFG/LLN0$GO$NewGOOSEMessage", "detail": "MAC mudou de 00:30:a7:01:b3:16 para 02:00:c0:a8:0a:28"}

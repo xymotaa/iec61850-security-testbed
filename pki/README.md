@@ -66,6 +66,7 @@ O script lê o `.gns3`, descobre o `node_id` de cada nó e copia o pacote certo
 e `fora-do-inventario-1`; o `autenticador-8021x` recebe também o
 `inventario.json`). Rode com o projeto fechado ou reinicie os nós depois.
 
-> Não foi possível testar o GNS3 em si neste ambiente; o caminho acima foi
-> confirmado lendo o código do `gns3server` instalado (2.2.x), e o script é
+> O caminho acima foi confirmado no código do `gns3server` 2.2.x e a instalação
+> foi usada na validação no GNS3 real de 20/11/2026
+> (`autenticador-8021x/evidencias/gns3/RESULTADOS_GNS3.md`); o script também é
 > coberto por teste unitário com projeto falso.
