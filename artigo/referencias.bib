@@ -1,6 +1,6 @@
-% Referencias do artigo. Campos conferidos online (arXiv/SOL/KITopen/Crossref) em 20/11/2026.
-% Normas e biblioteca sem ano confirmado usam year = {s.d.} (sem data) e note = {VERIFICAR}.
-% Entradas com note = {VERIFICAR} tem dados que nao foi possivel confirmar.
+% Referencias do artigo. Campos conferidos online (arXiv/SOL/KITopen/Crossref/PDF do artigo/IEC webstore/IEEE 802/RFC Editor) em 21/11/2026.
+% Entradas com year = {s.d.} ou note = {VERIFICAR} ainda tem dados nao confirmados (IEC 61850-8-1, libiec61850, paginas do artigo base).
+% Normas: edicao e ano conferidos em listagens publicas (IEC webstore, IEEE 802, ANSI), sem acesso ao texto normativo.
 
 @inproceedings{oliveira2025analisador,
   author    = {Oliveira, Lucas H. V. and Gurj{\~a}o, Edmar Candeia},
@@ -23,34 +23,42 @@
   author  = {Herath, Akila and Liu, Chen-Ching and Hong, Junho and Park, Kuchan},
   title   = {Evaluation of Real-Time Mitigation Techniques for Cyber Security in {IEC} 61850 / {IEC} 62351 Substations},
   journal = {arXiv preprint arXiv:2511.18748},
-  year    = {2025}
+  year    = {2025},
+  note    = {Cabe{\c{c}}alho do PDF: CIGRE US National Committee 2025 Grid of the Future Symposium}
 }
 
 @inproceedings{alberto2026gooseidrs,
   author    = {Concei{\c{c}}{\~a}o Alberto, Hermenegildo da and S{\'a}nchez, Gustavo and Dembel, Jean Marie and Diop, Idy and Elbez, Ghada and Hagenmeyer, Veit},
   title     = {{GOOSEIDRS}: Intrusion Detection and Automated Response for {IEC} 61850 {GOOSE} Masquerade Attacks},
-  booktitle = {Proceedings of the 2026 ACM Sustainability Week},
+  booktitle = {{ACM} Sustainability Week 2026 ({ACM} Sustainability Week Companion '26)},
+  address   = {Banff, AB, Canad{\'a}},
+  publisher = {ACM},
   year      = {2026},
   pages     = {36--46},
-  url       = {https://publikationen.bibliothek.kit.edu/1000195394},
-  note      = {Evento e editora: VERIFICAR}
+  doi       = {10.1145/3765611.3815139},
+  url       = {https://publikationen.bibliothek.kit.edu/1000195394}
 }
 
-@article{zemanek2022powerduck,
-  author  = {Zemanek, Sven and Hacker, Immanuel and Wolsing, Konrad and Wagner, Eric and Henze, Martin and Serror, Martin},
-  title   = {{PowerDuck}: A {GOOSE} Data Set of Cyberattacks in Substations},
-  journal = {arXiv preprint arXiv:2207.04716},
-  year    = {2022},
-  note    = {Publica{\c{c}}{\~a}o em evento (CSET/ACM): VERIFICAR}
+@inproceedings{zemanek2022powerduck,
+  author    = {Zemanek, Sven and Hacker, Immanuel and Wolsing, Konrad and Wagner, Eric and Henze, Martin and Serror, Martin},
+  title     = {{PowerDuck}: A {GOOSE} Data Set of Cyberattacks in Substations},
+  booktitle = {Cyber Security Experimentation and Test Workshop ({CSET} 2022)},
+  address   = {Virtual, CA, EUA},
+  publisher = {ACM},
+  year      = {2022},
+  doi       = {10.1145/3546096.3546102},
+  note      = {arXiv:2207.04716; conjunto de dados em 10.5281/zenodo.6724225}
 }
 
 @article{girdhar2023sdn,
   author  = {Girdhar, Mansi and Hong, Junho and Su, Wencong and Herath, Akila and Liu, Chen-Ching},
   title   = {{SDN}-Based Dynamic Cybersecurity Framework of {IEC}-61850 Communications in Smart Grid},
   journal = {arXiv preprint arXiv:2311.12205},
-  year    = {2023}
+  year    = {2023},
+  note    = {Local de publica{\c{c}}{\~a}o conforme a lista de refer{\^e}ncias de Herath et al. (2025): 2024 IEEE PES General Meeting, p. 1--5 (n{\~a}o confirmado)}
 }
 
+% (Crossref: o DOI indica submissao em 2022, publicacao em 2023)
 @article{hussain2023hybrid,
   author  = {Hussain, Shahbaz and Iqbal, Atif and Hussain, S. M. Suhail and Zanero, Stefano and Shikfa, Abdullatif and Ragaini, Enrico and Khan, Irfan and Alammari, Rashid},
   title   = {A novel hybrid methodology to secure {GOOSE} messages against cyberattacks in smart grids},
@@ -59,7 +67,6 @@
   pages   = {1857},
   year    = {2023},
   doi     = {10.1038/s41598-022-27157-z}
-% (Crossref: o DOI indica submissao em 2022, publicacao em 2023)
 }
 
 @article{moore2026anomaly,
@@ -88,23 +95,41 @@
 
 @misc{iec62351-6,
   author = {{IEC}},
-  year   = {s.d.},
+  year   = {2020},
   title  = {{IEC} 62351-6: Power systems management and associated information exchange -- Data and communications security -- Security for {IEC} 61850 profiles},
-  note   = {Edi{\c{c}}{\~a}o e ano: VERIFICAR}
+  note   = {Edi{\c{c}}{\~a}o 1.0, publicada em 20/10/2020}
 }
 
 @misc{iec62443-3-3,
   author = {{IEC}},
-  year   = {s.d.},
+  year   = {2013},
   title  = {{IEC} 62443-3-3: Industrial communication networks -- Network and system security -- System security requirements and security levels},
-  note   = {Edi{\c{c}}{\~a}o e ano: VERIFICAR}
+  note   = {Edi{\c{c}}{\~a}o 1.0, com a errata {COR1}:2014}
 }
 
 @misc{ieee8021x,
   author = {{IEEE}},
-  year   = {s.d.},
-  title  = {{IEEE 802.1X: Port-Based Network Access Control}},
-  note   = {Edi{\c{c}}{\~a}o e ano: VERIFICAR}
+  year   = {2020},
+  title  = {{IEEE Std 802.1X-2020}: Port-Based Network Access Control},
+  note   = {Publicada em 28/02/2020; substitui a {IEEE Std 802.1X-2010}}
+}
+
+@misc{rfc5216,
+  author       = {Simon, D. and Aboba, B. and Hurst, R.},
+  year         = {2008},
+  title        = {The {EAP-TLS} Authentication Protocol},
+  howpublished = {{RFC} 5216, {IETF}},
+  url          = {https://www.rfc-editor.org/rfc/rfc5216.txt},
+  note         = {Standards Track; obsoleta a RFC 2716}
+}
+
+@misc{rfc9190,
+  author       = {Preu{\ss} Mattsson, J. and Sethi, M.},
+  year         = {2022},
+  title        = {{EAP-TLS} 1.3: Using the Extensible Authentication Protocol with {TLS} 1.3},
+  howpublished = {{RFC} 9190, {IETF}},
+  url          = {https://www.rfc-editor.org/rfc/rfc9190.txt},
+  note         = {Standards Track; atualiza a RFC 5216}
 }
 
 @misc{libiec61850,

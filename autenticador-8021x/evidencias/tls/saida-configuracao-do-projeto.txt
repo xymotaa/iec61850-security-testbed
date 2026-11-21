@@ -1,0 +1,27 @@
+== medição: configuração do projeto (versão de TLS não fixada)
+== data (UTC): 2026-11-21T13:48:44Z
+== ambiente: contêiner Docker privilegiado, par veth + network namespace; NÃO é o GNS3
+PRETTY_NAME="Debian GNU/Linux 13 (trixie)"
+== versões ==
+hostapd v2.10
+wpa_supplicant v2.10
+hostapd 2:2.10-24
+libssl3t64:amd64 3.5.7-1~deb13u3
+wpasupplicant 2:2.10-24
+== bibliotecas ligadas ==
+	libssl.so.3 => /lib/x86_64-linux-gnu/libssl.so.3 (0x00007f7db501f000)
+	libcrypto.so.3 => /lib/x86_64-linux-gnu/libcrypto.so.3 (0x00007f7db49e2000)
+	libssl.so.3 => /lib/x86_64-linux-gnu/libssl.so.3 (0x00007f7319951000)
+	libcrypto.so.3 => /lib/x86_64-linux-gnu/libcrypto.so.3 (0x00007f7319316000)
+== resultado do EAP ==
+EAPOL: Supplicant port status: Unauthorized
+EAP-TLS: Done
+vc: CTRL-EVENT-EAP-SUCCESS EAP authentication completed successfully
+EAPOL: Supplicant port status: Authorized
+== wpa_supplicant: versão de TLS e cifra ==
+SSL: Using TLS version TLSv1.2
+OpenSSL: Server selected cipher suite 0xc030
+SSL: Using TLS version TLSv1.2
+SSL: Using TLS version TLSv1.2
+== hostapd: erros de configuração (esperado: nenhuma linha abaixo) ==
+== fim ==

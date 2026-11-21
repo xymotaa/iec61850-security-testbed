@@ -1,0 +1,27 @@
+== medição: TLS 1.3 habilitado nas duas pontas (tls_flags / phase1)
+== data (UTC): 2026-11-21T13:48:59Z
+== ambiente: contêiner Docker privilegiado, par veth + network namespace; NÃO é o GNS3
+PRETTY_NAME="Debian GNU/Linux 13 (trixie)"
+== versões ==
+hostapd v2.10
+wpa_supplicant v2.10
+hostapd 2:2.10-24
+libssl3t64:amd64 3.5.7-1~deb13u3
+wpasupplicant 2:2.10-24
+== bibliotecas ligadas ==
+	libssl.so.3 => /lib/x86_64-linux-gnu/libssl.so.3 (0x00007fd18d930000)
+	libcrypto.so.3 => /lib/x86_64-linux-gnu/libcrypto.so.3 (0x00007fd18d2f3000)
+	libssl.so.3 => /lib/x86_64-linux-gnu/libssl.so.3 (0x00007ff3b52d2000)
+	libcrypto.so.3 => /lib/x86_64-linux-gnu/libcrypto.so.3 (0x00007ff3b4c97000)
+== resultado do EAP ==
+EAPOL: Supplicant port status: Unauthorized
+EAP-TLS: Done
+vc: CTRL-EVENT-EAP-SUCCESS EAP authentication completed successfully
+EAPOL: Supplicant port status: Authorized
+== wpa_supplicant: versão de TLS e cifra ==
+SSL: Using TLS version TLSv1.3
+OpenSSL: Server selected cipher suite 0xc030
+SSL: Using TLS version TLSv1.2
+SSL: Using TLS version TLSv1.2
+== hostapd: erros de configuração (esperado: nenhuma linha abaixo) ==
+== fim ==
