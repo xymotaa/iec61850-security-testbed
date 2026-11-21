@@ -1,0 +1,38 @@
+\pgfplotsset{
+  sens/.style={width=0.97\linewidth, height=5.2cm, ymin=-0.03, ymax=1.05,
+    ytick={0,0.25,0.5,0.75,1}, yticklabels={0\%,25\%,50\%,75\%,100\%},
+    grid=major, grid style={gray!25}, tick label style={font=\scriptsize},
+    label style={font=\footnotesize}, legend style={font=\scriptsize, draw=gray}}}
+\begin{minipage}[t]{0.5\linewidth}
+\centering
+\begin{tikzpicture}
+\begin{axis}[sens, xmode=log, xmin=4, xmax=2500, xlabel={Taxa do ataque (pacotes/s)}, ylabel={Taxa de detecção}, xtick={10,100,1000}, legend columns=4, legend to name=legfig7]
+\addplot[mark=square*, solid, color=black, mark size=1.6pt] coordinates {(5,0.0000) (10,0.7200) (15,1.0000) (18,1.0000) (20,1.0000) (22,1.0000) (25,1.0000) (30,1.0000) (35,1.0000) (40,1.0000) (50,1.0000) (60,1.0000) (80,1.0000) (100,1.0000) (250,1.0000) (500,1.0000) (1000,1.0000) (2000,1.0000)};
+\addlegendentry{limiar 10}
+\addplot[mark=triangle*, dashed, color=gray!70!black, mark size=1.6pt] coordinates {(5,0.0000) (10,0.0000) (15,0.0000) (18,0.0000) (20,0.8200) (22,1.0000) (25,1.0000) (30,1.0000) (35,1.0000) (40,1.0000) (50,1.0000) (60,1.0000) (80,1.0000) (100,1.0000) (250,1.0000) (500,1.0000) (1000,1.0000) (2000,1.0000)};
+\addlegendentry{limiar 20}
+\addplot[mark=o, dotted, thick, color=black!55, mark size=1.6pt] coordinates {(5,0.0000) (10,0.0000) (15,0.0000) (18,0.0000) (20,0.0000) (22,0.0000) (25,0.0000) (30,0.0000) (35,0.0000) (40,0.8100) (50,1.0000) (60,1.0000) (80,1.0000) (100,1.0000) (250,1.0000) (500,1.0000) (1000,1.0000) (2000,1.0000)};
+\addlegendentry{limiar 40}
+\addplot[mark=diamond*, dash dot, color=black!85, mark size=1.6pt] coordinates {(5,0.0000) (10,0.0000) (15,0.0000) (18,0.0000) (20,0.0000) (22,0.0000) (25,0.0000) (30,0.0000) (35,0.0000) (40,0.0000) (50,0.0000) (60,0.0000) (80,0.7800) (100,1.0000) (250,1.0000) (500,1.0000) (1000,1.0000) (2000,1.0000)};
+\addlegendentry{limiar 80}
+\end{axis}
+\end{tikzpicture}
+
+\footnotesize (a)
+\end{minipage}%
+\begin{minipage}[t]{0.5\linewidth}
+\centering
+\begin{tikzpicture}
+\begin{axis}[sens, xmin=3, xmax=62, xtick={10,20,30,40,60}, xlabel={Rajada legítima (pacotes/s)}, ylabel={Taxa de falsos positivos}]
+\addplot[mark=square*, solid, color=black, mark size=1.6pt] coordinates {(5,0.0000) (10,0.7700) (15,1.0000) (20,1.0000) (30,1.0000) (40,1.0000) (60,1.0000)};
+\addplot[mark=triangle*, dashed, color=gray!70!black, mark size=1.6pt] coordinates {(5,0.0000) (10,0.0000) (15,0.0000) (20,0.7300) (30,1.0000) (40,1.0000) (60,1.0000)};
+\addplot[mark=o, dotted, thick, color=black!55, mark size=1.6pt] coordinates {(5,0.0000) (10,0.0000) (15,0.0000) (20,0.0000) (30,0.0000) (40,0.7300) (60,1.0000)};
+\addplot[mark=diamond*, dash dot, color=black!85, mark size=1.6pt] coordinates {(5,0.0000) (10,0.0000) (15,0.0000) (20,0.0000) (30,0.0000) (40,0.0000) (60,0.0000)};
+\end{axis}
+\end{tikzpicture}
+
+\footnotesize (b)
+\end{minipage}
+
+\vspace{3pt}
+\pgfplotslegendfromname{legfig7}

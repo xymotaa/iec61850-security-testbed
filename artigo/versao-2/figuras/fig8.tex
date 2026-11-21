@@ -1,0 +1,59 @@
+\begin{tikzpicture}[x=1cm,y=1cm,
+  c/.style={draw, minimum height=0.72cm, align=center, font=\scriptsize, inner sep=2pt},
+  blk/.style={c, fill=gray!50, text width=3.3cm},
+  alr/.style={c, fill=gray!20, text width=3.3cm, line width=1.2pt},
+  nul/.style={c, text width=3.3cm},
+  nex/.style={c, text width=3.3cm, dashed, text=gray!70!black},
+  lab/.style={c, text width=1.7cm, font=\scriptsize\bfseries},
+  hd/.style={c, minimum height=0.8cm, font=\scriptsize\bfseries, fill=white, text width=3.3cm}]
+  \node[hd, text width=1.7cm] at (0,0) {Cenário};
+  \node[hd] at (2.75,0) {802.1X (autenticador)};
+  \node[hd] at (6.15,0) {HMAC (verificação no IDS)};
+  \node[hd] at (9.55,0) {IDS (regras de estado)};
+  % linhas (y decrescente)
+  \node[lab] at (0,-0.78) {E0};
+  \node[nex] at (2.75,-0.78) {desativado};
+  \node[nex] at (6.15,-0.78) {inativo};
+  \node[nul] at (9.55,-0.78) {sem alerta registrado};
+  \node[lab] at (0,-1.5) {E1};
+  \node[blk] at (2.75,-1.5) {bloqueio};
+  \node[nex] at (6.15,-1.5) {inativo};
+  \node[nul] at (9.55,-1.5) {sem alerta registrado};
+  \node[lab] at (0,-2.22) {E2};
+  \node[blk] at (2.75,-2.22) {bloqueio};
+  \node[nex] at (6.15,-2.22) {inativo};
+  \node[nex] at (9.55,-2.22) {não em execução};
+  \node[lab] at (0,-2.94) {E3};
+  \node[blk] at (2.75,-2.94) {bloqueio};
+  \node[nex] at (6.15,-2.94) {inativo};
+  \node[nex] at (9.55,-2.94) {não em execução};
+  \node[lab] at (0,-3.66) {E4};
+  \node[nul] at (2.75,-3.66) {sem bloqueio};
+  \node[nex] at (6.15,-3.66) {inativo};
+  \node[alr] at (9.55,-3.66) {alerta (\texttt{masquerade})};
+  \node[lab] at (0,-4.38) {E4b};
+  \node[blk] at (2.75,-4.38) {bloqueio};
+  \node[nex] at (6.15,-4.38) {inativo};
+  \node[nex] at (9.55,-4.38) {não em execução};
+  \node[lab] at (0,-5.1) {E5 (i)};
+  \node[nul] at (2.75,-5.1) {sem bloqueio};
+  \node[alr] at (6.15,-5.1) {alerta (\texttt{auth\_fail})};
+  \node[nex] at (9.55,-5.1) {regras não aplicadas};
+  \node[lab] at (0,-5.82) {E5 (ii)};
+  \node[nul] at (2.75,-5.82) {sem bloqueio};
+  \node[nul] at (6.15,-5.82) {sem alerta de HMAC};
+  \node[alr] at (9.55,-5.82) {alerta (\texttt{masquerade})};
+  \node[lab] at (0,-6.54) {E5 (iii)};
+  \node[blk] at (2.75,-6.54) {bloqueio};
+  \node[nul] at (6.15,-6.54) {sem alerta novo registrado};
+  \node[nul] at (9.55,-6.54) {sem alerta novo registrado};
+  % legenda
+  \node[blk, text width=0.9cm, minimum height=0.45cm] at (0.3,-7.5) {};
+  \node[font=\scriptsize, anchor=west] at (0.85,-7.5) {bloqueio};
+  \node[alr, text width=0.9cm, minimum height=0.45cm] at (2.9,-7.5) {};
+  \node[font=\scriptsize, anchor=west] at (3.45,-7.5) {alerta};
+  \node[nul, text width=0.9cm, minimum height=0.45cm] at (5.2,-7.5) {};
+  \node[font=\scriptsize, anchor=west] at (5.75,-7.5) {sem alerta ou bloqueio};
+  \node[nex, text width=0.9cm, minimum height=0.45cm] at (9.6,-7.5) {};
+  \node[font=\scriptsize, anchor=west] at (10.15,-7.5) {inativo ou não em execução};
+\end{tikzpicture}

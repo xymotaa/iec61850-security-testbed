@@ -1,0 +1,31 @@
+\begin{tikzpicture}[x=1cm,y=1cm,
+  cob/.style={caixa, fill=gray!35, minimum height=0.9cm, text width=1.95cm, font=\scriptsize},
+  ncob/.style={caixa, minimum height=0.9cm, text width=1.95cm, font=\scriptsize}]
+  % linha 1: estrutura do quadro (fora de escala)
+  \node[caixa, text width=3.3cm, minimum height=1.3cm, font=\scriptsize] (eth) at (1.9,0) {Cabeçalho Ethernet\\MAC de destino, MAC de origem, VLAN (se houver), EtherType \texttt{0x88B8}};
+  \node[caixa, text width=3.9cm, minimum height=1.3cm, font=\scriptsize] (hdr) at (6.35,0) {Cabeçalho GOOSE\\APPID, comprimento (inclui o trailer), \texttt{Reserved1} = tamanho do trailer, \texttt{Reserved2}};
+  \node[caixa, text width=2.2cm, minimum height=1.3cm, font=\scriptsize] (apdu) at (9.9,0) {APDU GOOSE\\(campos abaixo)};
+  \node[caixa, fill=gray!35, text width=3.0cm, minimum height=1.3cm, font=\scriptsize] (trl) at (13.0,0) {Trailer de autenticação\\\texttt{0xA0}, comprimento (BER), tag HMAC-SHA256 de 32 bytes};
+  \draw[seta] (eth) -- (hdr);
+  \draw[seta] (hdr) -- (apdu);
+  \draw[seta] (apdu) -- (trl);
+  % linha 2: campos do APDU
+  \node[font=\footnotesize, anchor=west] at (-0.4,-1.7) {Campos do APDU, na ordem do quadro:};
+  \node[cob]  (a1) at (1.1,-2.7) {\texttt{gocbRef}};
+  \node[ncob] (a2) at (3.3,-2.7) {\texttt{timeAllowed\-ToLive}};
+  \node[ncob] (a3) at (5.5,-2.7) {\texttt{datSet}};
+  \node[ncob] (a4) at (7.7,-2.7) {\texttt{goID}};
+  \node[cob]  (a5) at (9.9,-2.7) {\texttt{t}};
+  \node[cob]  (a6) at (12.1,-2.7) {\texttt{stNum}};
+  \node[cob]  (b1) at (1.1,-3.9) {\texttt{sqNum}};
+  \node[ncob] (b2) at (3.3,-3.9) {\texttt{test}};
+  \node[ncob] (b3) at (5.5,-3.9) {\texttt{confRev}};
+  \node[ncob] (b4) at (7.7,-3.9) {\texttt{ndsCom}};
+  \node[ncob] (b5) at (9.9,-3.9) {\texttt{numDat\-SetEntries}};
+  \node[cob]  (b6) at (12.1,-3.9) {\texttt{allData}};
+  % legenda
+  \node[cob, text width=1.2cm, minimum height=0.5cm] at (1.0,-5.2) {};
+  \node[font=\footnotesize, anchor=west] at (1.7,-5.2) {coberto pela tag};
+  \node[ncob, text width=1.2cm, minimum height=0.5cm] at (6.0,-5.2) {};
+  \node[font=\footnotesize, anchor=west] at (6.7,-5.2) {não coberto};
+\end{tikzpicture}

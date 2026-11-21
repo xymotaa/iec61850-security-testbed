@@ -1,0 +1,19 @@
+\begin{tikzpicture}[x=1cm,y=1cm]
+  \node[caixa, text width=2.3cm] (scd) at (1.3,0) {SCD\\(sintético ou real)};
+  \node[caixa, text width=2.3cm] (ext) at (4.2,0) {Extrator de duas passadas};
+  \node[caixa, text width=2.3cm] (json) at (7.1,0) {JSON};
+  \node[caixa, text width=2.3cm] (ger) at (10.0,0) {Gerador de topologia (variante \texttt{{-}{-}8021x})};
+  \node[caixa, text width=2.3cm] (proj) at (12.9,0) {Projeto GNS3 e inventário nome$\rightarrow$MAC};
+  \node[caixa, text width=2.3cm] (pki) at (1.3,-2.7) {Gerador de PKI};
+  \node[caixa, text width=3.6cm] (cert) at (5.2,-2.7) {CA, certificados por nó e lista de revogação};
+  \node[caixa, text width=3.0cm] (inst) at (9.4,-5.4) {Instalador (projeto, inventário e PKI)};
+  \node[caixa, text width=2.3cm] (vol) at (12.9,-5.4) {Volumes dos nós no GNS3};
+  \draw[seta] (scd) -- (ext);
+  \draw[seta] (ext) -- (json);
+  \draw[seta] (json) -- (ger);
+  \draw[seta] (ger) -- (proj);
+  \draw[seta] (pki) -- (cert);
+  \draw[seta] (proj.south) -- ++(0,-1.0) -| (inst.north);
+  \draw[seta] (cert.south) |- (inst.west);
+  \draw[seta] (inst) -- (vol);
+\end{tikzpicture}

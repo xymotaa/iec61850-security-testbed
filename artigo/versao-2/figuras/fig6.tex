@@ -1,0 +1,47 @@
+\begin{minipage}[t]{0.49\linewidth}
+\centering
+\begin{tikzpicture}[x=1cm,y=1cm, every node/.style={font=\scriptsize},
+  no/.style={caixa, font=\scriptsize, text width=2.2cm, inner sep=2pt}]
+  \node[no] (n0) at (0,0)    {\texttt{ubuntu-ied-1}};
+  \node[no] (n1) at (0,-1.15){\texttt{ubuntu-ied-2}};
+  \node[no] (n2) at (0,-2.3) {\texttt{oraculo-1}};
+  \node[no] (n3) at (0,-3.45){\texttt{ids-1}};
+  \node[no] (n4) at (0,-4.6) {\texttt{publicador-1}};
+  \node[no] (n5) at (0,-5.75){\texttt{atacante-1}};
+  \node[draw, rounded corners=3pt, minimum width=3.4cm, minimum height=6.6cm, fill=gray!8, anchor=north west] (aut) at (2.0,0.5) {};
+  \node[font=\scriptsize\bfseries, anchor=north] at (3.7,0.4) {\texttt{autenticador-8021x}};
+  \node[caixa, font=\scriptsize, text width=3.0cm] at (3.7,-1.35) {\texttt{hostapd}, um processo por porta (EAP-TLS)};
+  \node[caixa, font=\scriptsize, text width=3.0cm] at (3.7,-3.05) {Supervisor: lê o log do \texttt{hostapd} e consulta o inventário CN$\rightarrow$MAC};
+  \node[caixa, font=\scriptsize, text width=3.0cm] at (3.7,-4.8) {\texttt{nftables}: ponte \texttt{br0}, gancho \emph{forward}, política de descarte};
+  \foreach \i in {0,1,2,3,4,5}{
+    \draw (n\i.east) -- node[above, font=\tiny, pos=0.5] {eth\i} (2.0,-1.15*\i);
+  }
+\end{tikzpicture}
+
+\footnotesize (a)
+\end{minipage}%
+\hfill
+\begin{minipage}[t]{0.49\linewidth}
+\centering
+\begin{tikzpicture}[x=1cm,y=1cm, every node/.style={font=\scriptsize},
+  d/.style={caixa, cinza, font=\scriptsize, text width=2.7cm, inner sep=2pt},
+  r/.style={caixa, font=\scriptsize, text width=2.5cm, inner sep=2pt}]
+  \node[caixa, font=\scriptsize, text width=2.7cm, inner sep=2pt] (e) at (0,0) {Handshake EAP-TLS};
+  \node[d] (c) at (0,-1.35) {Certificado e CRL válidos?};
+  \node[d] (i) at (0,-2.95) {CN no inventário?};
+  \node[d] (m) at (0,-4.35) {MAC da porta é um dos MACs do CN?};
+  \node[caixa, font=\scriptsize, text width=2.7cm, inner sep=2pt] (ok) at (0,-5.9) {Par (porta, MAC) autorizado no \texttt{nftables}};
+  \node[r] (r1) at (3.7,-1.35) {\texttt{sem\_\allowbreak certificado}, \texttt{certificado\_\allowbreak invalido}, \texttt{certificado\_\allowbreak revogado} ou \texttt{falha\_\allowbreak eap}};
+  \node[r] (r2) at (3.7,-2.95) {\texttt{cn\_\allowbreak fora\_\allowbreak do\_\allowbreak inventario}};
+  \node[r] (r3) at (3.7,-4.35) {\texttt{mac\_\allowbreak divergente}};
+  \draw[seta] (e) -- (c);
+  \draw[seta] (c) -- node[left, font=\tiny] {sim} (i);
+  \draw[seta] (i) -- node[left, font=\tiny] {sim} (m);
+  \draw[seta] (m) -- node[left, font=\tiny] {sim} (ok);
+  \draw[seta] (c) -- node[above, font=\tiny] {não} (r1);
+  \draw[seta] (i) -- node[above, font=\tiny] {não} (r2);
+  \draw[seta] (m) -- node[above, font=\tiny] {não} (r3);
+\end{tikzpicture}
+
+\footnotesize (b)
+\end{minipage}

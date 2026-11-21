@@ -1,0 +1,17 @@
+\begin{tikzpicture}[x=1cm,y=1cm]
+  \node[caixa, cinza, text width=6.6cm] (raiz) at (0.25,0) {Comprometer a função de proteção GOOSE (OU)};
+  \node[caixa, text width=2.6cm] (disp) at (-4.2,-1.8) {Disponibilidade};
+  \node[caixa, text width=4.2cm] (int) at (3.6,-1.8) {Integridade e autenticidade};
+  \node[caixa, text width=2.45cm] (fl) at (-5.7,-3.6) {Flooding (A)\\CU3};
+  \node[caixa, text width=2.45cm] (su) at (-2.7,-3.6) {Suppression (D)\\CU2};
+  \node[caixa, text width=2.45cm] (rp) at (0.9,-3.6) {Replay (B)\\CU1};
+  \node[caixa, text width=2.45cm] (c2) at (3.6,-3.6) {Masquerade C2\\CU1};
+  \node[caixa, text width=2.45cm] (c1) at (6.3,-3.6) {Masquerade C1\\CU1};
+  \draw (raiz.south) -- ++(0,-0.5) -| (disp.north);
+  \draw (raiz.south) -- ++(0,-0.5) -| (int.north);
+  \draw (disp.south) -- ++(0,-0.5) -| (fl.north);
+  \draw (disp.south) -- ++(0,-0.5) -| (su.north);
+  \draw (int.south) -- ++(0,-0.5) -| (rp.north);
+  \draw (int.south) -- ++(0,-0.5) -| (c2.north);
+  \draw (int.south) -- ++(0,-0.5) -| (c1.north);
+\end{tikzpicture}
