@@ -280,7 +280,7 @@ A avaliação usa três ambientes, descritos a seguir; a Tabela 7 resume seus ce
 
 ### 4.5. Reprodutibilidade e disponibilidade
 
-O código, os scripts da campanha, as evidências dos três ambientes e a medição auxiliar de TLS estão no repositório do projeto [COMMIT DE REFERÊNCIA: a informar na entrega]. As evidências estão em `benchmark/resultados/` (campanha *offline*), `autenticador-8021x/evidencias/gns3/` (GNS3), `autenticador-8021x/evidencias/` (logs `teste_netns-*.log` dos *network namespaces*) e `autenticador-8021x/evidencias/tls/` (medição de TLS). A PKI é de laboratório: as chaves privadas não são versionadas e são geradas por um script do projeto. A campanha *offline* usa semente fixa, e os comandos de cada ambiente estão nos arquivos de documentação do repositório.
+O código, os scripts da campanha, as evidências dos três ambientes e a medição auxiliar de TLS estão no repositório do projeto (<https://github.com/xymotaa/iec61850-security-testbed>), no commit [COMMIT DE REFERÊNCIA: a informar na entrega]. As evidências estão em `benchmark/resultados/` (campanha *offline*), `autenticador-8021x/evidencias/gns3/` (GNS3), `autenticador-8021x/evidencias/` (logs `teste_netns-*.log` dos *network namespaces*) e `autenticador-8021x/evidencias/tls/` (medição de TLS). A PKI é de laboratório: as chaves privadas não são versionadas e são geradas por um script do projeto. A campanha *offline* usa semente fixa, e os comandos de cada ambiente estão nos arquivos de documentação do repositório.
 
 ---
 

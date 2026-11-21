@@ -35,8 +35,8 @@ Tabelas 3 e 11 removidas (duas frases na 2.4 e a lista de evidências na 4.5 as 
 
 ## Pendências (não mascaradas no PDF)
 
-- `[COMMIT DE REFERÊNCIA: a informar na entrega]` (Seção 4.5), em vermelho.
-- `referencias.bib`: `Páginas: VERIFICAR` (Oliveira e Gurjão 2025), `(não confirmado)` (Girdhar et al. 2023), nota "Cabeçalho do PDF" (Herath et al. 2025) e `MZ Automation (s.d.)` sem data de acesso aparecem na lista de referências; `iec61850-8-1` não é citada no texto e não entra na lista.
+- Seção 4.5: URL do repositório informada; o hash do commit de referência continua como `[COMMIT DE REFERÊNCIA: a informar na entrega]` (em vermelho), a preencher depois do commit final.
+- `referencias.bib` (revisado em 21/11/2026): Oliveira e Gurjão com páginas 293–298 (SOL e Crossref); Girdhar com a versão publicada registrada na nota (PESGM 2024, p. 1–5); Herath com o evento do cabeçalho do PDF e do arXiv (data e local não confirmados); libiec61850 com "Acesso em 21/11/2026". `iec61850-8-1` não é citada no texto e não entra na lista. Ainda em aberto: o ano de Girdhar (a entrada cita o preprint de 2023; a versão publicada é de 2024), `MZ Automation (s.d.)` sem ano e a leitura só parcial de Roomi et al.
 - Afiliação e e-mails dos autores: o PDF traz só a Unifesspa, sem e-mails; nomes só com o primeiro nome, como definido.
 - O modelo SBC não exige o título em inglês; ele não aparece no PDF.
 - Figura 3: os rótulos do print do GNS3 são pequenos; um print novo com rótulos maiores melhoraria a legibilidade.

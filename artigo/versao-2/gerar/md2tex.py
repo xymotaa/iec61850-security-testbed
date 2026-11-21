@@ -146,6 +146,8 @@ def inline(s, caption=False):
 
     # codigo
     s = re.sub(r"`([^`]+)`", lambda m: keep(esc_code(m.group(1))), s)
+    # enderecos
+    s = re.sub(r"<(https?://[^>\s]+)>", lambda m: keep(r"\url{%s}" % m.group(1)), s)
     # placeholder de pendencia (visivel de proposito)
     s = s.replace("[COMMIT DE REFERÊNCIA: a informar na entrega]",
                   keep(r"\textcolor{red}{\textbf{[COMMIT DE REFER\^ENCIA: a informar na entrega]}}"))
