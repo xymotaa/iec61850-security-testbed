@@ -248,6 +248,13 @@ L[i0 + 1:i1] = [
     "",
 ]
 
+# ---------------------------------------------------------------- ano de Girdhar et al. (versao publicada, PESGM 2024)
+_txt = "\n".join(L)
+_n = _txt.count("Girdhar et al. 2023") + _txt.count("Girdhar et al. (2023)")
+_txt = _txt.replace("Girdhar et al. 2023", "Girdhar et al. 2024").replace("Girdhar et al. (2023)", "Girdhar et al. (2024)")
+L[:] = _txt.split("\n")
+print("citacoes de Girdhar atualizadas para 2024:", _n)
+
 # ---------------------------------------------------------------- renumeracao das tabelas
 fim = next(i for i, l in enumerate(L) if l.startswith("## Pendências"))
 corpo = "\n".join(L[:fim])
