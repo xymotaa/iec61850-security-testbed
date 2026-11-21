@@ -11,14 +11,35 @@
   \PackageWarningNoLine{main}{sbc-template.sty nao encontrado: layout aproximado}%
 }
 
+% O modelo usa \flushbottom, que abre buracos grandes quando ha figuras e tabelas.
+\raggedbottom
+
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
 \usepackage[brazilian]{babel}
+\usepackage{amsmath}
 \usepackage{graphicx,url}
 \usepackage{booktabs,array,tabularx}
+\newcolumntype{L}[1]{>{\raggedright\arraybackslash}p{#1}}
+\newcolumntype{Y}{>{\raggedright\arraybackslash}X}
 \usepackage{xcolor}
 \usepackage{tikz}
 \usetikzlibrary{positioning,shapes.geometric,arrows.meta,fit,calc}
+
+% Figuras e tabelas: sem empilhar no fim, perto do ponto de citacao.
+\renewcommand{\topfraction}{0.9}
+\renewcommand{\bottomfraction}{0.8}
+\renewcommand{\textfraction}{0.1}
+\renewcommand{\floatpagefraction}{0.8}
+\setlength{\textfloatsep}{10pt plus 2pt minus 2pt}
+\setlength{\floatsep}{8pt plus 2pt minus 2pt}
+\setlength{\intextsep}{8pt plus 2pt minus 2pt}
+
+% \paragraph do modelo reserva espaco vertical demais: cabecalho em negrito na linha do texto.
+\renewcommand{\paragraph}[1]{\par\noindent\textbf{#1}\ }
+
+% Flags de linha de comando: "-{}-" evita a ligadura que faz "--" sair com um traco so.
+\newcommand{\dd}{-{}-}
 
 % ---------- marcadores de pendencia (VISIVEIS de proposito) ----------
 \newcommand{\todo}[1]{\textcolor{red}{\textbf{[PENDENTE: #1]}}}
@@ -26,20 +47,21 @@
 \newcommand{\verif}{\textcolor{orange!80!black}{\textbf{VERIFICAR}}}
 
 % Figura de grafico gerado pelo benchmark: so inclui se o arquivo existir.
-% Uso: \figbench{arquivo-sem-extensao}{legenda}{rotulo}
-\newcommand{\figbench}[3]{%
-  \begin{figure}[ht]
+% Uso: \figbench[largura relativa]{arquivo-sem-extensao}{legenda}{rotulo}
+\newcommand{\figbench}[4][0.7]{%
+  \begin{figure}[!htb]
     \centering
-    \IfFileExists{figuras/#1.pdf}{%
-      \includegraphics[width=0.9\linewidth]{figuras/#1.pdf}}{%
-    \IfFileExists{../benchmark/figuras/#1.pdf}{%
-      \includegraphics[width=0.9\linewidth]{../benchmark/figuras/#1.pdf}}{%
+    \IfFileExists{figuras/#2.pdf}{%
+      \includegraphics[width=#1\linewidth]{figuras/#2.pdf}}{%
+    \IfFileExists{../benchmark/figuras/#2.pdf}{%
+      \includegraphics[width=#1\linewidth]{../benchmark/figuras/#2.pdf}}{%
       \fbox{\parbox{0.85\linewidth}{\centering\vspace{1.2cm}%
-        \todo{figura \texttt{\detokenize{#1.pdf}} n\~ao encontrada}\vspace{1.2cm}}}}}
-    \caption{#2}\label{#3}
+        \todo{figura \texttt{\detokenize{#2.pdf}} n\~ao encontrada}\vspace{1.2cm}}}}}
+    \caption{#3}\label{#4}
   \end{figure}}
 
 \sloppy
+\emergencystretch=2em
 
 \title{Defesa em profundidade para GOOSE: limites de um IDS de estado, de uma mitigação criptográfica no estilo IEC 62351-6 e do controle de acesso IEEE 802.1X (EAP-TLS)}
 
@@ -65,30 +87,29 @@
 
 A converg\^encia entre tecnologia da informa\c{c}\~ao e tecnologia operacional ampliou a superf\'icie de ataque das subesta\c{c}\~oes el\'etricas. Na norma IEC 61850, as mensagens GOOSE (\emph{Generic Object Oriented Substation Event}) disparam fun\c{c}\~oes de prote\c{c}\~ao, como a abertura de disjuntores, e exigem tempo de transfer\^encia inferior a 4~ms. Para cumprir esse requisito, o GOOSE \'e mapeado diretamente sobre a camada de enlace (EtherType \texttt{0x88B8}), em modelo \emph{publisher/subscriber} multicast, sem pilha TCP/IP e sem autentica\c{c}\~ao ou cifragem nativas.
 
-O trabalho de Oliveira e Gurj\~ao~\cite{oliveira2025analisador} automatiza a extra\c{c}\~ao da estrutura de uma subesta\c{c}\~ao a partir de arquivos SCL, monta a topologia no GNS3 e audita a pol\'itica de senhas dos IEDs conforme a IEC 62443-3-3. Esse escopo cobre o plano de ger\^encia (SSH), mas n\~ao o tr\'afego GOOSE em si: um invasor com acesso \`a rede local pode forjar comandos de abertura de disjuntor sem qualquer credencial SSH.
+O trabalho de Oliveira e Gurj\~ao~\cite{oliveira2025analisador} automatiza a extra\c{c}\~ao da estrutura de uma subesta\c{c}\~ao a partir de arquivos SCL, monta a topologia no GNS3 e audita a pol\'itica de senhas dos IEDs (IEC 62443-3-3). Esse escopo cobre o plano de ger\^encia (SSH), mas n\~ao o tr\'afego GOOSE: um invasor na rede local pode forjar comandos de abertura de disjuntor sem credencial SSH.
 
-\paragraph{Problema e lacuna.} IDS passivos s\~ao a defesa mais imediata para esse tr\'afego, pois n\~ao exigem alterar os IEDs. Contudo, falta uma caracteriza\c{c}\~ao experimental de \emph{quais} ataques GOOSE um IDS que s\'o observa \texttt{stNum}, \texttt{sqNum}, MAC e taxa consegue detectar \emph{em princ\'ipio}, e onde essa abordagem deixa de ser suficiente. Detecção e autenticação por mensagem, por sua vez, não decidem \emph{quem} pode se conectar à rede: sem controle de acesso à porta, qualquer nó no domínio L2 pode tentar injetar quadros.
+\paragraph{Problema e pergunta de pesquisa.} IDS passivos s\~ao a defesa mais imediata para esse tr\'afego, pois n\~ao exigem alterar os IEDs, mas falta caracterizar \emph{quais} ataques GOOSE um IDS que s\'o observa \texttt{stNum}, \texttt{sqNum}, MAC e taxa detecta \emph{em princ\'ipio}. Autentica\c{c}\~ao por mensagem, por sua vez, n\~ao decide \emph{quem} pode se conectar. Perguntamos at\'e onde o IDS detecta, o que o HMAC acrescenta e a que custo de lat\^encia, e o que o controle de acesso \`a porta (IEEE 802.1X com EAP-TLS) acrescenta a ambos: o que cada camada de uma defesa em profundidade resolve e o que \emph{n\~ao} resolve.
 
-\paragraph{Pergunta de pesquisa.} At\'e onde um IDS passivo baseado em \texttt{stNum}/\texttt{sqNum}/MAC detecta ataques GOOSE, o que a autenticação por HMAC acrescenta, a que custo de latência, e o que um controle de acesso à porta (IEEE 802.1X com EAP-TLS) acrescenta a ambos? Em outras palavras, o que cada camada de uma defesa em profundidade resolve e o que \emph{não} resolve?
-
-\paragraph{Contribui\c{c}\~oes.} (i)~Um testbed reprodut\'ivel de subesta\c{c}\~ao em GNS3, gerado a partir de SCD, com atacante e IDS (Se\c{c}\~ao~\ref{sec:metodo}); (ii)~um modelo de amea\c{c}as e tr\^es casos de uso (Se\c{c}\~ao~\ref{sec:ameacas}); (iii)~uma campanha de $N=600$ execu\c{c}\~oes que delimita empiricamente o que o IDS passivo detecta (Se\c{c}\~ao~\ref{sec:resultados}); (iv)~um mapeamento entre ataques e requisitos normativos (Tabela~\ref{tab:normas}); (v)~a avalia\c{c}\~ao, em campanha \emph{offline} reproduzida, de uma simula\c{c}\~ao de mitiga\c{c}\~ao criptogr\'afica no estilo IEC 62351-6 (HMAC-SHA256 por quadro) com e sem a chave em poder do atacante, e da sensibilidade do limiar de flooding (Se\c{c}\~ao~\ref{sec:resultados}). (vi)~uma implementação real de controle de acesso L2 com IEEE 802.1X e EAP-TLS no testbed (autenticador \texttt{hostapd} $+$ \texttt{nftables}, PKI de laboratório, CRL e vínculo CN$\leftrightarrow$MAC derivado do SCD; Seção~\ref{sec:8021x}); e (vii)~a validação dessa implementação, com componentes reais, no GNS3 e em \emph{network namespaces}, em cenários E0--E5, e a discussão da defesa em profundidade 802.1X $+$ HMAC $+$ IDS (Seções~\ref{sec:val8021x} e~\ref{sec:discussao}). Os resultados de (iii) vêm do 4.\textordmasculine{} Marco; (v) é \emph{offline} e ainda não foi repetido no GNS3; (vii) foi observado no GNS3 real, com cada cenário executado uma vez, e em \emph{netns} (Seção~\ref{sec:discussao}).
+\paragraph{Contribui\c{c}\~oes.} (i)~Um testbed reprodut\'ivel em GNS3, gerado de SCD; (ii)~modelo de amea\c{c}as, tr\^es casos de uso e mapeamento ataque$\times$norma; (iii)~uma campanha de $N=600$ execu\c{c}\~oes que delimita o que o IDS passivo detecta, reproduzida \emph{offline} e estendida com HMAC no estilo IEC 62351-6 e com a sensibilidade do limiar de flooding; e (iv)~802.1X/EAP-TLS real (\texttt{hostapd} $+$ \texttt{nftables}, PKI de laborat\'orio, CRL, v\'inculo CN$\leftrightarrow$MAC do SCD), validado no GNS3 e em \emph{network namespaces} (cen\'arios E0--E5), com a discuss\~ao da defesa em profundidade. Os resultados de (iii) s\~ao \emph{offline}; os de (iv) foram observados uma vez por cen\'ario no GNS3.
 
 % ======================================================================
 \section{Fundamenta\c{c}\~ao e trabalhos relacionados}
 
 \paragraph{GOOSE e sua sem\^antica de estado.} Cada fluxo GOOSE \'e identificado por um \texttt{gocbRef}. O publicador incrementa \texttt{stNum} a cada mudan\c{c}a de estado e zera \texttt{sqNum}; entre mudan\c{c}as, retransmite o mesmo estado (\emph{heartbeat}) incrementando \texttt{sqNum}. O assinante descarta quadros com $(\texttt{stNum},\texttt{sqNum})$ menor ou igual ao \'ultimo aceito. Essa gram\'atica \'e a base do IDS de estado e tamb\'em o que o atacante precisa respeitar para ser aceito.
 
-\paragraph{Normas.} A IEC 62351-6 define mecanismos de autentica\c{c}\~ao para os perfis da IEC 61850, incluindo GOOSE; a IEC 62443-3-3 define requisitos de sistema (SR) e a IEEE 802.1X~\cite{ieee8021x} o controle de acesso por porta (no testbed, com EAP-TLS); a IEC 62351-6~\cite{iec62351-6} é a referência da autenticação de mensagens. O detalhamento cl\'ausula a cl\'ausula est\'a na Tabela~\ref{tab:normas}.
+\paragraph{Normas.} A IEC 62351-6~\cite{iec62351-6} define autentica\c{c}\~ao para os perfis da IEC 61850; a IEC 62443-3-3 define requisitos de sistema (SR); a IEEE 802.1X~\cite{ieee8021x}, o controle de acesso por porta (Tabela~\ref{tab:normas}).
 
-\paragraph{Trabalhos relacionados.} Zemanek et al.~\cite{zemanek2022powerduck} publicam o PowerDuck, um conjunto de dados de ataques GOOSE em subesta\c{c}\~oes, cuja taxonomia de ataques orienta os cen\'arios deste trabalho. Auto-SGCR~\cite{roomi2025autosgcr} gera automaticamente um \emph{cyber range} de rede el\'etrica a partir de modelos IEC 61850, pr\'oximo ao fluxo SCD$\rightarrow$testbed aqui usado. Para detec\c{c}\~ao, Alberto et al.~\cite{alberto2026gooseidrs} tratam especificamente de detec\c{c}\~ao e resposta autom\'atica a \emph{masquerade} em GOOSE, e Moore~\cite{moore2026anomaly} avalia detec\c{c}\~ao de anomalias por aprendizado n\~ao supervisionado e temporal. Sobre mitiga\c{c}\~ao, Herath et al.~\cite{herath2025evaluation} avaliam t\'ecnicas de mitiga\c{c}\~ao em tempo real em subesta\c{c}\~oes IEC 61850/62351, Hussain et al.~\cite{hussain2023hybrid} prop\~oem uma metodologia h\'ibrida para proteger mensagens GOOSE e Girdhar et al.~\cite{girdhar2023sdn} um arcabou\c{c}o din\^amico baseado em SDN. No contexto nacional, Oliveira et al.~\cite{oliveira2023ataques} implementam ataques em ambiente simulado para sistemas el\'etricos. \todo{ler os trabalhos e substituir estas descri\c{c}\~oes de uma frase (baseadas no t\'itulo/resumo) por compara\c{c}\~ao de m\'etodo, m\'etricas e resultados}
+\paragraph{Trabalhos relacionados.} Zemanek et al.~\cite{zemanek2022powerduck} publicam o PowerDuck, conjunto de dados de ataques GOOSE cuja taxonomia orienta nossos cen\'arios. Auto-SGCR~\cite{roomi2025autosgcr} gera um \emph{cyber range} de rede el\'etrica a partir de modelos IEC 61850, pr\'oximo ao fluxo SCD$\rightarrow$testbed aqui usado. Em detec\c{c}\~ao, Alberto et al.~\cite{alberto2026gooseidrs} tratam de detec\c{c}\~ao e resposta autom\'atica a \emph{masquerade} em GOOSE e Moore~\cite{moore2026anomaly} avalia aprendizado n\~ao supervisionado e temporal. Em mitiga\c{c}\~ao, Herath et al.~\cite{herath2025evaluation} avaliam t\'ecnicas em tempo real em subesta\c{c}\~oes IEC 61850/62351, Hussain et al.~\cite{hussain2023hybrid} prop\~oem uma metodologia h\'ibrida e Girdhar et al.~\cite{girdhar2023sdn} um arcabou\c{c}o baseado em SDN. No contexto nacional, Oliveira et al.~\cite{oliveira2023ataques} implementam ataques em ambiente simulado. \todo{ler os trabalhos e substituir estas descri\c{c}\~oes de uma frase (baseadas no t\'itulo/resumo) por compara\c{c}\~ao de m\'etodo, m\'etricas e resultados}
 
 % ======================================================================
 \section{Metodologia e arquitetura do testbed}\label{sec:metodo}
 
-O ambiente reproduz o do artigo original: quatro \emph{switches} de borda em estrela ligados a um \emph{switch} central (o \emph{switch} nativo do GNS3 n\~ao executa Spanning Tree, ent\~ao uma malha geraria \emph{loops}), cinco IEDs simulados (\texttt{ubuntu-ied}) e tr\^es n\'os adicionais no \emph{switch} central, no mesmo dom\'inio multicast: o Or\'aculo (auditor SSH), o IDS (\texttt{ids-1}) e o atacante (\texttt{atacante-1}) (Figura~\ref{fig:arquitetura}). A topologia \'e gerada automaticamente a partir de um SCD (\texttt{extrair\_scd.py} e \texttt{gerar\_topologia\_gns3.py}); a valida\c{c}\~ao ponta a ponta usou o SCD real \texttt{simpleIO\_direct\_control\_goose.scd} do projeto libiec61850~\cite{libiec61850}, com 1~IED e 2 blocos GOOSE.
+O ambiente reproduz o do artigo original: quatro \emph{switches} de borda em estrela ligados a um \emph{switch} central (sem malha: o nativo do GNS3 n\~ao executa Spanning Tree), cinco IEDs simulados (\texttt{ubuntu-ied}) e tr\^es n\'os no \emph{switch} central, no mesmo dom\'inio multicast: o Or\'aculo (auditor SSH), o IDS (\texttt{ids-1}) e o atacante (\texttt{atacante-1}) (Figura~\ref{fig:arquitetura}). A topologia \'e gerada de um SCD (\texttt{extrair\_scd.py}, \texttt{gerar\_topologia\_gns3.py}); a valida\c{c}\~ao ponta a ponta usou o SCD real \texttt{simpleIO\_direct\_control\_goose.scd} da libiec61850~\cite{libiec61850}, com 1~IED e 2 blocos GOOSE.
 
-\begin{figure}[ht]
+\begin{figure}[!htb]
 \centering
+\resizebox{0.72\linewidth}{!}{%
 \begin{tikzpicture}[
   font=\footnotesize,
   sw/.style={rectangle,draw,rounded corners=2pt,fill=blue!10,minimum width=1.3cm,minimum height=0.6cm},
@@ -113,49 +134,45 @@ O ambiente reproduz o do artigo original: quatro \emph{switches} de borda em est
   \draw (orac)--(core); \draw (ids)--(core); \draw (atk)--(core);
   \draw[dashed,->] (orac) -- node[above,sloped,pos=.45]{SSH (SRs)} (-2.8,3.2);
   \node[align=center,text=gray!60!black] at (0,-2.7) {dom\'inio multicast L2 (GOOSE, EtherType \texttt{0x88B8}); IDS em modo passivo};
-\end{tikzpicture}
-\caption{Arquitetura do testbed. O Or\'aculo audita os IEDs via SSH (plano de ger\^encia); o atacante injeta e o IDS observa quadros GOOSE no \emph{switch} central.}\label{fig:arquitetura}
+\end{tikzpicture}}
+\caption{Arquitetura do testbed: o Or\'aculo audita os IEDs via SSH; o atacante injeta e o IDS observa GOOSE no \emph{switch} central.}\label{fig:arquitetura}
 \end{figure}
 
-\paragraph{Variante com 802.1X.} Além da topologia acima, o gerador aceita a opção \texttt{--8021x}, que substitui os \emph{switches} por um nó autenticador (\texttt{autenticador-8021x}) ao qual IEDs, Oráculo, IDS, publicador e atacante se ligam diretamente, fixa o MAC de cada nó e grava o inventário CN$\rightarrow$MAC. A topologia original não é alterada, e a variante é descrita na Seção~\ref{sec:8021x}. Essa topologia (projeto \texttt{subestacao\_8021x}, 7 nós Docker ligados diretamente ao autenticador, uma porta por nó) foi aberta e executada no GNS3 2.2.61 em 20/11/2026 (Seção~\ref{sec:val8021x}).
 
-\paragraph{Atacante.} Todos os ataques partem de um quadro GOOSE real capturado (\texttt{molde.pcap}, de um rel\'e SEL-351) e mutam apenas os campos necess\'arios; o campo \texttt{allData} \'e tratado como \emph{blob} bin\'ario opaco, e o booleano de estado \'e localizado por express\~ao regular sobre a assinatura TLV MMS (\texttt{0x83 0x01 <v>}). O codec ASN.1/BER, escrito manualmente, reproduz byte a byte o quadro capturado.
+\paragraph{Atacante.} Todos os ataques partem de um quadro GOOSE real capturado (\texttt{molde.pcap}, de um rel\'e SEL-351) e mutam s\'o os campos necess\'arios; \texttt{allData} \'e um \emph{blob} opaco e o booleano de estado \'e localizado por express\~ao regular sobre a assinatura TLV MMS (\texttt{0x83 0x01 <v>}). O codec ASN.1/BER, manual, reproduz byte a byte o quadro capturado.
 
-\paragraph{Campanha do 4.\textordmasculine{} Marco (campanha anterior).} Cada cen\'ario foi repetido $N=100$ vezes com par\^ametros variados (Tabela~\ref{tab:anterior}), totalizando 600 execu\c{c}\~oes, medindo a taxa de detec\c{c}\~ao (TPR; no cen\'ario de base, a taxa de falsos positivos, FPR) e a lat\^encia de processamento por quadro no IDS. Os n\'umeros dessa campanha foram consolidados no material do 4.\textordmasculine{} Marco, e o script que os gerou (\texttt{benchmark\_ids.py}) \emph{n\~ao foi versionado}.
+\paragraph{Campanhas do IDS.} A campanha anterior (4.\textordmasculine{} Marco) repetiu $N=100$ vezes cada um de 6 cen\'arios (base leg\'itima T0, flooding A, replay B, masquerade C1 e C2, suppression D), 600 execu\c{c}\~oes, medindo TPR (FPR em T0) e lat\^encia por quadro; seu script \emph{n\~ao foi versionado}. No 5.\textordmasculine{} Marco foi \emph{reconstru\'ido} (\texttt{benchmark/}, com detalhes em \texttt{benchmark/README.md}) e estendido com o HMAC e a varredura do limiar. Os quadros s\~ao bytes Ethernet reais entregues ao \texttt{GooseMonitor} com rel\'ogio virtual: \'e uma \textbf{campanha offline}, sem GNS3, \emph{switch}, rede ou IED, e n\~ao substitui a valida\c{c}\~ao ponta a ponta. Cada repeti\c{c}\~ao usa monitor novo, 5 \emph{heartbeats} de aquecimento, intervalos $\pm10\%$ e semente fixa (61850); ``detectado'' \'e ao menos um alerta. A lat\^encia usa \texttt{time.perf\_counter\_ns} em Python~3.12 (Linux x86\_64, notebook compartilhado). As lat\^encias das duas campanhas \emph{n\~ao s\~ao compar\'aveis em valor absoluto} (m\'aquinas e cron\^ometros diferentes): usamos a ordem de grandeza e diferen\c{c}as relativas \emph{dentro} da mesma campanha; as detec\c{c}\~oes coincidem. \todo{citar o reposit\'orio/commit dos scripts de benchmark (ainda n\~ao commitados)} \todo{informar o modelo de CPU da m\'aquina da campanha reproduzida (o \texttt{execucao.json} guarda s\'o Python e SO)}
 
-\paragraph{Campanha reproduzida (5.\textordmasculine{} Marco).} Por isso, o script foi \emph{reconstru\'ido} a partir da tabela do 4.\textordmasculine{} Marco (\texttt{benchmark/benchmark\_ids.py} e \texttt{benchmark/trafego.py}, no reposit\'orio do projeto) e estendido com a mitiga\c{c}\~ao por HMAC e a varredura do limiar. Os quadros s\~ao bytes Ethernet reais montados por \texttt{goose\_frame}, relidos por \texttt{parse\_ethernet\_goose} e entregues diretamente ao \texttt{GooseMonitor}, com rel\'ogio virtual: \'e uma \textbf{campanha offline}, sem GNS3, \emph{switch}, rede ou IED, e portanto n\~ao substitui a valida\c{c}\~ao ponta a ponta. Cada repeti\c{c}\~ao usa um monitor novo, 5 \emph{heartbeats} leg\'itimos de aquecimento e depois somente o tr\'afego do atacante; os intervalos entre quadros variam $\pm10\%$ e a semente \'e fixa (61850). ``Detectado'' significa que algum quadro do atacante gerou ao menos um alerta (em T0, qualquer quadro). A lat\^encia \'e medida por quadro com \texttt{time.perf\_counter\_ns} em Python~3.12 (Linux x86\_64, notebook compartilhado), descontando a mediana do custo de uma leitura do cron\^ometro ($\approx 2~\mu$s, da mesma ordem do que se mede); distinguimos o custo do \emph{parse}, da verifica\c{c}\~ao do HMAC e de \texttt{GooseMonitor.process}. Os detalhes da reprodu\c{c}\~ao est\~ao em \texttt{benchmark/README.md}. \todo{citar o reposit\'orio/commit dos scripts de benchmark (ainda n\~ao commitados) para reprodutibilidade} \todo{informar o modelo de CPU da m\'aquina da campanha reproduzida (o \texttt{execucao.json} guarda s\'o Python e SO)}
-
-\paragraph{Duas medi\c{c}\~oes de lat\^encia que n\~ao se misturam.} A campanha anterior e a reproduzida foram executadas em m\'aquinas e com metodologias de cron\^ometro diferentes (a original n\~ao documenta como mediu); a lat\^encia absoluta tamb\'em varia entre execu\c{c}\~oes da mesma m\'aquina. Por isso \emph{n\~ao comparamos valores absolutos entre as duas}: usamos apenas a ordem de grandeza (microssegundos, ao menos duas ordens abaixo de 4000~$\mu$s) e diferen\c{c}as relativas \emph{dentro} da mesma campanha. As detec\c{c}\~oes, por outro lado, s\~ao compar\'aveis e coincidem.
 
 % ======================================================================
 \section{Modelo de amea\c{c}as e casos de uso}\label{sec:ameacas}
 
-\paragraph{Atacante.} Est\'a no mesmo dom\'inio de difus\~ao L2 dos IEDs (GOOSE n\~ao \'e rote\'avel), tem privil\'egio de socket cru e acesso a uma captura v\'alida de GOOSE. N\~ao precisa de credenciais nem de explorar o IED, e portanto a auditoria SSH do Or\'aculo n\~ao o enxerga. Nas campanhas do IDS e do HMAC assume-se que não há \emph{port security} nem 802.1X, o que torna trivial a clonagem de MAC. Na avaliação do 802.1X (Seção~\ref{sec:val8021x}) o atacante é considerado em quatro níveis de capacidade: (a)~sem credencial; (b)~com certificado inválido (CA desconhecida), revogado ou fora do inventário; (c)~com certificado válido \emph{de outro dispositivo}, usando o MAC desse dispositivo; e (d)~com certificado válido de um nó comprometido e MAC próprio. Não tratamos atacantes que comprometem o próprio IED publicador nem a chave-mestra do HMAC, exceto no cenário explícito de chave vazada; a CA e o autenticador são considerados confiáveis.
+\paragraph{Atacante.} Est\'a no mesmo dom\'inio L2 dos IEDs (GOOSE n\~ao \'e rote\'avel), tem socket cru e uma captura v\'alida de GOOSE; n\~ao precisa de credenciais, e a auditoria SSH do Or\'aculo n\~ao o enxerga. Nas campanhas do IDS e do HMAC n\~ao h\'a \emph{port security} nem 802.1X. Na avalia\c{c}\~ao do 802.1X h\'a quatro n\'iveis: (a)~sem credencial; (b)~certificado inv\'alido, revogado ou fora do invent\'ario; (c)~certificado v\'alido \emph{de outro dispositivo}, com o MAC dele; (d)~certificado v\'alido de n\'o comprometido e MAC pr\'oprio. Ficam fora do modelo o IED publicador comprometido e a chave-mestra (exceto no cen\'ario de chave vazada); CA e autenticador s\~ao confi\'aveis.
 
 \paragraph{Casos de uso.} Os quatro ataques implementados se agrupam em tr\^es casos de uso (Figura~\ref{fig:arvore}):
 \begin{itemize}
-  \item \textbf{CU1 --- abertura indevida de disjuntor (integridade).} O atacante forja uma mudan\c{c}a de estado (\emph{masquerade}): inverte o booleano de estado em \texttt{allData}, incrementa \texttt{stNum} em 1 e zera \texttt{sqNum}. Na variante C2 (ing\^enua) usa MAC pr\'oprio; na C1 (sofisticada) clona o MAC do IED leg\'itimo. O replay (B) \'e a variante sem muta\c{c}\~ao, reenviando um comando antigo.
-  \item \textbf{CU2 --- bloqueio de prote\c{c}\~ao (\emph{suppression}, D).} Um \'unico quadro com $\texttt{stNum}$ muito \`a frente do estado real (salto $\Delta$) e $\texttt{sqNum}=0$ faz os assinantes descartarem os quadros leg\'itimos seguintes como ``antigos'', sem inundar a rede.
-  \item \textbf{CU3 --- perda de \emph{heartbeat} (\emph{flooding}, A).} Quadros em alta taxa (50 a 2000~pkts/s) com \texttt{sqNum} crescente e \texttt{stNum} fixo saturam o enlace e a CPU dos assinantes, arriscando a perda de \emph{heartbeats} leg\'itimos e o descumprimento do limite de 4~ms.
+  \item \textbf{CU1: abertura indevida de disjuntor (integridade).} O \emph{masquerade} forja uma mudan\c{c}a de estado: inverte o booleano em \texttt{allData}, incrementa \texttt{stNum} e zera \texttt{sqNum}. A variante C2 (ing\^enua) usa MAC pr\'oprio; a C1 (sofisticada) clona o MAC do IED leg\'itimo. O replay (B) reenvia um comando antigo, sem muta\c{c}\~ao.
+  \item \textbf{CU2: bloqueio de prote\c{c}\~ao (\emph{suppression}, D).} Um quadro com \texttt{stNum} muito \`a frente do real (salto $\Delta$) e $\texttt{sqNum}=0$ faz os assinantes descartarem os quadros leg\'itimos seguintes como ``antigos'', sem inundar a rede.
+  \item \textbf{CU3: perda de \emph{heartbeat} (\emph{flooding}, A).} Quadros em alta taxa (50 a 2000~pkts/s) saturam enlace e CPU dos assinantes, arriscando os 4~ms.
 \end{itemize}
 
-\begin{figure}[ht]
+\begin{figure}[!htb]
 \centering
 \begin{tikzpicture}[
-  font=\footnotesize,
+  font=\scriptsize,
   n/.style={rectangle,draw,rounded corners=2pt,align=center,minimum height=0.7cm,inner sep=3pt},
-  det/.style={n,fill=green!15},
-  und/.style={n,fill=red!20,very thick},
+  det/.style={n,fill=green!15,text width=2.4cm},
+  und/.style={n,fill=red!20,very thick,text width=2.4cm},
   or/.style={n,fill=blue!10},
   >={Stealth[length=2mm]}]
   \node[or] (root) at (0,0) {Comprometer a fun\c{c}\~ao de prote\c{c}\~ao GOOSE (OU)};
-  \node[or] (disp) at (-4.5,-1.6) {Disponibilidade};
-  \node[or] (integ) at (0.8,-1.6) {Integridade / autenticidade};
-  \node[det] (a) at (-5.8,-3.2) {A: flooding\\(CU3)};
-  \node[det] (d) at (-3.1,-3.2) {D: suppression\\(CU2)};
-  \node[det] (b) at (-0.3,-3.2) {B: replay\\(CU1)};
-  \node[det] (c2) at (2.2,-3.2) {C2: masquerade\\MAC pr\'oprio (CU1)};
-  \node[und] (c1) at (5.2,-3.2) {C1: masquerade\\MAC clonado (CU1)};
+  \node[or] (disp) at (-4.4,-1.5) {Disponibilidade};
+  \node[or] (integ) at (1.5,-1.5) {Integridade / autenticidade};
+  \node[det] (a) at (-5.9,-3.1) {A: flooding\\(CU3)};
+  \node[det] (d) at (-2.95,-3.1) {D: suppression\\(CU2)};
+  \node[det] (b) at (0,-3.1) {B: replay\\(CU1)};
+  \node[det] (c2) at (2.95,-3.1) {C2: masquerade\\MAC pr\'oprio\\(CU1)};
+  \node[und] (c1) at (5.9,-3.1) {C1: masquerade\\MAC clonado\\(CU1)};
   \draw[->] (root)--(disp); \draw[->] (root)--(integ);
   \draw[->] (disp)--(a); \draw[->] (disp)--(d);
   \draw[->] (integ)--(b); \draw[->] (integ)--(c2); \draw[->] (integ)--(c1);
@@ -168,61 +185,54 @@ O ambiente reproduz o do artigo original: quatro \emph{switches} de borda em est
 
 \subsection{IDS de estado}
 
-Optamos por um IDS pr\'oprio (\texttt{GooseMonitor}) porque os motores de mercado, voltados \`a pilha IP, n\~ao inspecionam quadros puramente L2. O monitor guarda, por \texttt{gocbRef}, o \'ultimo $(\texttt{stNum},\texttt{sqNum},\text{MAC})$ e aplica quatro regras (Figura~\ref{fig:estados}):
+Usamos um IDS pr\'oprio (\texttt{GooseMonitor}), pois os motores de mercado, voltados \`a pilha IP, n\~ao inspecionam quadros puramente L2. O monitor guarda, por \texttt{gocbRef}, o \'ultimo $(\texttt{stNum},\texttt{sqNum},\mathrm{MAC})$ e aplica quatro regras, todas $O(1)$ por quadro (Figura~\ref{fig:estados}):
 \begin{description}
-  \item[Replay:] alerta se $(\texttt{stNum},\texttt{sqNum}) \le (\texttt{stNum},\texttt{sqNum})_{\text{\'ult.}}$; o estado \emph{n\~ao} \'e atualizado no alerta, para que um quadro antigo n\~ao envenene a refer\^encia.
+  \item[Replay:] alerta se $(\texttt{stNum},\texttt{sqNum})$ for menor ou igual ao \'ultimo; o estado \emph{n\~ao} \'e atualizado no alerta, para que um quadro antigo n\~ao envenene a refer\^encia.
   \item[Suppression:] alerta se $\Delta\texttt{stNum} > 50$ (limiar de plausibilidade).
   \item[Masquerade:] alerta se o MAC de origem difere do \'ultimo visto no mesmo \texttt{gocbRef}.
-  \item[Flooding:] alerta na borda quando a taxa em janela deslizante de 2~s supera 20~pkts/s; um rel\'ogio passivo (\texttt{tick}, a cada 1~s) emite o fim do evento mesmo sem novos quadros.
+  \item[Flooding:] alerta na borda quando a taxa em janela deslizante de 2~s supera 20~pkts/s; um rel\'ogio passivo (\texttt{tick}, 1~s) emite o fim do evento mesmo sem novos quadros.
 \end{description}
-Todas as opera\c{c}\~oes s\~ao $O(1)$ por quadro.
 
-\begin{figure}[ht]
+\begin{figure}[!htb]
 \centering
 \begin{tikzpicture}[
-  font=\footnotesize,
+  font=\scriptsize,
   st/.style={circle,draw,minimum size=1.5cm,align=center,fill=blue!8},
-  al/.style={rectangle,draw,red!70!black,fill=red!8,rounded corners=2pt,align=center,font=\scriptsize},
+  al/.style={rectangle,draw,red!70!black,fill=red!8,rounded corners=2pt,align=center,text width=3.0cm},
   >={Stealth[length=2mm]},
   lab/.style={font=\scriptsize,align=center}]
   \node[st] (s0) at (0,0) {sem\\baseline};
-  \node[st] (s1) at (5,0) {$(st,sq,\text{MAC})$\\\'ultimo};
-  \draw[->] (s0) -- node[above,lab]{1.\textordmasculine{} quadro do \texttt{gocbRef}} (s1);
-  \draw[->] (s1) to[loop above] node[above,lab]{$sq{+}{+}$ (\emph{heartbeat}) ou\\ $st{+}{+}$, $sq{=}0$ (evento)} (s1);
-  \node[al] (rp) at (2.5,-2.2) {replay: $(st,sq)\le$ \'ultimo\\(estado n\~ao avan\c{c}a)};
-  \node[al] (sp) at (6.2,-2.2) {suppression:\\$\Delta st>50$};
-  \node[al] (ms) at (9.2,-2.2) {masquerade:\\MAC $\ne$ \'ultimo};
-  \node[al] (fl) at (7.4,-3.6) {flooding: $>20$ pkts/s em 2~s (borda)};
-  \draw[->,red!70!black,dashed] (s1) -- (rp);
-  \draw[->,red!70!black,dashed] (s1) -- (sp);
-  \draw[->,red!70!black,dashed] (s1) -- (ms);
-  \draw[->,red!70!black,dashed] (s1) -- (fl);
+  \node[st] (s1) at (5.6,0) {$(st,sq,\mathrm{MAC})$\\\'ultimo};
+  \draw[->] (s0) -- node[above,lab]{1.\textordmasculine{} quadro\\do \texttt{gocbRef}} (s1);
+  \draw[->] (s1) to[loop above] node[above,lab]{$sq{+}{+}$ (\emph{heartbeat}) ou $st{+}{+}$, $sq{=}0$ (evento)} (s1);
+  \node[al] (rp) at (-0.2,-2.6) {replay: $(st,sq)\le$ \'ultimo\\(estado n\~ao avan\c{c}a)};
+  \node[al] (sp) at (3.7,-2.6) {suppression:\\$\Delta st>50$};
+  \node[al] (ms) at (7.6,-2.6) {masquerade:\\MAC $\ne$ \'ultimo};
+  \node[al] (fl) at (11.5,-2.6) {flooding: $>20$ pkts/s\\em janela de 2~s (borda)};
+  \foreach \a in {rp,sp,ms,fl} \draw[->,red!70!black,dashed] (s1) -- (\a.north);
 \end{tikzpicture}
-\caption{M\'aquina de estados do IDS por \texttt{gocbRef}. Transi\c{c}\~oes tracejadas geram alertas. O estado ``sem baseline'' explica a limita\c{c}\~ao de partida a frio (Se\c{c}\~ao~\ref{sec:discussao}).}\label{fig:estados}
+\caption{M\'aquina de estados do IDS por \texttt{gocbRef}. Transi\c{c}\~oes tracejadas geram alertas. ``Sem baseline'' explica a partida a frio (Se\c{c}\~ao~\ref{sec:discussao}).}\label{fig:estados}
 \end{figure}
 
 \subsection{Modifica\c{c}\~oes e cen\'arios novos}
 
-Al\'em do IDS, estendemos o testbed com dois cen\'arios que n\~ao constam no artigo original nem na campanha de base:
+Estendemos o testbed com dois cen\'arios ausentes do artigo original.
 
-\paragraph{C1 com HMAC (simula\c{c}\~ao da ideia da IEC 62351-6).} Esta autentica\c{c}\~ao \'e uma \textbf{simula\c{c}\~ao da ideia} da IEC 62351-6, \emph{n\~ao uma implementa\c{c}\~ao conforme}: n\~ao h\'a a codifica\c{c}\~ao normativa da extens\~ao, nem gest\~ao ou distribui\c{c}\~ao de chaves (IEC 62351-9). \verif{} (rela\c{c}\~ao exata com o mecanismo da norma). O que foi implementado (\texttt{ids/goose\_auth.py}, com c\'opia id\^entica em \texttt{atacante/}):
+\paragraph{C1 com HMAC (simula\c{c}\~ao da ideia da IEC 62351-6).} \'E uma \textbf{simula\c{c}\~ao da ideia}, \emph{n\~ao uma implementa\c{c}\~ao conforme}: n\~ao h\'a a codifica\c{c}\~ao normativa da extens\~ao nem gest\~ao de chaves (IEC 62351-9). \verif{} (rela\c{c}\~ao exata com o mecanismo da norma). O c\'odigo est\'a em \texttt{ids/goose\_auth.py}:
 \begin{itemize}
-  \item \textbf{Algoritmo:} HMAC-SHA256 por quadro, com tag completa de 32~bytes (sem truncamento).
-  \item \textbf{Chaves:} uma chave por \texttt{gocbRef}, derivada por HMAC-SHA256 de uma chave-mestra (de teste, p\'ublica, no benchmark; no c\'odigo, lida de \texttt{GOOSE\_HMAC\_KEY} se definida).
-  \item \textbf{Campos cobertos:} \texttt{gocbRef}, \texttt{stNum}, \texttt{sqNum}, \texttt{t} (\emph{timestamp}) e \texttt{allData}, serializados com prefixo de tamanho para que a concatena\c{c}\~ao seja n\~ao amb\'igua. O MAC de origem e os demais campos do PDU n\~ao s\~ao cobertos.
-  \item \textbf{Posi\c{c}\~ao e sinaliza\c{c}\~ao:} a tag vai como \emph{trailer} TLV (tag arbitr\'aria \texttt{0xA0}) logo ap\'os o APDU, dentro do comprimento declarado no cabe\c{c}alho GOOSE, e \'e sinalizada pelo campo \texttt{Reserved1}, que carrega o tamanho do trailer (0 = quadro sem trailer, byte a byte igual ao GOOSE de sempre).
-  \item \textbf{Verifica\c{c}\~ao:} compara\c{c}\~ao em tempo constante (\texttt{hmac.compare\_digest}); quadro sem tag ou malformado \'e inv\'alido. Um quadro que falha gera o alerta \texttt{auth\_fail} e \'e descartado \emph{sem alterar o estado} do monitor, para que um quadro n\~ao autenticado n\~ao valide $(\texttt{stNum},\texttt{sqNum})$ nem MAC. A checagem de taxa (flooding) roda antes da verifica\c{c}\~ao, de modo que ainda alerta sobre quadros n\~ao autenticados.
-  \item \textbf{Sem prote\c{c}\~ao contra \emph{replay} por si s\'o:} um quadro leg\'itimo reenviado mant\'em a tag v\'alida; quem o detecta \'e a checagem de $(\texttt{stNum},\texttt{sqNum})$.
+  \item \textbf{Algoritmo, chaves e cobertura:} HMAC-SHA256 por quadro, tag de 32~bytes, uma chave por \texttt{gocbRef} derivada de uma chave-mestra (de teste, p\'ublica); cobre \texttt{gocbRef}, \texttt{stNum}, \texttt{sqNum}, \texttt{t} e \texttt{allData}, mas n\~ao o MAC de origem.
+  \item \textbf{Formato:} tag como \emph{trailer} TLV (tag arbitr\'aria \texttt{0xA0}) ap\'os o APDU, sinalizado por \texttt{Reserved1} (0 = sem trailer).
+  \item \textbf{Verifica\c{c}\~ao:} em tempo constante; quadro sem tag ou malformado gera \texttt{auth\_fail} e \'e descartado \emph{sem alterar o estado} do monitor; a checagem de taxa roda antes. A tag n\~ao impede replay: s\'o $(\texttt{stNum},\texttt{sqNum})$ o detecta.
 \end{itemize}
-Comparamos tr\^es modos: \texttt{sem\_hmac} (IDS atual); \texttt{hmac} (IED assina, IDS verifica, atacante \emph{sem} a chave, enviando quadros sem tag); e \texttt{hmac\_chave\_vazada} (idem, mas o atacante \emph{tem} a chave-mestra e assina seus quadros).
+Comparamos tr\^es modos: \texttt{sem\_hmac}; \texttt{hmac} (o atacante \emph{n\~ao} tem a chave e envia quadros sem tag); e \texttt{hmac\_chave\_vazada} (o atacante \emph{tem} a chave-mestra e assina).
 
-\paragraph{Sensibilidade do limiar de flooding.} O limiar padr\~ao (20~pkts/s em janela de 2~s) \'e uma escolha de projeto. Varremos o limiar $\in\{10,20,40,80\}$~pkts/s contra (a)~a taxa do ataque $\in\{5,10,15,18,20,22,25,30,35,40,50,60,80,100,250,500,1000,2000\}$~pkts/s, cobrindo o regime \emph{low-and-slow} (5 a 40~pkts/s), e (b)~a taxa da rajada leg\'itima do cen\'ario de base $\in\{5,10,15,20,30,40,60\}$~pkts/s (FPR). Cada ponto tem $N=100$ repeti\c{c}\~oes, sempre no modo sem HMAC, pois o limiar atua apenas na checagem de taxa.
+\paragraph{Sensibilidade do limiar de flooding.} Varremos o limiar (padr\~ao: 20~pkts/s em janela de 2~s) em $\{10,20,40,80\}$~pkts/s contra a taxa do ataque (5 a 2000~pkts/s, incluindo o regime \emph{low-and-slow}, 5 a 40) e contra a taxa da rajada leg\'itima do cen\'ario de base (5 a 60~pkts/s, para o FPR), com $N=100$ por ponto, sem HMAC.
 
 \subsection{Controle de acesso L2 com IEEE 802.1X (EAP-TLS)}\label{sec:8021x}
 
-O HMAC e o IDS atuam sobre quadros que já chegaram à rede. Para controlar \emph{quem} entra, implementamos no testbed um nó \textbf{autenticador} (\texttt{autenticador-8021x}) que age como \emph{switch} L2: nenhum dispositivo troca tráfego de dados antes de provar sua identidade com um certificado X.509 (EAP-TLS, autenticação mútua), e o certificado é vinculado ao MAC do dispositivo. Não é simulação: o \texttt{hostapd} 2.10 (driver \texttt{wired}, servidor EAP embutido) conduz o EAPOL com o \texttt{wpa\_supplicant} dos nós, e o encaminhamento é decidido por \texttt{nftables} (família \texttt{bridge}). O supplicant é opt-in nas imagens dos nós (\texttt{AUTH\_8021X=1}), de modo que o comportamento anterior das imagens é preservado. A Figura~\ref{fig:arq8021x} mostra a arquitetura (painel a) e a decisão de autorização (painel b).
+O HMAC e o IDS atuam sobre quadros que j\'a chegaram \`a rede. Para controlar \emph{quem} entra, a op\c{c}\~ao \texttt{\dd{}8021x} do gerador de topologia substitui os \emph{switches} por um n\'o \textbf{autenticador} (\texttt{autenticador-8021x}) ao qual os 7 n\'os se ligam diretamente, fixa o MAC de cada n\'o e grava o invent\'ario CN$\rightarrow$MAC (a topologia original n\~ao muda). O autenticador age como \emph{switch} L2: nenhum dispositivo troca tr\'afego antes de provar sua identidade com um certificado X.509 (EAP-TLS, autentica\c{c}\~ao m\'utua), vinculado ao seu MAC. N\~ao \'e simula\c{c}\~ao: o \texttt{hostapd} 2.10 (driver \texttt{wired}, servidor EAP embutido) conduz o EAPOL com o \texttt{wpa\_supplicant} dos n\'os, e o encaminhamento \'e decidido por \texttt{nftables} (fam\'ilia \texttt{bridge}). O supplicant \'e opt-in nas imagens (\texttt{AUTH\_8021X=1}). A Figura~\ref{fig:arq8021x} mostra a arquitetura (a) e a decis\~ao de autoriza\c{c}\~ao (b).
 
-\begin{figure}[ht]
+\begin{figure}[!htb]
 \centering
 \resizebox{\linewidth}{!}{%
 \begin{tikzpicture}[
@@ -231,7 +241,7 @@ O HMAC e o IDS atuam sobre quadros que já chegaram à rede. Para controlar \emp
   comp/.style={rectangle,draw,rounded corners=2pt,fill=blue!10,minimum width=3.1cm,minimum height=0.6cm,align=center,font=\scriptsize},
   ext/.style={rectangle,draw,rounded corners=2pt,fill=green!12,minimum width=3.1cm,minimum height=0.8cm,align=center,font=\scriptsize},
   dec/.style={rectangle,draw,rounded corners=3pt,fill=blue!8,minimum width=2.15cm,minimum height=0.9cm,align=center,font=\scriptsize,text width=2.0cm},
-  rej/.style={rectangle,draw,red!70!black,fill=red!8,rounded corners=2pt,minimum width=2.15cm,align=center,font=\scriptsize,text width=2.0cm},
+  rej/.style={rectangle,draw,red!70!black,fill=red!8,rounded corners=2pt,minimum width=2.15cm,align=center,font=\scriptsize,text width=2.1cm},
   okn/.style={dec,fill=green!20,thick},
   lab/.style={font=\scriptsize,align=center},
   >={Stealth[length=2mm]}]
@@ -270,274 +280,194 @@ O HMAC e o IDS atuam sobre quadros que já chegaram à rede. Para controlar \emp
   \foreach \a/\b in {d1/r1,d2/r2,d3/r3,d4/r4} \draw[->,red!70!black,dashed] (\a) -- node[right,lab]{n\~ao} (\b);
   \node[lab,text=gray!60!black] at (6.5,-4.5) {Rejei\c{c}\~ao: sess\~ao derrubada (\texttt{deauthenticate}) e evento \texttt{auth\_rejeitada} em JSONL};
 \end{tikzpicture}}
-\caption{Controle de acesso 802.1X no testbed. (a)~Os n\'os (supplicants) falam EAPOL/EAP-TLS com o \texttt{hostapd}; o supervisor l\^e o log para obter o CN validado pelo TLS e atualiza o set do \texttt{nftables}. (b)~Decis\~ao de autoriza\c{c}\~ao ap\'os o EAP-TLS: s\'o o par (porta, MAC) que passa em todas as verifica\c{c}\~oes \'e liberado. Dispositivo que n\~ao fala EAPOL (sem supplicant) nunca chega a (b): seus quadros s\~ao descartados e apenas contados.}\label{fig:arq8021x}
+\caption{Controle de acesso 802.1X no testbed. (a)~Os n\'os (supplicants) falam EAPOL/EAP-TLS com o \texttt{hostapd}; o supervisor l\^e o log para obter o CN validado pelo TLS e atualiza o set do \texttt{nftables}. (b)~Decis\~ao de autoriza\c{c}\~ao ap\'os o EAP-TLS: s\'o o par (porta, MAC) que passa em todas as verifica\c{c}\~oes \'e liberado. Dispositivo sem supplicant nunca chega a (b): seus quadros s\~ao descartados e contados.}\label{fig:arq8021x}
 \end{figure}
 
-\paragraph{Decisões de projeto e seus motivos.}
+\paragraph{Decis\~oes de projeto.}
 \begin{itemize}
-  \item \textbf{Um processo \texttt{hostapd} por porta.} O driver \texttt{wired} rejeitou vários \texttt{bss=} em um mesmo arquivo (\texttt{Failed to add BSS}, testado). Além disso, as linhas de TLS do log não trazem a interface; com um único processo, a correlação certificado$\leftrightarrow$porta era ambígua quando o mesmo MAC aparecia em duas portas (ver Seção~\ref{sec:discussao}).
-  \item \textbf{Ler o log do \texttt{hostapd} em vez de usar o \texttt{ctrl\_iface}.} O \texttt{ctrl\_iface} expõe apenas a identidade EAP \emph{declarada} pelo cliente (testado: um cliente pode declarar qualquer nome); o \emph{subject} validado pelo TLS só aparece no log. O custo é o acoplamento ao formato de log do \texttt{hostapd} 2.10, fixado pela imagem (Debian) e coberto por testes com trechos reais.
-  \item \textbf{CRL concatenada ao \texttt{ca\_cert}.} A build Debian do \texttt{hostapd} 2.10 tem \texttt{check\_crl} e \texttt{crl\_reload\_interval}, mas não a diretiva \texttt{crl=}; com OpenSSL a CRL é lida do mesmo arquivo da CA. Um certificado revogado é rejeitado (\texttt{certificate revoked}), e uma CRL atualizada é aplicada após o intervalo de recarga (padrão 60~s) e, para derrubar sessões já abertas, com reautenticação forçada.
-  \item \textbf{\texttt{nftables} na família \texttt{bridge}, política \emph{drop}.} O encaminhamento exige o par (porta de entrada, MAC de origem) autorizado e ao menos um dispositivo autorizado na porta de saída. O EAPOL (\texttt{01:80:C2:00:00:03}) é de enlace local e não passa pelas regras.
-  \item \textbf{O IDS também se autentica} (certificado \texttt{ids-1}): uma vez autorizada, sua porta recebe o multicast GOOSE como qualquer outra. Há uma exceção configurável (\texttt{PORTAS\_CONFIAVEIS}), sem 802.1X, para equipamento sem supplicant; ela é uma exceção de segurança e não foi usada na validação.
-  \item \textbf{PKI de laboratório} (\texttt{openssl}): CA de teste, um certificado por dispositivo, um certificado revogado (com CRL), um de nó fora do inventário e um certificado \emph{válido} de um nó comprometido (\texttt{atacante-comprometido}), este para o cenário de limite do 802.1X. As chaves são de laboratório e não devem ser reutilizadas.
-  \item \textbf{Servidor EAP embutido.} Não há RADIUS externo: simplifica o testbed, mas não representa a topologia de produção.
+  \item \textbf{Um \texttt{hostapd} por porta:} o driver \texttt{wired} rejeitou v\'arios \texttt{bss=} em um arquivo, e um processo \'unico tornava a correla\c{c}\~ao certificado$\leftrightarrow$porta amb\'igua (Se\c{c}\~ao~\ref{sec:discussao}).
+  \item \textbf{Ler o log em vez do \texttt{ctrl\_iface}:} este s\'o exp\~oe a identidade EAP \emph{declarada}; o \emph{subject} validado pelo TLS s\'o aparece no log (acoplamento ao formato do \texttt{hostapd} 2.10).
+  \item \textbf{CRL concatenada ao \texttt{ca\_cert}:} a build Debian n\~ao tem a diretiva \texttt{crl=}; a CRL nova vale ap\'os a recarga (60~s) e, em sess\~oes abertas, com reautentica\c{c}\~ao for\c{c}ada.
+  \item \textbf{\texttt{nftables} em \texttt{bridge}, pol\'itica \emph{drop}:} exige o par (porta, MAC de origem) autorizado; o IDS tamb\'em se autentica. PKI de laborat\'orio e EAP embutido, sem RADIUS externo.
 \end{itemize}
 
-\paragraph{Vínculo CN$\leftrightarrow$MAC.} Um certificado válido não basta: o CN (nome do nó) deve constar em um inventário que mapeia CN$\rightarrow$MAC, gerado a partir do mesmo SCD que gera a topologia (\texttt{inventario\_8021x.py}). Como o GNS3 atribui MACs aleatórios, o gerador fixa o MAC de cada nó (esquema \texttt{02:00:<IP em hexa>}; o publicador usa o MAC de origem do GOOSE de \texttt{molde.pcap}, para o IDS ver o mesmo emissor do baseline). Um certificado válido apresentado por MAC que não é o do seu dono é rejeitado com \texttt{mac\_divergente}; depois de autenticado, um quadro com MAC de origem diferente do autenticado é descartado por regra. Com isso, um atacante autenticado só consegue publicar com o \emph{seu próprio} MAC: o C1 (clonagem do MAC do emissor legítimo) deixa de ser possível e resta o caso do C2 (MAC próprio), que o IDS de estado detecta por divergência de MAC (Tabela~\ref{tab:anterior}). O descarte do MAC forjado após a autenticação foi observado (Tabela~\ref{tab:8021x}, E4b e E5\,(iii)), e o IDS, no GNS3, sinalizou o nó autenticado com MAC próprio por divergência de MAC (E4 e E5\,(ii)).
+\paragraph{V\'inculo CN$\leftrightarrow$MAC.} Um certificado v\'alido n\~ao basta: o CN deve constar em um invent\'ario CN$\rightarrow$MAC gerado do mesmo SCD da topologia. Como o GNS3 atribui MACs aleat\'orios, o gerador fixa o MAC de cada n\'o (esquema \texttt{02:00:<IP em hexa>}; o publicador usa o MAC de origem do GOOSE de \texttt{molde.pcap}). Certificado v\'alido apresentado por MAC que n\~ao \'e do dono \'e rejeitado (\texttt{mac\_divergente}), e depois da autentica\c{c}\~ao um quadro com outro MAC \'e descartado. O atacante autenticado s\'o publica com o \emph{pr\'oprio} MAC: o C1 deixa de ser poss\'ivel e resta o C2, que o IDS detecta por diverg\^encia de MAC (Tabela~\ref{tab:reproduzida}).
 
-\paragraph{Defesa em profundidade: o que cada camada resolve e não resolve.} A Tabela~\ref{tab:camadas} resume o papel de cada camada, com a evidência usada neste artigo. O fio condutor é que nenhuma camada isolada fecha o conjunto: o 802.1X não vê a mensagem, o HMAC não decide quem se conecta e o IDS não previne.
 
-\begin{table}[ht]
+\begin{table}[!htb]
 \centering
-\caption{Defesa em profundidade: o que cada camada controla e o que não resolve (evidência entre parênteses).}\label{tab:camadas}
-\scriptsize
-\begin{tabularx}{\linewidth}{@{}p{2.1cm}XX@{}}
+\caption{Defesa em profundidade: o que cada camada controla e o que n\~ao resolve (evid\^encia entre par\^enteses).}\label{tab:camadas}
+\footnotesize
+\begin{tabularx}{\linewidth}{@{}L{2.3cm}YY@{}}
 \toprule
-Camada & Controla & Não resolve \\
+Camada & Controla & N\~ao resolve \\
 \midrule
-802.1X (EAP-TLS) $+$ \texttt{nftables} & Quem se conecta: dispositivo sem credencial, certificado inválido/revogado, certificado de outro nó com MAC clonado, MAC forjado após autenticar (Tabela~\ref{tab:8021x}) & Nó com certificado válido e MAC próprio publica GOOSE forjado (E4); sem MACsec, quadros não são cifrados nem têm integridade; janela até a reautenticação (padrão 600~s) \\
-HMAC por quadro (simulação 62351-6) & Autenticidade e integridade da mensagem contra atacante sem chave (C1: 0\%$\rightarrow$100\%, Tabela~\ref{tab:hmac}) & Chave vazada (C1 volta a 0\%); replay de quadro legítimo; flooding; gestão de chaves \\
-IDS de estado & Anomalias de $(\texttt{stNum},\texttt{sqNum})$, MAC e taxa (Tabelas~\ref{tab:anterior} e~\ref{tab:reproduzida}) & C1 sem HMAC (0\%); flooding \emph{low-and-slow}; partida a frio; apenas detecta, não previne \\
+802.1X (EAP-TLS) $+$ \texttt{nftables} & Quem se conecta: sem credencial, certificado inv\'alido/revogado, certificado de outro n\'o com MAC clonado, MAC forjado ap\'os autenticar (Tabela~\ref{tab:8021x}) & N\'o com certificado v\'alido e MAC pr\'oprio publica GOOSE forjado (E4); sem MACsec n\~ao h\'a cifra nem integridade; janela at\'e a reautentica\c{c}\~ao (600~s) \\
+HMAC por quadro (simula\c{c}\~ao 62351-6) & Autenticidade e integridade da mensagem contra atacante sem chave (C1: 0\%$\rightarrow$100\%, Tabela~\ref{tab:reproduzida}) & Chave vazada (C1 volta a 0\%); replay de quadro leg\'itimo; flooding; gest\~ao de chaves \\
+IDS de estado & Anomalias de $(\texttt{stNum},\texttt{sqNum})$, MAC e taxa (Tabela~\ref{tab:reproduzida}) & C1 sem HMAC (0\%); \emph{low-and-slow}; partida a frio; s\'o detecta, n\~ao previne \\
 \bottomrule
 \end{tabularx}
 \end{table}
-
 
 % ======================================================================
 \section{Resultados}\label{sec:resultados}
 
-\subsection{Mapeamento ataque $\times$ requisito normativo}
+\subsection{Mapeamento ataque $\times$ requisito normativo}\label{sec:normas}
 
-A Tabela~\ref{tab:normas} relaciona cada ataque \`a propriedade violada e ao que o reposit\'orio sustenta sobre as normas. A coluna do IEEE 802.1X deixou de ser apenas uma recomenda\c{c}\~ao: reflete o comportamento observado na implementa\c{c}\~ao (Se\c{c}\~ao~\ref{sec:8021x}). C\'elulas marcadas \verif{} n\~ao t\^em respaldo nos documentos do projeto e devem ser conferidas na norma antes da submiss\~ao.
+A Tabela~\ref{tab:normas} relaciona cada ataque \`a propriedade violada, ao que o reposit\'orio sustenta sobre as normas e \`a camada que mitiga ou foi observada. C\'elulas \verif{} n\~ao t\^em respaldo nos documentos do projeto. No Or\'aculo, SR 3.1, 5.1 e 7.1 resultaram n\~ao conformes nos 5 IEDs (3 de 12 crit\'erios conformes) e verificam o IED, n\~ao o \emph{switch}.
 
-\begin{table}[ht]
+\begin{table}[!htb]
 \centering
-\caption{Ataque $\times$ requisito de norma. Somente o que \'e sustentado por documentos do reposit\'orio; o restante est\'a marcado.}\label{tab:normas}
-\scriptsize
-\begin{tabularx}{\linewidth}{@{}p{1.5cm}p{1.6cm}XXXX@{}}
+\caption{Ataque $\times$ requisito de norma e camada que mitiga ou foi observada. S\'o o que \'e sustentado por documentos do reposit\'orio; o restante est\'a marcado.}\label{tab:normas}
+\footnotesize
+\begin{tabularx}{\linewidth}{@{}L{1.6cm}L{2.4cm}YY@{}}
 \toprule
-Ataque & Propriedade & IEC 61850-8-1 & IEC 62351-6 & IEC 62443-3-3 & IEEE 802.1X (comportamento observado no testbed; cl. \verif) \\
+Ataque & Propriedade violada & Requisito/norma & Camada que mitiga / observado \\
 \midrule
-A flooding & Disponibilidade & Tempo de transfer\^encia $<4$~ms; cl. \verif{} & Autentica\c{c}\~ao n\~ao impede inunda\c{c}\~ao: \verif{} & SR 7.1 (limita\c{c}\~ao de DoS), \emph{no Or\'aculo avaliado s\'o para SSH}; SR \verif{} p/ L2 & Barra inje\c{c}\~ao a partir de porta n\~ao autorizada (E1 a E3, no GNS3 e em \emph{netns}); n\~ao h\'a limite de taxa para n\'o autorizado no autenticador atual (flood de n\'o autorizado n\~ao testado) \\
-B replay & Autenticidade temporal & $(\texttt{stNum},\texttt{sqNum})$ crescentes; cl. \verif{} & \verif{} (prote\c{c}\~ao contra \emph{replay} depende do formato da norma) & SR 3.1 (integridade das comunica\c{c}\~oes), n\~ao conforme no Or\'aculo & Barra replay vindo de porta n\~ao autorizada; replay de n\'o autenticado com MAC pr\'oprio passa (E4) \\
-C1 masq.\ (MAC clonado) & Integridade / autenticidade & Gram\'atica de estado respeitada pelo quadro forjado & Assinatura/HMAC do quadro (cl. \verif{}); mitiga\c{c}\~ao definitiva segundo o reposit\'orio & SR 3.1, n\~ao conforme no Or\'aculo (``sem 62351-6'') & Barra clonagem de MAC em porta n\~ao autenticada (E1), certificado de outro n\'o com MAC clonado (E3) e MAC forjado ap\'os autenticar (E4); \emph{n\~ao} barra n\'o com certificado v\'alido e MAC pr\'oprio (E4) \\
-C2 masq.\ (MAC pr\'oprio) & Integridade / autenticidade & idem & idem & SR 3.1 & N\~ao barra n\'o com certificado v\'alido e MAC pr\'oprio: autentica o dispositivo, n\~ao a mensagem (E4) \\
-D suppression & Disponibilidade (DoS l\'ogico) & Descarte de $(\texttt{stNum},\texttt{sqNum})$ $\le$ \'ultimo aceito & \verif{} & SR 3.1 / SR 7.1 \verif{} & Barra a partir de porta n\~ao autorizada; de n\'o autorizado n\~ao barra (n\~ao testado) \\
+A flooding & Disponibilidade & 61850-8-1: transfer\^encia $<4$~ms (cl. \verif); 62443-3-3 SR 7.1, no Or\'aculo s\'o para SSH; 62351-6: \verif & IDS por taxa; 802.1X barra inje\c{c}\~ao de porta n\~ao autorizada (E1--E3); flood de n\'o autorizado n\~ao testado \\
+B replay & Autenticidade temporal & $(\texttt{stNum},\texttt{sqNum})$ crescentes (cl. \verif); SR 3.1, n\~ao conforme no Or\'aculo; 62351-6: \verif & IDS detecta; HMAC n\~ao impede; 802.1X barra de porta n\~ao autorizada, mas passa com MAC pr\'oprio (E4) \\
+C1 masq., MAC clonado & Integridade e autenticidade & 62351-6: assinatura/HMAC do quadro (cl. \verif); SR 3.1, n\~ao conforme no Or\'aculo & HMAC (0\%$\rightarrow$100\%); 802.1X barra clonagem (E1, E3, E4b); n\~ao barra certificado v\'alido com MAC pr\'oprio (E4) \\
+C2 masq., MAC pr\'oprio & Integridade e autenticidade & idem & IDS detecta por MAC (100\%); 802.1X n\~ao barra (E4) \\
+D suppression & Disponibilidade (DoS l\'ogico) & Descarte de $(\texttt{stNum},\texttt{sqNum})$ $\le$ \'ultimo aceito; SR 3.1/7.1 \verif; 62351-6: \verif & IDS ($\Delta\texttt{stNum}>50$); 802.1X barra de porta n\~ao autorizada; de n\'o autorizado n\~ao testado \\
 \bottomrule
 \end{tabularx}
 \end{table}
 
-\noindent\textbf{Obs.:} no Or\'aculo, SR 3.1 (integridade de mensagens L2), SR 5.1 (VLAN) e SR 7.1 (anti-DoS por \texttt{MaxStartups} do SSH) resultaram n\~ao conformes nos 5 IEDs; 3 de 12 crit\'erios foram conformes. O SR 5.1/7.1 do Or\'aculo verifica o IED, n\~ao o \emph{switch}. A coluna do 802.1X descreve o que a implementa\c{c}\~ao do testbed fez nos cen\'arios da Tabela~\ref{tab:8021x}; as cl\'ausulas da IEEE 802.1X e da IEC 62351-6 que a sustentam continuam \verif.
+\subsection{Campanha do IDS passivo ($N=600$) e reprodu\c{c}\~ao offline}\label{sec:reproduzida}
 
-\subsection{Campanha do IDS passivo ($N=600$, 4.\textordmasculine{} Marco)}
+Na campanha anterior, o IDS detectou 400 das 500 execu\c{c}\~oes de ataque; a falha est\'a em C1 (0/100) e T0 n\~ao teve falso positivo (valores n\~ao reconfer\'iveis: dados brutos n\~ao preservados). A reprodu\c{c}\~ao offline (Tabela~\ref{tab:reproduzida}, Figura~\ref{fig:tpr}) \textbf{coincide exatamente} nas detec\c{c}\~oes sem HMAC. Como o tr\'afego \'e sint\'etico e determin\'istico por par (modo, par\^ametro), as taxas saem em 0\% ou 100\%, e o intervalo de Wilson ($N=100$) quantifica a incerteza: $[96{,}3\%;100\%]$ para 100/100 e $[0\%;3{,}7\%]$ para 0/100.
 
-A Tabela~\ref{tab:anterior} reproduz os resultados consolidados da \textbf{campanha anterior} (4.\textordmasculine{} Marco; 6 cen\'arios $\times$ 100 repeti\c{c}\~oes). Seu script n\~ao foi preservado; a vers\~ao reconstru\'ida est\'a na Se\c{c}\~ao~\ref{sec:reproduzida}.
-
-\begin{table}[ht]
+\begin{table}[!htb]
 \centering
-\caption{\textbf{Campanha anterior (4.\textordmasculine{} Marco)}, $N=100$ por cen\'ario; lat\^encia m\'edia $\pm$ desvio-padr\~ao por quadro, medida em outra m\'aquina e com outra metodologia (n\~ao compar\'avel em valor absoluto com a Tabela~\ref{tab:reproduzida}).}\label{tab:anterior}
-\small
-\begin{tabular}{@{}p{3.6cm}p{3.6cm}rrr@{}}
-\toprule
-Cen\'ario & Varia\c{c}\~ao param\'etrica & Detec. & Taxa & Lat.\ ($\mu$s) \\
-\midrule
-T0 --- base leg\'itimo & \emph{heartbeat} 1~Hz + 2 rajadas (5~pps) & 0/100 & 0,0\% (FPR) & $4{,}29\pm1{,}34$ \\
-A --- Flooding & $f\in\{50,100,250,500,1000,2000\}$~pps & 100/100 & 100,0\% (TPR) & $4{,}49\pm1{,}55$ \\
-B --- Replay & $\Delta t\in[0{,}5;10]$~s & 100/100 & 100,0\% (TPR) & $5{,}56\pm0{,}83$ \\
-C1 --- Masq.\ (MAC clonado) & muta\c{c}\~ao \texttt{0x83}, $st{+}1$ & 0/100 & 0,0\% (TPR) & $4{,}03\pm0{,}31$ \\
-C2 --- Masq.\ (MAC pr\'oprio) & muta\c{c}\~ao \texttt{0x83}, $st{+}1$ & 100/100 & 100,0\% (TPR) & $5{,}07\pm1{,}07$ \\
-D --- Suppression & $\Delta st\in\{60,100,250,500,1000,5000\}$ & 100/100 & 100,0\% (TPR) & $5{,}84\pm1{,}71$ \\
-\bottomrule
-\end{tabular}
-\end{table}
-
-Nos cinco cen\'arios de ataque o IDS detectou 400 das 500 execu\c{c}\~oes (80\%); a falha concentra-se integralmente em C1, e o cen\'ario de base n\~ao gerou falsos positivos. Esses valores foram copiados do material do 4.\textordmasculine{} Marco e n\~ao podem ser reconferidos contra os dados brutos, que n\~ao foram preservados; a confirma\c{c}\~ao independente vem da campanha reproduzida abaixo.
-
-\subsection{Campanha reproduzida e mitiga\c{c}\~ao por HMAC (offline, $N=100$ por cen\'ario e modo)}\label{sec:reproduzida}
-
-A Tabela~\ref{tab:reproduzida} e a Figura~\ref{fig:tpr} trazem a campanha reconstru\'ida nos tr\^es modos. As detec\c{c}\~oes sem HMAC \textbf{coincidem exatamente} com a campanha anterior (400/500 nos ataques, 0/100 no cen\'ario de base, falha apenas em C1). Como o tr\'afego \'e sint\'etico e determin\'istico para cada par (modo, par\^ametro), as taxas saem em 0\% ou 100\%, e o intervalo de Wilson ($N=100$) \'e o que quantifica a incerteza: $[96{,}3\%;100\%]$ para 100/100 e $[0\%;3{,}7\%]$ para 0/100.
-
-\begin{table}[ht]
-\centering
-\caption{\textbf{Campanha reproduzida (offline)}: detec\c{c}\~oes em $N=100$ por cen\'ario e modo (TPR; FPR em T0). IC95\% de Wilson: $[96{,}3\%;100\%]$ para 100/100 e $[0\%;3{,}7\%]$ para 0/100. Entre par\^enteses, os tipos de alerta.}\label{tab:reproduzida}
-\small
-\begin{tabular}{@{}p{3.2cm}p{2.1cm}p{2.9cm}p{2.5cm}@{}}
-\toprule
-Cen\'ario & Sem HMAC & HMAC, atacante sem chave & HMAC, chave vazada \\
-\midrule
-T0 --- base (FPR) & 0/100 & 0/100 & 0/100 \\
-A --- Flooding & 100/100 & 100/100 (\texttt{auth\_fail}, \texttt{flood\_start}) & 100/100 \\
-B --- Replay & 100/100 & 100/100 (\texttt{replay}) & 100/100 \\
-\textbf{C1 --- Masq.\ MAC clonado} & \textbf{0/100} & \textbf{100/100} (\texttt{auth\_fail}) & \textbf{0/100} \\
-C2 --- Masq.\ MAC pr\'oprio & 100/100 & 100/100 (\texttt{auth\_fail}) & 100/100 (\texttt{masquerade}) \\
-D --- Suppression & 100/100 & 100/100 (\texttt{auth\_fail}) & 100/100 \\
-\bottomrule
-\end{tabular}
-\end{table}
-
-\figbench{tpr_por_cenario}{Taxa de detec\c{c}\~ao (TPR; FPR em T0) por cen\'ario e modo, na campanha reproduzida. O C1 \'e o \'unico cen\'ario em que o HMAC muda o resultado, e s\'o enquanto a chave n\~ao vaza.}{fig:tpr}
-
-\paragraph{C1 com HMAC (Tabela~\ref{tab:hmac}).} O atacante sem a chave n\~ao produz tag v\'alida: todos os 100 quadros forjados de C1 geram \texttt{auth\_fail}, e a detec\c{c}\~ao vai de 0/100 para 100/100 (IC95\% $[96{,}3\%;100\%]$). Se o atacante possui a chave, C1 volta a 0/100 (IC95\% $[0\%;3{,}7\%]$): o quadro assinado \'e indistingu\'ivel de um evento leg\'itimo, o que \'e o limite da mitiga\c{c}\~ao. O tr\'afego leg\'itimo assinado n\~ao gerou falso positivo (0/100). No replay (B), o quadro reenviado mant\'em o HMAC v\'alido; a detec\c{c}\~ao (100/100, alerta \texttt{replay}) vem apenas da checagem de $(\texttt{stNum},\texttt{sqNum})$, ou seja, o HMAC n\~ao substitui o IDS de estado. Com chave vazada, C2 (MAC distinto) \'e pego pelo alerta \texttt{masquerade}, n\~ao pela autentica\c{c}\~ao.
-
-\begin{table}[ht]
-\centering
-\caption{C1 com autentica\c{c}\~ao HMAC (simula\c{c}\~ao no estilo IEC 62351-6), $N=100$. Lat\^encia por quadro na campanha reproduzida (m\'edia $\pm$ desvio-padr\~ao): \texttt{process} \'e o IDS; \texttt{verify} \'e a verifica\c{c}\~ao do HMAC. Valores absolutos variam entre execu\c{c}\~oes; interpretar a ordem de grandeza e as diferen\c{c}as relativas.}\label{tab:hmac}
+\caption{\textbf{Campanha reproduzida (offline)}: detec\c{c}\~oes em $N=100$ por cen\'ario e modo (TPR; FPR em T0). Entre par\^enteses, os tipos de alerta.}\label{tab:reproduzida}
 \footnotesize
-\begin{tabular}{@{}p{3.3cm}rrrr@{}}
+\begin{tabularx}{\linewidth}{@{}L{3.4cm}YYY@{}}
 \toprule
-Configura\c{c}\~ao & Detec. & Taxa [IC95\%] & \texttt{process} ($\mu$s) & \texttt{verify} ($\mu$s) \\
+Cen\'ario & Sem HMAC & HMAC, sem chave & HMAC, chave vazada \\
 \midrule
-C1 sem HMAC & 0/100 & 0,0\% [0,0; 3,7] & $5{,}56\pm3{,}78$ & --- \\
-C1, HMAC, atacante sem chave & 100/100 & 100,0\% [96,3; 100,0] & $4{,}97\pm3{,}40$ & $2{,}76\pm2{,}45$ \\
-C1, HMAC, chave vazada & 0/100 & 0,0\% [0,0; 3,7] & $8{,}56\pm0{,}62$ & $16{,}22\pm2{,}06$ \\
-\midrule
-T0 leg\'itimo, sem HMAC (FPR) & 0/100 & 0,0\% [0,0; 3,7] & $11{,}62\pm1{,}68$ & --- \\
-T0 leg\'itimo, com HMAC (FPR) & 0/100 & 0,0\% [0,0; 3,7] & $5{,}92\pm0{,}59$ & $11{,}39\pm1{,}06$ \\
-\midrule
-\multicolumn{5}{@{}p{0.95\linewidth}@{}}{Microbenchmark isolado (20\,000 chamadas): \texttt{sign} mediana $11{,}0~\mu$s (P99 $26{,}3$); \texttt{verify} mediana $11{,}5~\mu$s (P99 $35{,}3$).} \\
+T0: base (FPR) & 0/100 & 0/100 & 0/100 \\
+A: Flooding & 100/100 & 100/100 (\texttt{auth\_fail}, \texttt{flood\_start}) & 100/100 \\
+B: Replay & 100/100 & 100/100 (\texttt{replay}) & 100/100 \\
+\textbf{C1: Masq., MAC clonado} & \textbf{0/100} & \textbf{100/100} (\texttt{auth\_fail}) & \textbf{0/100} \\
+C2: Masq., MAC pr\'oprio & 100/100 & 100/100 (\texttt{auth\_fail}) & 100/100 (\texttt{masquerade}) \\
+D: Suppression & 100/100 & 100/100 (\texttt{auth\_fail}) & 100/100 \\
 \bottomrule
-\end{tabular}
+\end{tabularx}
 \end{table}
 
-\paragraph{Custo de lat\^encia.} O custo realista do HMAC \'e o da verifica\c{c}\~ao de quadros \emph{com} tag: cerca de 11 a 21~$\mu$s por quadro assinado (T0, replay e chave vazada) e, no microbenchmark, mediana de 11,5~$\mu$s para \texttt{verify}. Isso \'e da mesma ordem que o pr\'oprio processamento do IDS (alguns a ~$10~\mu$s) e leva a lat\^encia total por quadro assinado a algo entre ~$17$ e ~$38~\mu$s (Figura~\ref{fig:latencia}), isto \'e, mais de duas ordens de grandeza abaixo do limite de 4000~$\mu$s. Cuidados na leitura: (i)~quadros sem tag (atacante sem chave) saem da verifica\c{c}\~ao imediatamente e s\~ao \emph{mais baratos} (2 a 3~$\mu$s), n\~ao representando o custo normal; (ii)~a lat\^encia de \texttt{process} varia entre modos por ru\'ido de medi\c{c}\~ao (em T0 sem HMAC ela \'e at\'e maior que com HMAC), de modo que s\'o o custo de \texttt{verify} \'e interpret\'avel; (iii)~trata-se de Python em m\'aquina compartilhada, sem IED real; o custo em hardware embarcado ou com acelera\c{c}\~ao criptogr\'afica n\~ao foi medido.
+\figbench[0.52]{tpr_por_cenario}{Taxa de detec\c{c}\~ao (TPR; FPR em T0) por cen\'ario e modo, na campanha reproduzida. O C1 \'e o \'unico cen\'ario em que o HMAC muda o resultado, e s\'o enquanto a chave n\~ao vaza.}{fig:tpr}
 
-\figbench{latencia_por_cenario}{Lat\^encia total por quadro (\texttt{process} $+$ \texttt{verify}, escala log) por cen\'ario e modo na campanha reproduzida, contra o limite de 4000~$\mu$s.}{fig:latencia}
+\subsection{Mitiga\c{c}\~ao por HMAC e custo de lat\^encia}
+
+Sem a chave, o atacante n\~ao produz tag v\'alida: os 100 quadros de C1 geram \texttt{auth\_fail} e a detec\c{c}\~ao vai de 0/100 a 100/100 (Tabela~\ref{tab:reproduzida}; IC95\% de Wilson $[96{,}3\%;100\%]$). Com a chave, C1 volta a 0/100 ($[0\%;3{,}7\%]$): o quadro assinado \'e indistingu\'ivel de um evento leg\'itimo, o limite da mitiga\c{c}\~ao. O tr\'afego leg\'itimo assinado n\~ao gerou falso positivo (0/100). No replay (B) a tag continua v\'alida e s\'o $(\texttt{stNum},\texttt{sqNum})$ o detecta: o HMAC n\~ao substitui o IDS de estado. Com chave vazada, C2 \'e pego por \texttt{masquerade}.
+
+\paragraph{Custo de lat\^encia.} O custo realista \'e o da verifica\c{c}\~ao de quadros \emph{com} tag: na campanha, \texttt{verify} custou $11{,}39\pm1{,}06~\mu$s no tr\'afego leg\'itimo assinado e $16{,}22\pm2{,}06~\mu$s com chave vazada (contra $2{,}76\pm2{,}45~\mu$s para quadros sem tag, que saem cedo); no microbenchmark (20\,000 chamadas), \texttt{sign} tem mediana de $11{,}0~\mu$s (P99 $26{,}3$) e \texttt{verify} de $11{,}5~\mu$s (P99 $35{,}3$). O total fica em ~17--38~$\mu$s por quadro assinado (Figura~\ref{fig:latencia}), mais de duas ordens de grandeza abaixo de 4000~$\mu$s. O \texttt{process} do IDS varia por ru\'ido entre modos (em T0 sem HMAC \'e at\'e maior que com HMAC), e s\'o \texttt{verify} \'e interpret\'avel; tudo \'e Python em m\'aquina compartilhada, sem IED real.
+
+\figbench[0.52]{latencia_por_cenario}{Lat\^encia total por quadro (\texttt{process} $+$ \texttt{verify}, escala log) por cen\'ario e modo na campanha reproduzida, contra o limite de 4000~$\mu$s.}{fig:latencia}
 
 \subsection{Sensibilidade do limiar de flooding}
 
-A Tabela~\ref{tab:limiar} e a Figura~\ref{fig:limiar} mostram que a detec\c{c}\~ao de flooding \'e um degrau em torno do limiar: TPR de 0\% abaixo dele, entre 72\% e 82\% na taxa igual ao limiar (atribu\'imos o valor intermedi\'ario \`a varia\c{c}\~ao de $\pm10\%$ nos intervalos, e n\~ao a uma propriedade do detector) e 100\% logo acima. Com o limiar padr\~ao de 20~pkts/s, ataques de 5 a 18~pkts/s ($N=100$ cada) n\~ao s\~ao detectados: um \emph{flooding low-and-slow} abaixo do limiar passa despercebido pela checagem de taxa. O FPR do baseline \'e um degrau an\'alogo: com limiar 20, rajadas leg\'itimas de at\'e 15~pkts/s d\~ao 0\% e de 30~pkts/s d\~ao 100\%; o limiar 10 j\'a d\'a 77\% a 10~pkts/s; o limiar 80 n\~ao tem falso positivo at\'e 60~pkts/s, mas s\'o detecta ataques a partir de 100~pkts/s (78\% a 80~pkts/s). Ou seja, n\~ao h\'a limiar que detecte ataques lentos sem gerar falsos positivos sob rajadas leg\'itimas da mesma magnitude. As rajadas leg\'itimas (5 a 60~pkts/s) s\~ao uma carga \emph{sint\'etica assumida}, n\~ao medida em subesta\c{c}\~ao real.
+A detec\c{c}\~ao de flooding \'e um degrau em torno do limiar (Figura~\ref{fig:limiar}): TPR 0\% abaixo dele, 72\% a 82\% na taxa igual ao limiar (variação de $\pm10\%$ nos intervalos) e 100\% acima; com o limiar 20~pkts/s, ataques de 5 a 18~pkts/s passam (\emph{low-and-slow}). O FPR \'e um degrau an\'alogo: com limiar 20, rajadas leg\'itimas de at\'e 15~pkts/s d\~ao 0\% e de 30~pkts/s, 100\%; o limiar 80 n\~ao tem falso positivo at\'e 60~pkts/s, mas s\'o detecta ataques a partir de 100~pkts/s. N\~ao h\'a limiar que detecte ataques lentos sem falsos positivos sob rajadas leg\'itimas equivalentes (rajadas de 5 a 60~pkts/s: carga \emph{sint\'etica assumida}).
 
-\begin{table}[ht]
+\figbench[0.4]{sensibilidade_limiar}{Sensibilidade do limiar de flooding: (a)~TPR $\times$ taxa do ataque, com a regi\~ao \emph{low-and-slow} sombreada; (b)~FPR do baseline $\times$ taxa da rajada leg\'itima.}{fig:limiar}
+
+\subsection{Valida\c{c}\~ao do 802.1X: GNS3 real e \emph{network namespaces} (cen\'arios E0--E5)}\label{sec:val8021x}
+
+\paragraph{M\'etodo no GNS3.} Em 20/11/2026, no GNS3 2.2.61, abrimos o projeto \texttt{subestacao\_8021x} (portas \texttt{eth0} a \texttt{eth5}: \texttt{ubuntu-ied-1}, \texttt{ubuntu-ied-2}, \texttt{oraculo-1}, \texttt{ids-1}, \texttt{publicador-1}, \texttt{atacante-1}), com a PKI instalada por \texttt{pki/instalar\_no\_gns3.py}. As fontes s\~ao o log JSONL do autenticador, os alertas do IDS e um \texttt{tcpdump}, extra\'idos dos n\'os (\texttt{docker cp}), e sa\'idas de console coladas pelo operador (\texttt{ping}, \texttt{nft list set}), em \texttt{autenticador-8021x/evidencias/gns3/}; o roteiro est\'a em \texttt{changelog/guia-testes-5marco.md}.
+
+\paragraph{M\'etodo em \emph{netns}.} O \texttt{teste\_netns.sh} roda em um cont\^einer Docker \texttt{\dd{}privileged} com \texttt{hostapd}, \texttt{wpa\_supplicant} e \texttt{nftables} \emph{reais}; 9 clientes (\emph{network namespaces} ligados por pares veth) e 30 verifica\c{c}\~oes por execu\c{c}\~ao. Os logs somam 11 execu\c{c}\~oes: 8 com 30 aprovadas e 0 falhas; 2 com 29 (roteiro anterior); 1 com 28 e 2 falhas, anterior \`a corre\c{c}\~ao do supplicant (Se\c{c}\~ao~\ref{sec:discussao}). O supplicant das 4 imagens tamb\'em autentica (16 verifica\c{c}\~oes). As execu\c{c}\~oes seguiram corre\c{c}\~oes de c\'odigo e n\~ao s\~ao amostras independentes: n\~ao calculamos taxas nem intervalos; o \emph{netns} n\~ao tem a lat\^encia de um enlace emulado.
+
+\paragraph{Resultados.} A Tabela~\ref{tab:8021x} traz os cen\'arios, a Figura~\ref{fig:camadas} a camada que atuou e a Figura~\ref{fig:e1} a evid\^encia do E1. Sem 802.1X (E0) o \texttt{ping} do atacante passou e o IDS n\~ao alertou; com ele, E1 a E3 terminaram em \texttt{ping} 0/3. No E4 o atacante com certificado v\'alido e MAC pr\'oprio autenticou e o IDS emitiu apenas \texttt{MASQUERADE}. Com o MAC do publicador (E4b, E5\,(iii)) o \texttt{nftables} descartou o par; no E5 o IDS (\texttt{\dd{}auth}) acusou \texttt{auth\_fail} sem a chave e \texttt{masquerade} com a chave vazada: tr\^es camadas ativas juntas.
+
+\begin{table}[!htb]
 \centering
-\caption{Sensibilidade do limiar de flooding ($N=100$ por c\'elula). Esquerda: TPR (\%) por taxa do ataque; direita: FPR (\%) do cen\'ario de base por taxa da rajada leg\'itima. Em negrito, o limiar padr\~ao.}\label{tab:limiar}
-\small
-\begin{tabular}{@{}r|rrrrr|rrrr@{}}
-\toprule
- & \multicolumn{5}{c|}{TPR por taxa do ataque (pkts/s)} & \multicolumn{4}{c}{FPR por rajada leg\'itima (pkts/s)} \\
-Limiar & 10 & 20 & 40 & 80 & 100 & 10 & 20 & 40 & 60 \\
-\midrule
-10 & 72 & 100 & 100 & 100 & 100 & 77 & 100 & 100 & 100 \\
-\textbf{20} & 0 & 82 & 100 & 100 & 100 & 0 & 73 & 100 & 100 \\
-40 & 0 & 0 & 81 & 100 & 100 & 0 & 0 & 73 & 100 \\
-80 & 0 & 0 & 0 & 78 & 100 & 0 & 0 & 0 & 0 \\
-\bottomrule
-\end{tabular}
-\end{table}
-
-\figbench{sensibilidade_limiar}{Sensibilidade do limiar de flooding: (a)~TPR $\times$ taxa do ataque, com a regi\~ao \emph{low-and-slow} sombreada; (b)~FPR do baseline $\times$ taxa da rajada leg\'itima.}{fig:limiar}
-
-\subsection{Validação do 802.1X: GNS3 real e \emph{network namespaces} (cenários E0--E5)}\label{sec:val8021x}
-
-\paragraph{Método no GNS3.} Em 20/11/2026, no GNS3 2.2.61, abrimos o projeto \texttt{subestacao\_8021x} (gerado por \texttt{gerar\_topologia\_gns3.py --8021x}): 7 nós Docker ligados diretamente ao \texttt{autenticador-8021x} (\texttt{hostapd} \emph{wired}, um processo por porta, \texttt{nftables} na família \emph{bridge}), com a PKI de laboratório instalada por \texttt{pki/instalar\_no\_gns3.py}. As portas são: \texttt{eth0} \texttt{ubuntu-ied-1}, \texttt{eth1} \texttt{ubuntu-ied-2}, \texttt{eth2} \texttt{oraculo-1}, \texttt{eth3} \texttt{ids-1}, \texttt{eth4} \texttt{publicador-1} e \texttt{eth5} \texttt{atacante-1}. As fontes são o log JSONL do autenticador, os alertas do IDS e um \texttt{tcpdump} extraídos dos nós (\texttt{docker cp}), e saídas de console coladas pelo operador (\texttt{ping}, \texttt{nft list set}); os arquivos estão em \texttt{autenticador-8021x/evidencias/gns3/}. O roteiro é o de \texttt{changelog/guia-testes-5marco.md}.
-
-\paragraph{Método em \emph{netns}.} Em paralelo, o teste \texttt{teste\_netns.sh} roda em um contêiner Docker \texttt{--privileged} com \texttt{hostapd}, \texttt{wpa\_supplicant} e \texttt{nftables} \emph{reais}; os 9 clientes são \emph{network namespaces} ligados por pares veth à ponte do contêiner (sem passar pela ponte do \emph{host}, que descartaria o EAPOL). Cada execução faz 30 verificações (alcançabilidade por \texttt{ping} e conferência dos eventos \texttt{auth\_aceita}/\texttt{auth\_rejeitada}/\texttt{quadro\_descartado} do JSONL). Um teste à parte (\texttt{teste\_imagens\_clientes.sh}) confirma que o supplicant embutido em cada uma das quatro imagens (\texttt{ubuntu-ied}, \texttt{oraculo}, \texttt{ids}, \texttt{atacante}) autentica contra o autenticador (uma execução registrada, 16 verificações, 0 falhas). O \emph{netns} não tem \emph{ubridge}, volumes persistentes do GNS3 nem a latência de um enlace emulado.
-
-\paragraph{Execuções registradas em \emph{netns}.} Os logs em \texttt{autenticador-8021x/evidencias/} somam 11 execuções do \texttt{teste\_netns.sh}: 8 com 30 verificações aprovadas e 0 falhas; 2 anteriores com 29 aprovadas e 0 falhas (versão do roteiro sem a verificação ``\texttt{p5} (MAC clonado) nunca chegou a ser autorizado''); e 1 com 28 aprovadas e 2 falhas (reautenticação do cliente 1 após a queda de link e alcançabilidade do cliente 1 após a revogação em operação), anterior à correção do supplicant (Seção~\ref{sec:discussao}). As execuções foram repetidas após correções de código; não são amostras independentes, e por isso não calculamos taxas ou intervalos de confiança.
-
-\paragraph{Resultados.} A Tabela~\ref{tab:8021x} traz os cenários com a coluna ``Ambiente''. A Figura~\ref{fig:camadas} resume qual camada atuou em cada cenário; a Figura~\ref{fig:gns3topo} mostra a topologia e a Figura~\ref{fig:e1} traz a evidência do console no E1. No GNS3, a base registrou 5 eventos \texttt{auth\_aceita} (\texttt{ubuntu-ied-1}, \texttt{ubuntu-ied-2}, \texttt{oraculo-1}, \texttt{ids-1}, \texttt{publicador-1}) e nenhum para o \texttt{atacante-1}; no \texttt{ubuntu-ied-1} o PAE ficou \texttt{AUTHENTICATED} com EAP-TLS (método 13) e o \texttt{ping} para o \texttt{ubuntu-ied-2} deu 3/3, RTT médio de 0,519~ms. Sem 802.1X (E0), o \texttt{ping} do atacante deu 3/3 (0,468~ms), e o IDS não alertou. Com o 802.1X ativo, E1 (sem certificado, MAC do publicador), E2 (certificado revogado, \texttt{cn=revogado-1}, serial \texttt{100B}) e E3 (certificado de outro nó com o MAC do \texttt{ubuntu-ied-1}) terminaram com \texttt{ping} 0/3. Em E4 o atacante com certificado válido e MAC próprio autenticou, o GOOSE forjado chegou ao \texttt{ids-1} (o \texttt{tcpdump} mostra origem \texttt{02:00:c0:a8:0a:28}) e o IDS emitiu apenas \texttt{MASQUERADE} (``MAC mudou de \texttt{00:30:a7:01:b3:16} para \texttt{02:00:c0:a8:0a:28}''). Em E4b, com o MAC de origem do publicador, o \texttt{nftables} contou 5 pacotes e 1760 bytes no par \texttt{eth5 . 00:30:a7:01:b3:16}. No E5, (i)~sem a chave HMAC o IDS (\texttt{--auth}) emitiu \texttt{auth\_fail}; (ii)~com a chave vazada e MAC próprio, \texttt{masquerade}; (iii)~com a chave vazada e o MAC do publicador, nenhum alerta novo no IDS e 5 pacotes e 1930 bytes descartados no mesmo par. O E5 foi, assim, observado nas três camadas ativas juntas no GNS3.
-
-\begin{table}[ht]
-\centering
-\caption{Validação do 802.1X, cenários E0--E5. ``GNS3'': topologia \texttt{subestacao\_8021x}, \textbf{cada cenário executado uma vez}; fonte \texttt{autenticador-8021x/evidencias/gns3/}. ``netns'': \texttt{teste\_netns-20261120-164423.log} (30 aprovadas, 0 falhas), \texttt{evidencias/}. Latência e sobrecarga de autenticação não foram medidas em nenhum ambiente.}\label{tab:8021x}
+\caption{Valida\c{c}\~ao do 802.1X, cen\'arios E0--E5. ``GNS3'': \textbf{cada cen\'ario executado uma vez}; fonte: \texttt{autenticador-8021x/evidencias/gns3/} (eventos JSONL, alertas do IDS, \texttt{tcpdump} e sa\'ida do \texttt{nft}). ``netns'': \texttt{teste\_netns-20261120-164423.log} (30 aprovadas, 0 falhas). Lat\^encia e sobrecarga de autentica\c{c}\~ao n\~ao foram medidas.}\label{tab:8021x}
 \scriptsize
-\begin{tabularx}{\linewidth}{@{}p{2.3cm}p{1.2cm}p{1.9cm}Xp{1.7cm}@{}}
+\begin{tabularx}{\linewidth}{@{}L{3.0cm}L{1.4cm}L{2.0cm}Y@{}}
 \toprule
-Cenário & Ambiente & Camada que barra & Resultado observado & Fonte \\
+Cen\'ario & Ambiente & Camada que barra & Resultado \\
 \midrule
-Base (802.1X ativo) & GNS3 & --- & 5 \texttt{auth\_aceita}, nenhuma para o \texttt{atacante-1}; PAE \texttt{AUTHENTICATED}, EAP-TLS; \texttt{ping} \texttt{ied-1}$\rightarrow$\texttt{ied-2} 3/3, RTT médio 0,519~ms & eventos JSONL \\
-E0 --- sem 802.1X (\texttt{autenticador-ctl desativar}) & GNS3; netns & Nenhuma & GNS3: \texttt{ping} do atacante 3/3 (0,468~ms), sem alerta do IDS (a porta aberta é provada pelo \texttt{ping}). Netns: cliente sem credencial alcança outro nó; ao reativar, volta a ser bloqueado & \texttt{alertas\_e0}; \texttt{teste\_netns} \\
-E1 --- sem certificado, MAC do publicador & GNS3; netns & 802.1X (\texttt{nftables}) & GNS3: \texttt{ping} 0/3 (\emph{Destination Host Unreachable}); \texttt{quadro\_descartado} em \texttt{eth5}, motivo \texttt{origem\_nao\_autorizada}; nenhum alerta no IDS. Netns: idem; sem \texttt{auth\_rejeitada}, pois não fala EAPOL & \texttt{alertas\_e1}; eventos \\
-E2 --- certificado revogado & GNS3; netns & 802.1X (TLS $+$ CRL) & GNS3: supplicant ``porta NÃO autorizada após 15~s''; \texttt{auth\_rejeitada}, \texttt{cn=revogado-1}, serial \texttt{100B}, \texttt{certificado\_revogado}; \texttt{ping} 0/3 & eventos \\
-E3 --- certificado válido de outro nó, MAC do \texttt{ubuntu-ied-1} & GNS3; netns & 802.1X (vínculo CN$\leftrightarrow$MAC) & GNS3: TLS aceito (o supplicant imprime AUTORIZADA), mas \texttt{auth\_rejeitada} \texttt{mac\_divergente} (esperado \texttt{02:00:c0:a8:0a:28}); par fora de \texttt{autorizados}; \texttt{ping} 0/3 & eventos \\
-E4 --- certificado válido, MAC próprio & GNS3; netns & IDS (só heurística de MAC) & GNS3: autentica; GOOSE forjado chega ao \texttt{ids-1}; alerta \texttt{MASQUERADE}. Netns: autentica e alcança o IED~2 (não executa IDS) & \texttt{tcpdump\_e4}; \texttt{alertas\_e4} \\
-E4b --- certificado válido, MAC do publicador & GNS3; netns & 802.1X (par porta$+$MAC) & GNS3: \texttt{nft list set descartados}: \texttt{eth5 . 00:30:a7:01:b3:16}, 5 pacotes, 1760 bytes. Netns: MAC forjado após autenticar é descartado; volta a alcançar com o MAC autenticado & saída do \texttt{nft} (console) \\
-E5\,(i) --- sem chave HMAC, MAC próprio & GNS3 & IDS \texttt{--auth} & \texttt{auth\_fail} & \texttt{alertas\_e5} \\
-E5\,(ii) --- chave vazada, MAC próprio & GNS3 & IDS (MAC) & \texttt{masquerade} & \texttt{alertas\_e5} \\
-E5\,(iii) --- chave vazada, MAC do publicador & GNS3 & 802.1X (par porta$+$MAC) & Nenhum alerta novo no IDS; \texttt{nft}: \texttt{eth5 . 00:30:a7:01:b3:16}, 5 pacotes, 1930 bytes & \texttt{alertas\_e5} (2 linhas); \texttt{nft} \\
+E0: sem 802.1X & GNS3, netns & Nenhuma & \texttt{ping} do atacante 3/3 (0,468~ms); sem alerta do IDS. (Base com 802.1X: 5 \texttt{auth\_aceita}, \texttt{ping} IED~1$\rightarrow$IED~2 3/3, 0,519~ms) \\
+E1: sem certificado, MAC do publicador & GNS3, netns & 802.1X (\texttt{nftables}) & \texttt{ping} 0/3; \texttt{quadro\_descartado} em \texttt{eth5} (\texttt{origem\_nao\_autorizada}); sem alerta no IDS \\
+E2: certificado revogado & GNS3, netns & 802.1X (TLS $+$ CRL) & \texttt{auth\_rejeitada} (\texttt{certificado\_revogado}, serial \texttt{100B}); \texttt{ping} 0/3 \\
+E3: certificado v\'alido de outro n\'o, MAC do IED~1 & GNS3, netns & 802.1X (v\'inculo CN$\leftrightarrow$MAC) & TLS aceito, mas \texttt{auth\_rejeitada} (\texttt{mac\_divergente}); \texttt{ping} 0/3 \\
+E4: certificado v\'alido, MAC pr\'oprio & GNS3, netns & IDS (s\'o MAC) & Autentica; GOOSE forjado chega ao \texttt{ids-1}; alerta \texttt{MASQUERADE} (MAC mudou de \texttt{00:30:a7:01:b3:16} para \texttt{02:00:c0:a8:0a:28}) \\
+E4b: certificado v\'alido, MAC do publicador & GNS3, netns & 802.1X (par porta$+$MAC) & \texttt{nft}: \texttt{eth5 . 00:30:a7:01:b3:16}, 5 pacotes, 1760 bytes descartados \\
+E5\,(i): sem chave HMAC, MAC pr\'oprio & GNS3 & IDS \texttt{\dd{}auth} & \texttt{auth\_fail} \\
+E5\,(ii): chave vazada, MAC pr\'oprio & GNS3 & IDS (MAC) & \texttt{masquerade} \\
+E5\,(iii): chave vazada, MAC do publicador & GNS3 & 802.1X (par porta$+$MAC) & Nenhum alerta novo; \texttt{nft}: 5 pacotes, 1930 bytes descartados \\
 \midrule
-E2b --- revogação em operação & netns & 802.1X (CRL) & Após recarregar a CRL e reautenticar, o nó comprometido é rejeitado e o IED~1 perde o acesso a ele; o IED~1 (não revogado) segue alcançando o outro nó. \textbf{Não executado no GNS3} & \texttt{teste\_netns}, ``CRL'' \\
-Outros motivos & netns & 802.1X & CA falsa: \texttt{certificado\_invalido}; CN fora do inventário: \texttt{cn\_fora\_do\_inventario}; sem certificado: \texttt{sem\_certificado}; nenhum alcança o IED~2 & \texttt{teste\_netns} \\
-Queda de link & netns & 802.1X & Sessão encerrada (\texttt{link\_down}); o cliente reautentica sozinho e volta a alcançar o IED~2 & \texttt{teste\_netns} \\
+E2b, CA falsa, CN fora do invent\'ario, queda de link & netns & 802.1X & Revoga\c{c}\~ao em opera\c{c}\~ao (ap\'os recarregar a CRL), CA falsa (\texttt{certificado\_invalido}) e CN fora do invent\'ario (\texttt{cn\_fora\_do\_inventario}) s\~ao barrados; ap\'os queda de link o cliente reautentica sozinho. \textbf{N\~ao executados no GNS3} \\
 \bottomrule
 \end{tabularx}
 \end{table}
 
-\begin{figure}[ht]
+\begin{figure}[!htb]
 \centering
-\includegraphics[width=\linewidth]{figuras/camadas_por_cenario.pdf}
-\caption{Camada que barrou ou detectou cada cen\'ario no GNS3 (cada cen\'ario executado uma vez; fonte: \texttt{autenticador-8021x/evidencias/gns3/RESULTADOS\_GNS3.md}). Uma marca indica a camada respons\'avel; ``passou'' indica que o quadro forjado chegou \`a rede sem ser barrado nem alertado (E0, sem 802.1X).}\label{fig:camadas}
+\includegraphics[width=0.85\linewidth]{figuras/camadas_por_cenario.pdf}
+\caption{Camada que barrou ou detectou cada cen\'ario no GNS3 (uma execu\c{c}\~ao por cen\'ario; fonte: \texttt{RESULTADOS\_GNS3.md}). ``Passou'': o quadro forjado chegou \`a rede sem ser barrado nem alertado (E0, sem 802.1X).}\label{fig:camadas}
 \end{figure}
 
-\begin{figure}[ht]
+\begin{figure}[!htb]
 \centering
-\includegraphics[width=0.78\linewidth]{figuras/gns3_topologia_8021x.png}
-\caption{Topologia \texttt{subestacao\_8021x} no GNS3 2.2.61 durante a valida\c{c}\~ao: sete n\'os Docker, cada um ligado a uma porta distinta do \texttt{autenticador-8021x}, sem \emph{switches} nativos.}\label{fig:gns3topo}
-\end{figure}
+\begin{minipage}{\linewidth}
+\fontsize{7}{8.6}\selectfont
+\begin{verbatim}
+# atacante-1: apos o masquerade com o MAC do publicador
+ping -c 3 -W 2 192.168.10.12
+From 192.168.10.40 icmp_seq=1 Destination Host Unreachable
+From 192.168.10.40 icmp_seq=2 Destination Host Unreachable
+From 192.168.10.40 icmp_seq=3 Destination Host Unreachable
+3 packets transmitted, 0 received, +3 errors, 100% packet loss, time 2063ms
 
-\begin{figure}[ht]
-\centering
-\includegraphics[width=0.72\linewidth]{figuras/gns3_e1_atacante.png}\\[4pt]
-\includegraphics[width=0.92\linewidth]{figuras/gns3_e1_autenticador.png}
-\caption{Evid\^encia do E1 no GNS3. Acima, o console do \texttt{atacante-1}: o \texttt{ping} para o \texttt{ubuntu-ied-2} falha com 100\% de perda ap\'os o envio do masquerade com o MAC do publicador. Abaixo, o console do \texttt{autenticador-8021x}: o \emph{set} \texttt{descartados} do \texttt{nftables} registra, na porta \texttt{eth5}, os quadros descartados com origem \texttt{00:30:a7:01:b3:16} (65 pacotes, 5380 bytes).}\label{fig:e1}
+# autenticador-8021x
+nft list set bridge acesso8021x descartados
+        elements = { "eth5" . 00:30:a7:01:b3:16 counter packets 65 bytes 5380 expires 1m33s787ms,
+                     "eth5" . 02:00:c0:a8:0a:28 counter packets 55 bytes 3560 expires 53s339ms }
+\end{verbatim}
+\end{minipage}
+\caption{Evid\^encia do E1 no GNS3: trechos transcritos do console (prompts e linhas intermedi\'arias omitidos; \texttt{\#} marca coment\'ario nosso). O \texttt{ping} do \texttt{atacante-1} falha (100\% de perda) e o \emph{set} \texttt{descartados} contabiliza, na porta \texttt{eth5}, 65 pacotes (5380 bytes) com origem \texttt{00:30:a7:01:b3:16}; o segundo elemento \'e o MAC pr\'oprio do atacante (E4).}\label{fig:e1}
 \end{figure}
 
 \paragraph{Ressalvas de leitura.}
-(i)~\emph{E3:} o supplicant do atacante imprime ``porta AUTORIZADA'' porque o \texttt{hostapd} aceitou o certificado no TLS; a recusa vem do vínculo CN$\leftrightarrow$MAC, que não insere o par no set \texttt{autorizados}, e o descarte é imposto no plano de dados. A mensagem do supplicant, sozinha, não indica acesso.
-(ii)~\emph{Evidência dos descartes:} o log \texttt{quadro\_descartado} registra descartes em degraus de 5 pacotes; os contadores do \texttt{nft} são a evidência confiável dos descartes recentes (as entradas expiram em 2~min).
-(iii)~\emph{Bytes por quadro:} 1760/5 $=352$ no E4b e 1930/5 $=386$ no E5\,(iii). A diferença de 34 bytes é \emph{compatível} com o trailer do HMAC (tag \texttt{0xA0}, comprimento e 32 bytes), mas é uma \textbf{inferência} a partir dos contadores, não uma medição do trailer.
-(iv)~\emph{E0:} o log do IDS vazio mostra apenas ausência de alerta; a prova de que a porta estava aberta é o \texttt{ping}.
-(v)~\emph{Entradas de console} (\texttt{ping}, \texttt{nft}) foram coladas pelo operador; as demais fontes são arquivos extraídos dos nós.
-(vi)~\emph{Não executados no GNS3:} E2b (revogação em operação, só em \emph{netns}), queda de link e CA falsa (só em \emph{netns}), e qualquer medição de latência ou sobrecarga de autenticação.
-(vii)~\emph{Amostra pequena:} cada cenário foi executado \textbf{uma vez} no GNS3, sem repetições estatísticas; os números são observações pontuais (3 pacotes de \texttt{ping}, 5 pacotes descartados), não taxas.
+(i)~\emph{E3:} o supplicant imprime ``porta AUTORIZADA'' porque o \texttt{hostapd} aceitou o certificado no TLS; a recusa vem do v\'inculo CN$\leftrightarrow$MAC, no plano de dados. (ii)~\emph{Descartes:} a evid\^encia confi\'avel s\~ao os contadores do \texttt{nft} (o log registra degraus de 5 pacotes; entradas expiram em 2~min).
+(iii)~\emph{Bytes por quadro:} 1760/5 $=352$ (E4b) e 1930/5 $=386$ (E5\,(iii)); a diferen\c{c}a de 34 bytes \'e \emph{compat\'ivel} com o trailer do HMAC, mas \'e \textbf{infer\^encia}. (iv)~\emph{E0:} a porta aberta \'e provada pelo \texttt{ping}, n\~ao pelo log vazio do IDS.
+(v)~\emph{Amostra pequena:} cada cen\'ario foi executado \textbf{uma vez} no GNS3 (3 pacotes de \texttt{ping}, 5 descartados), sem repeti\c{c}\~oes estat\'isticas; \texttt{ping} e \texttt{nft} foram colados pelo operador. \todo{medir lat\^encia e sobrecarga de autentica\c{c}\~ao (EAP-TLS) em topologia real; nada disso foi medido}
 
-O cenário E4 é o limite do mecanismo: o nó com certificado válido e MAC próprio autentica e troca tráfego, e portanto pode publicar GOOSE; o 802.1X apenas garante que ele só o faz com o MAC autenticado, e a camada que o sinaliza, no GNS3, é o IDS, só por divergência de MAC. Com o E5, os dois controles funcionam em camadas: sem a chave o HMAC acusa \texttt{auth\_fail}; com a chave vazada o IDS ainda acusa o MAC diferente; e, se o atacante também forja o MAC do publicador, o 802.1X o descarta antes do IDS.
+O E4 \'e o limite do 802.1X: o n\'o com certificado v\'alido e MAC pr\'oprio autentica e pode publicar GOOSE; no GNS3 s\'o o IDS o sinalizou, por diverg\^encia de MAC. No E5 os controles se complementam: sem a chave o HMAC acusa; com a chave vazada o IDS acusa o MAC diferente; se o MAC do publicador tamb\'em \'e forjado, o 802.1X descarta antes do IDS.
 
 % ======================================================================
 \section{Discuss\~ao, limita\c{c}\~oes e trabalhos futuros}\label{sec:discussao}
 
-\paragraph{Interpreta\c{c}\~ao.} O resultado central \'e estrutural, n\~ao um defeito de implementa\c{c}\~ao: em C1, o quadro forjado tem MAC id\^entico e transi\c{c}\~ao de estado v\'alida, sendo indistingu\'ivel de um evento f\'isico real \emph{pela observa\c{c}\~ao passiva dos campos usados}. Isso n\~ao exclui que outras caracter\'isticas (temporiza\c{c}\~ao, correla\c{c}\~ao com medi\c{c}\~oes do processo, \emph{fingerprint} de \emph{hardware}) permitam detec\c{c}\~ao; essas t\'ecnicas est\~ao fora do escopo (ver \cite{moore2026anomaly,alberto2026gooseidrs}). Portanto, a conclus\~ao se restringe a IDS que s\'o usam \texttt{stNum}, \texttt{sqNum}, MAC e taxa.
+\paragraph{Interpreta\c{c}\~ao.} O resultado central \'e estrutural: em C1 o quadro forjado tem MAC id\^entico e transi\c{c}\~ao v\'alida, indistingu\'ivel de um evento real \emph{pela observa\c{c}\~ao passiva dos campos usados}. Temporiza\c{c}\~ao, correla\c{c}\~ao com o processo ou \emph{fingerprint} de \emph{hardware} podem detect\'a-lo (fora do escopo; ver \cite{moore2026anomaly,alberto2026gooseidrs}).
 
-\paragraph{O que o HMAC resolve e o que n\~ao resolve.} Contra o atacante sem a chave, o HMAC transforma o C1, indetect\'avel para o IDS passivo (0/100), em detec\c{c}\~ao total (100/100), por um custo de lat\^encia pequeno frente ao limite de 4~ms. Mas o ganho \'e condicional: (i)~com a chave vazada o C1 volta a 0/100, pois o quadro assinado \'e leg\'itimo \emph{do ponto de vista de todos os campos observados}; (ii)~o replay de um quadro leg\'itimo mant\'em a tag v\'alida, e s\'o a checagem de $(\texttt{stNum},\texttt{sqNum})$ o detecta, logo o HMAC complementa, e n\~ao substitui, o IDS de estado; (iii)~o HMAC n\~ao limita taxa, e o flooding continua dependendo do limiar de taxa, que nos ataques \emph{low-and-slow} abaixo dele n\~ao detecta nada e, se reduzido para pegar ataques lentos, gera falsos positivos sob rajadas leg\'itimas (Tabela~\ref{tab:limiar}). A gest\~ao segura das chaves (distribui\c{c}\~ao, rota\c{c}\~ao, revoga\c{c}\~ao) \'e, portanto, parte da mitiga\c{c}\~ao, e n\~ao foi tratada aqui.
+\paragraph{Defesa em profundidade.} Os tr\^es mecanismos respondem a perguntas diferentes (Tabela~\ref{tab:camadas}). Um atacante com credencial e chave vazada, com o pr\'oprio MAC, foi pego pelo IDS s\'o por diverg\^encia de MAC (E5\,(ii)); com o MAC do publicador, o 802.1X o barrou antes do IDS (E5\,(iii)); cada caso foi observado uma vez. Um n\'o inteiramente comprometido est\'a fora do modelo, e a gest\~ao de chaves e certificados, parte da defesa, n\~ao foi tratada.
 
-\paragraph{Defesa em profundidade.} Os três mecanismos respondem a perguntas diferentes. O 802.1X decide \emph{quem entra}: barrou os atacantes sem credencial, com certificado inválido ou revogado e com certificado de outro nó, e descartou o MAC forjado após a autenticação (Tabela~\ref{tab:8021x}), mas autenticou o nó com certificado válido e MAC próprio (E4), pois autentica o dispositivo, não a mensagem. O HMAC protege \emph{cada mensagem} contra quem não tem a chave (C1: 0\%$\rightarrow$100\%), mas cai com a chave vazada e não cobre replay nem flooding. O IDS \emph{detecta anomalias} de estado e taxa, mas é cego ao C1 sem HMAC e ao \emph{low-and-slow}. Um atacante com credencial 802.1X \emph{e} chave HMAC vazadas, publicando com seu próprio MAC, foi detectável no GNS3 pelo IDS apenas por divergência de MAC (E5\,(ii), \texttt{masquerade}); com o MAC do publicador, o 802.1X descartou os quadros antes do IDS (E5\,(iii)). Cada caso foi observado uma única vez, com poucos pacotes. Um nó comprometido por inteiro (credencial, chave e acesso ao emissor legítimo) está fora do modelo de ameaças.
+\paragraph{Li\c{c}\~oes de engenharia do 802.1X.} (i)~\emph{Correla\c{c}\~ao certificado$\leftrightarrow$esta\c{c}\~ao:} com um \'unico \texttt{hostapd}, o supervisor atribu\'ia o certificado \`a porta errada quando o mesmo MAC aparecia em duas portas; falha intermitente (1 em 6 execu\c{c}\~oes, segundo o README do autenticador; amostra pequena, fora dos logs de evid\^encia), achada em revis\~ao e corrigida com um processo por porta: uma execu\c{c}\~ao \'unica de teste de integra\c{c}\~ao \'e insuficiente. (ii)~\emph{Condi\c{c}\~ao de corrida no supplicant:} uma execu\c{c}\~ao (28 de 30) falhou na reautentica\c{c}\~ao ap\'os queda de link; suspeitamos de um \texttt{EAPOL-Logoff} atrasado de um \emph{daemon} antigo, mas isto \'e uma \textbf{hip\'otese} (sem captura de pacotes). Ap\'os a corre\c{c}\~ao, 5 execu\c{c}\~oes tiveram 30/30: compat\'ivel com a corre\c{c}\~ao, n\~ao prova que o problema se foi.
 
-\paragraph{Lições de engenharia da implementação 802.1X.} Dois problemas só apareceram com testes repetidos e revisão. (i)~\emph{Correlação certificado$\leftrightarrow$estação:} com um único \texttt{hostapd}, o supervisor atribuía o certificado à porta errada quando o mesmo MAC aparecia em duas portas (MAC clonado), com janela de exposição até a reautenticação. A falha foi intermitente (1 em 6 execuções do teste, segundo o registro do projeto), foi \emph{encontrada em revisão} e corrigida com um processo \texttt{hostapd} por porta; ela exemplifica por que uma execução única de teste de integração é insuficiente. A ausência da interface nas linhas de TLS é o diagnóstico registrado no README do autenticador; a frequência de 1/6 é uma amostra pequena e não consta nos logs de evidência. (ii)~\emph{Condição de corrida no supplicant:} uma execução registrada (28 de 30 verificações) falhou na reautenticação após queda de link; suspeitamos que um \emph{daemon} antigo enviava um \texttt{EAPOL-Logoff} atrasado e revogava a nova sessão, mas esta causa é uma \textbf{hipótese} (não isolamos o evento com captura de pacotes). Após a correção do supplicant, as cinco execuções seguintes registradas tiveram 30/30; isso é compatível com a correção, mas não prova ausência do problema.
-
-\paragraph{Limitações.}
-(i)~\emph{Campanha offline:} os quadros s\~ao alimentados direto no \texttt{GooseMonitor}, com rel\'ogio virtual, sem GNS3, \emph{switch}, perda ou reordena\c{c}\~ao de pacotes; ela n\~ao substitui a valida\c{c}\~ao ponta a ponta.
-(ii)~\emph{Tr\'afego sint\'etico e determin\'istico:} o conte\'udo dos quadros \'e fixo para cada (modo, par\^ametro); entre as 100 repeti\c{c}\~oes variam s\'o o par\^ametro e o tempo ($\pm10\%$). Por isso as taxas saem em 0\% ou 100\%, e o IC de Wilson, e n\~ao um desvio entre repeti\c{c}\~oes independentes, \'e que quantifica a incerteza.
-(iii)~\emph{Carga leg\'itima sint\'etica:} as rajadas de 5 a 60~pkts/s do baseline s\~ao assumidas, n\~ao medidas em subesta\c{c}\~ao real; os FPR da Tabela~\ref{tab:limiar} dependem dessa suposi\c{c}\~ao.
-(iv)~\emph{Reconstru\c{c}\~ao:} o script da campanha original n\~ao foi preservado; par\^ametros n\~ao documentados (dura\c{c}\~ao do flood, aquecimento, forma das rajadas, m\'etodo de cronometragem) foram escolhidos na reconstru\c{c}\~ao, e as lat\^encias n\~ao s\~ao compar\'aveis em valor absoluto com as do 4.\textordmasculine{} Marco.
-(v)~\emph{Lat\^encia:} \'e a do processamento Python no IDS (e da verifica\c{c}\~ao HMAC) em m\'aquina compartilhada, n\~ao a de um IED real nem a de fim a fim; o valor absoluto muda entre execu\c{c}\~oes.
-(vi)~\emph{HMAC simulado:} n\~ao \'e conforme \`a IEC 62351-6 (trailer e tag arbitr\'arios, sem gest\~ao de chaves). A ``chave vazada'' \'e a chave-mestra inteira; com chave por \texttt{gocbRef}, o vazamento de uma chave comprometeria s\'o aquele fluxo, o que n\~ao foi avaliado. O alerta \texttt{auth\_fail} \'e emitido por quadro rejeitado, sem agrega\c{c}\~ao, o que num flood sem chave gera um alerta por pacote.
-(vii)~\emph{Partida a frio:} o teste de masquerade s\'o compara com um MAC previamente visto; se o primeiro quadro de um \texttt{gocbRef} processado pelo IDS j\'a for o forjado, nada \'e detectado, mesmo em C2. Alertar em todo fluxo novo geraria falsos positivos; uma fonte externa (o MAC esperado vindo do SCD) mitigaria isso e n\~ao foi avaliada.
-(viii)~Os limiares ($\Delta st>50$; taxa de flooding) são fixos por projeto; a taxa foi varrida (Tabela~\ref{tab:limiar}), o salto de \texttt{stNum} não.
-(ix)~\emph{Amostra do GNS3:} cada cenário E0--E5 foi executado \textbf{uma vez} no GNS3, com poucos pacotes (\texttt{ping} 3/3 ou 0/3; 5 pacotes descartados), sem repetições estatísticas nem intervalos de confiança. E2b, queda de link e CA falsa só foram validados em \emph{netns} (contêiner privilegiado com pares veth). Não foram medidas a latência nem a sobrecarga de autenticação em topologia real, nem o comportamento sob carga. As saídas de \texttt{ping} e \texttt{nft} são de console, coladas pelo operador.
-(x)~\emph{Sem MACsec} (IEEE 802.1AE): os quadros não são cifrados nem têm integridade no enlace.
-(xi)~\emph{Janela de reautenticação:} se o dispositivo for trocado sem queda de link nem \emph{logoff}, o par permanece autorizado até a próxima reautenticação (padrão 600~s).
-(xii)~\emph{Acoplamento ao \texttt{hostapd} 2.10:} o supervisor depende do texto do log; outra versão pode quebrá-lo. Se o supervisor morrer de forma abrupta, as regras do \texttt{nftables} permanecem (quem já estava autorizado continua passando); se só um \texttt{hostapd} morrer, o supervisor revoga os pares da porta (\emph{fail-closed}).
-(xiii)~\emph{PKI de laboratório} e servidor EAP embutido (sem RADIUS externo); revogação só vale após recarregar a CRL.
-(xiv)~\emph{Escopo dos cenários:} flooding ou suppression partindo de um nó \emph{autorizado} não foi testado contra o autenticador; em \emph{netns} os cenários E0 a E4 testam o autenticador isoladamente, sem HMAC nem IDS, e no GNS3 a combinação das camadas só foi observada no E4 e no E5.
-(xv)~\emph{E3 e leitura do supplicant:} no GNS3 o supplicant do atacante mostra ``AUTORIZADA'' no E3, embora o acesso seja negado pelo vínculo CN$\leftrightarrow$MAC no plano de dados; a evidência confiável é o contador do \texttt{nft} e o evento \texttt{auth\_rejeitada}. A diferença de 34 bytes por quadro entre E4b (352) e E5\,(iii) (386) é inferência compatível com o trailer do HMAC, não medição.
-
-\paragraph{Validação em GNS3.} Os cenários E0 a E5 do 802.1X foram observados no GNS3 real (Seção~\ref{sec:val8021x}). Continuam \emph{offline} a campanha do HMAC (C1 sem HMAC, com HMAC e com chave vazada, $N=100$) e a varredura do limiar de flooding, que não foram repetidas no GNS3 e valem como hipótese a confirmar. \todo{medir latência e sobrecarga de autenticação (EAP-TLS) em topologia real; nada disso foi medido}
+\paragraph{Limita\c{c}\~oes.} Detalhes finos em \texttt{README.md} e \texttt{docs/resultados.md} do reposit\'orio; as principais:
+\begin{itemize}
+  \item \textbf{Campanha do IDS e do HMAC e lat\^encia:} \emph{offline}, tr\'afego sint\'etico e determin\'istico, script original n\~ao preservado, rajadas leg\'itimas assumidas, nada repetido no GNS3; lat\^encia de Python em m\'aquina compartilhada, n\~ao de IED real, e sobrecarga do EAP-TLS n\~ao medida.
+  \item \textbf{HMAC simulado:} n\~ao conforme \`a IEC 62351-6 (trailer e tag arbitr\'arios, sem gest\~ao de chaves); a ``chave vazada'' \'e a chave-mestra inteira (uma chave por \texttt{gocbRef} n\~ao foi avaliada); \texttt{auth\_fail} \'e emitido por quadro, sem agrega\c{c}\~ao.
+  \item \textbf{IDS:} partida a frio (o primeiro quadro de um \texttt{gocbRef} forjado n\~ao \'e detectado; o MAC esperado do SCD mitigaria, n\~ao avaliado) e limiares fixos (o salto de \texttt{stNum} n\~ao foi varrido).
+  \item \textbf{802.1X no GNS3:} cada cen\'ario E0--E5 uma vez, com poucos pacotes, sem intervalos de confian\c{c}a; E2b, queda de link e CA falsa s\'o em \emph{netns}; flooding e suppression de n\'o \emph{autorizado} n\~ao testados; camadas combinadas s\'o em E4 e E5.
+  \item \textbf{Escopo do 802.1X:} sem MACsec (IEEE 802.1AE); reautentica\c{c}\~ao a cada 600~s (janela para dispositivo trocado sem queda de link); acoplamento ao log do \texttt{hostapd} 2.10; PKI de laborat\'orio, sem RADIUS externo.
+\end{itemize}
 
 \paragraph{O que foi proposto, reproduzido, estendido e fica em aberto.}
 \begin{description}
-  \item[Proposto pelo artigo original~\cite{oliveira2025analisador}:] extra\c{c}\~ao SCL$\rightarrow$topologia GNS3, Or\'aculo com verifica\c{c}\~ao de senha (SR 1.3/1.7) e, como trabalho futuro, novos tipos de ataque.
-  \item[Reproduzido:] fluxo SCD$\rightarrow$GNS3 (agora tamb\'em gera a topologia automaticamente), topologia de 4 \emph{switches} + 5 IEDs + Or\'aculo e auditoria via SSH; as detec\c{c}\~oes da campanha $N=600$ do 4.\textordmasculine{} Marco, reproduzidas \emph{offline} com script reconstru\'ido.
-  \item[Estendido:] Or\'aculo de 2 para 8 SRs (3/12 crit\'erios conformes, incluindo corre\c{c}\~ao da sem\^antica de \texttt{ucredit}); quatro ataques GOOSE; IDS de estado; campanha $N=600$; valida\c{c}\~ao com SCD real.
-  \item[Novo neste artigo:] delimitação experimental do IDS passivo; C1 com HMAC (0\%$\rightarrow$100\%, e 0\% com chave vazada) e sensibilidade do limiar de flooding, ambos \emph{offline}; implementação real de 802.1X com EAP-TLS, CRL e vínculo CN$\leftrightarrow$MAC, observada no GNS3 real (E0--E5, cada cenário uma vez) e em \emph{network namespaces}.
-  \item[Em aberto:] latência e sobrecarga de autenticação em topologia real; repetição estatística dos cenários no GNS3; HMAC e limiar de flooding no GNS3; implementação conforme da IEC 62351-6 (formato, chaves e assinatura nativa); MACsec (IEEE 802.1AE); RADIUS externo e VLAN dinâmica; hardware real de \emph{switch}; IDS com linha de base do SCD; tráfego real; detecção baseada em aprendizado.
+  \item[Proposto pelo artigo original~\cite{oliveira2025analisador}:] extra\c{c}\~ao SCL$\rightarrow$topologia GNS3, Or\'aculo com verifica\c{c}\~ao de senha (SR 1.3/1.7) e, como trabalho futuro, novos ataques.
+  \item[Reproduzido e estendido:] fluxo SCD$\rightarrow$GNS3 (agora gerando a topologia), 4 \emph{switches} $+$ 5 IEDs $+$ Or\'aculo com auditoria SSH, e as detec\c{c}\~oes da campanha $N=600$ (\emph{offline}, script reconstru\'ido); Or\'aculo de 2 para 8 SRs (3/12 crit\'erios conformes, com corre\c{c}\~ao de \texttt{ucredit}); quatro ataques GOOSE; IDS de estado; valida\c{c}\~ao com SCD real.
+  \item[Novo neste artigo:] delimita\c{c}\~ao do IDS passivo; C1 com HMAC (0\%$\rightarrow$100\%, e 0\% com chave vazada) e sensibilidade do limiar, \emph{offline}; 802.1X real com EAP-TLS, CRL e v\'inculo CN$\leftrightarrow$MAC, no GNS3 (E0--E5, uma vez cada) e em \emph{netns}.
+  \item[Em aberto:] lat\^encia e sobrecarga de autentica\c{c}\~ao em topologia real; repeti\c{c}\~ao estat\'istica, HMAC e limiar no GNS3; IEC 62351-6 conforme; MACsec; RADIUS externo; \emph{switch} real; IDS com linha de base do SCD; tr\'afego real.
 \end{description}
 
 % ======================================================================
 \section{Conclus\~ao}
 
-Um IDS passivo de estado \'e barato (microssegundos por quadro) e eficaz contra flooding, replay, suppression e masquerade ing\^enuo, mas n\~ao detecta o masquerade que clona o MAC e respeita a m\'aquina de estados (0/100, em ambas as campanhas). Uma simula\c{c}\~ao de autentica\c{c}\~ao por HMAC-SHA256 no estilo da IEC 62351-6 leva essa detec\c{c}\~ao a 100/100 (IC95\% $[96{,}3\%;100\%]$) por cerca de 10 a 20~$\mu$s adicionais por quadro, mais de duas ordens de grandeza abaixo do limite de 4~ms; por\'em, com a chave vazada, o C1 volta a 0/100, o replay mant\'em o HMAC v\'alido e s\'o \'e pego pela checagem de $(\texttt{stNum},\texttt{sqNum})$, e o flooding \emph{low-and-slow} abaixo do limiar de taxa passa despercebido, sem limiar que o detecte sem falsos positivos sob rajadas leg\'itimas equivalentes. Controlar quem entra é outra pergunta: o 802.1X com EAP-TLS implementado (\texttt{hostapd}, \texttt{nftables}, CRL e vínculo CN$\leftrightarrow$MAC do SCD) barrou, no GNS3 real, o dispositivo sem credencial, o certificado revogado e o certificado de outro nó com MAC clonado, e descartou o par (porta, MAC) do publicador mesmo com a chave HMAC vazada; mas o nó com certificado válido e MAC próprio autenticou e seu GOOSE forjado chegou ao IDS, que o sinalizou só por divergência de MAC, pois o 802.1X autentica o dispositivo, não a mensagem (sem a chave, o IDS emitiu \texttt{auth\_fail}). Casos adicionais (CA desconhecida, queda de link, revogação em operação) foram validados apenas em \emph{netns}. Logo, 802.1X (quem entra), HMAC (cada mensagem) e IDS (anomalias) são complementares, e cada um deixa passar o que os outros cobrem; a gestão de chaves e certificados faz parte da defesa. Estes resultados vêm de uma campanha \emph{offline} com tráfego sintético e HMAC simulado e de cenários do 802.1X observados uma vez cada no GNS3 (sem repetições estatísticas) e em \emph{netns}; a medição de latência e sobrecarga de autenticação, a repetição estatística no GNS3, MACsec, RADIUS externo e uma implementação conforme da IEC 62351-6 são trabalho futuro.
+Um IDS passivo de estado \'e barato (microssegundos por quadro) e eficaz contra flooding, replay, suppression e masquerade ing\^enuo, mas n\~ao detecta o masquerade que clona o MAC e respeita a m\'aquina de estados (0/100, nas duas campanhas). O HMAC simulado no estilo da IEC 62351-6 leva essa detec\c{c}\~ao a 100/100 por cerca de 11~$\mu$s de mediana por verifica\c{c}\~ao, mas falha com a chave vazada e n\~ao cobre replay nem flooding \emph{low-and-slow}. O 802.1X com EAP-TLS barrou, no GNS3, o dispositivo sem credencial, o certificado revogado, o certificado de outro n\'o com MAC clonado e o MAC do publicador mesmo com a chave vazada, mas autentica o dispositivo, n\~ao a mensagem: o n\'o com certificado v\'alido e MAC pr\'oprio publicou e s\'o o IDS o sinalizou. Logo, 802.1X (quem entra), HMAC (cada mensagem) e IDS (anomalias) s\~ao complementares. Os resultados s\~ao \emph{offline} (IDS e HMAC) ou de uma execu\c{c}\~ao por cen\'ario no GNS3 (802.1X); sobrecarga de autentica\c{c}\~ao, repeti\c{c}\~ao estat\'istica, MACsec e IEC 62351-6 conforme s\~ao trabalho futuro.
 
-\bibliographystyle{sbc}
-\bibliography{referencias}
+{\footnotesize\bibliographystyle{sbc}
+\bibliography{referencias}}
 
 \end{document}

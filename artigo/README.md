@@ -4,9 +4,10 @@ Título provisório: *Defesa em profundidade para GOOSE: limites de um IDS de es
 O fio central é: 802.1X controla quem entra; HMAC protege cada mensagem; IDS detecta anomalias — e o que cada camada NÃO resolve.
 
 Arquivos:
-- `main.tex` — artigo completo (TikZ embutido: arquitetura, máquina de estados, árvore de ataques, arquitetura 802.1X + fluxo de decisão de autorização).
+- `main.tex` — artigo completo (TikZ embutido: arquitetura, máquina de estados, árvore de ataques, arquitetura 802.1X + fluxo de decisão de autorização). Macros: `\dd` (dois traços em flags, ex. `\texttt{\dd{}8021x}`), `\paragraph` redefinido (título em negrito na linha), `\figbench[largura]{pdf}{legenda}{rótulo}`.
 - `referencias.bib` — referências (dados conferidos online em 20/11/2026; o que não foi confirmado está com `note = {VERIFICAR}`).
-- `figuras/` — reservada para figuras `.tex`/imagens adicionais (vazia; os diagramas estão em `main.tex`).
+- `figuras/` — PDFs dos gráficos e da matriz de camadas; PNGs de evidência do GNS3 (não usados no artigo desde a revisão de formatação, mantidos como evidência).
+- `overleaf-upload/` e `overleaf-upload.zip` — pacote para o Overleaf (main.tex, referencias.bib, sbc-template.sty, sbc.bst, figuras/ só com as 4 imagens usadas). `overleaf-upload-nao-usados/` guarda PNGs que saíram do pacote.
 
 ## Como compilar
 
@@ -23,7 +24,7 @@ cd artigo && latexmk -pdf main.tex
 Se `sbc-template.sty` não estiver na pasta, `main.tex` usa um layout aproximado só para validar a compilação (aviso `sbc-template.sty nao encontrado`); o PDF final deve ser gerado com o template oficial.
 Pacotes exigidos: `babel`, `tikz`, `booktabs`, `tabularx`, `xcolor` (todos TeX Live padrão).
 
-**Estado da validação:** neste ambiente não há `pdflatex`/`latexmk`, então `main.tex` NÃO foi compilado. Só foi checado o balanceamento de chaves e de `\begin/\end`. Compile no Overleaf antes de confiar.
+**Estado da validação:** compilado de verdade (pdflatex + bibtex, TeX Live 2026 em Docker) com `sbc-template.sty` e `sbc.bst`: **13 páginas** (A4, 12 pt), 0 erros, 0 overfull, 13 underfull (todos de parágrafos/listas, inofensivos), sem citação com `?`. O PDF compilado está em `main.pdf`. Limite de páginas da conferência: desconhecido (meta usada: 10 a 12; ficou em 13, ~12,8 de conteúdo).
 
 ## Mudanças desta revisão (resultados reais do GNS3)
 
@@ -71,3 +72,31 @@ Observações sobre a bibliografia: Hussain et al. (Scientific Reports) consta n
 
 Para regerar: `benchmark/.venv/bin/python artigo/figuras/gerar_figuras_gns3.py`.
 No Overleaf, suba `main.tex`, `referencias.bib`, `sbc-template.sty`, `sbc.bst` e a pasta `figuras/`.
+
+
+## Revisão de formatação (compilação real)
+
+Problemas do PDF anterior (24 páginas) e o que foi feito:
+- Páginas: 24 -> 13. `\raggedbottom` (o `\flushbottom` do modelo abria buracos), floats `[!htb]` e menores, `\paragraph` sem espaço vertical, `microtype` não usado.
+- Erros: `\text` sem `amsmath` (3 "Undefined control sequence" e o `\'` em modo matemático): `amsmath` carregado e `\mathrm` nas fórmulas.
+- Flags: macro `\dd` (`--8021x`, `--auth`, `--privileged` saem com dois traços).
+- Bibliografia: normas e libiec61850 com `year = {s.d.}` e autor institucional (`{{IEC}}`, `{{IEEE}}`, `{{MZ Automation}}`), mantendo `note = {VERIFICAR}`; nenhuma citação sai com "?" ou sem autor.
+- TikZ: árvore de ataques (rótulos em 3 linhas, espaçamento 2,95 cm) e máquina de estados (alertas em linha, setas pelo topo) sem sobreposição, conferidos no PDF renderizado.
+- Matriz de camadas (fig. 8): `gerar_figuras_gns3.py` corrigido de verdade (coluna "Frame passou" mostra o texto "passou"); fonte maior; PDF/PNG regenerados.
+- Fig. do E1: os dois PNGs de console foram trocados por transcrição em `verbatim` (trechos fiéis, prompts omitidos, rotulada como transcrição).
+- Tabelas: todas com <= 5 colunas, legenda antes, colunas `L{}`/`Y` (raggedright) sem overfull. Ataque x norma: Ataque | Propriedade | Requisito/norma | Camada. E0-E5: Cenário | Ambiente | Camada que barra | Resultado.
+
+### O que foi cortado (e onde está agora)
+1. Tabela de sensibilidade do limiar: removida (texto e Fig. 7 mantidos; números completos em `benchmark/resultados/`).
+2. Tabela da campanha anterior do 4º Marco: removida; vira 3 frases na Seção 6.2 (400/500, C1 0/100, T0 sem falso positivo) e a coincidência com a reprodução offline.
+3. Tabela de latência/HMAC (`tab:hmac`): removida; as médias de `verify`, o microbenchmark e os IC de Wilson estão no texto (6.3). A Fig. 6 (latência) foi mantida.
+4. Decisões de projeto do 802.1X: 5 bullets curtos.
+5. Limitações: de 15 itens para 5 grupos; os detalhes finos permanecem em `README.md`/`docs/resultados.md` do repositório.
+6. Repetições do resultado E4/E5 (resumo, resultados, discussão, conclusão): detalhe só na Seção 6.5; nas demais, uma frase.
+7. Figura da topologia GNS3 (PNG) removida do artigo por falta de espaço (não agrega dado novo); a linha "Base" da tabela E0-E5 foi fundida à linha E0; a descrição da "Variante com 802.1X" foi fundida à Seção 5.3.
+Mantidos: tabela E0-E5, fig./diagrama 802.1X, tabela de defesa em profundidade, matriz de camadas, gráficos TPR e latência, quadro proposto/reproduzido/estendido/novo/em aberto e as ressalvas essenciais.
+
+### Pendências atuais (revisão humana)
+- Autores (sobrenomes de Matheus e Youri, afiliação, e-mails), edição/ano das normas, venue/páginas das referências (`VERIFICAR`), cláusulas na tabela ataque x norma, relação exata do HMAC com a IEC 62351-6, trabalhos relacionados (só descrição de uma frase), repositório/commit e CPU da campanha, limite de páginas da conferência.
+- Latência e sobrecarga de autenticação (EAP-TLS) não medidas; cada cenário do GNS3 foi executado uma vez; campanha HMAC/limiar só offline; causa do race do supplicant é hipótese.
+- Conferir no Overleaf (o PDF aqui foi gerado com TeX Live 2026 local; diferenças de versão podem mudar quebras de página).

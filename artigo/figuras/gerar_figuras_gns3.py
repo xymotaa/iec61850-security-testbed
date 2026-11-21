@@ -34,21 +34,23 @@ TONS = ["#4d4d4d", "#4d4d4d", "#4d4d4d", "#bdbdbd"]  # legivel em tons de cinza
 
 def figura():
     n = len(LINHAS)
-    fig, ax = plt.subplots(figsize=(6.4, 0.42 * n + 0.9))
+    fig, ax = plt.subplots(figsize=(4.4, 0.34 * n + 0.8))
     for i, lin in enumerate(LINHAS):
         y = n - 1 - i
-        ax.text(-0.15, y + 0.5, lin[0], ha="right", va="center", fontsize=7.5)
+        ax.text(-0.15, y + 0.5, lin[0], ha="right", va="center", fontsize=8)
         for j in range(4):
             on = lin[1 + j]
             ax.add_patch(Rectangle((j, y), 1, 1, fill=bool(on),
                                    facecolor=TONS[j] if on else "white",
                                    edgecolor="#808080", lw=0.6))
             if on:
-                ax.text(j + 0.5, y + 0.5, "✓" if j < 3 else "✗",
-                        ha="center", va="center", color="white" if j < 3 else "black",
-                        fontsize=9, fontweight="bold")
+                camada_barrou = j < 3
+                ax.text(j + 0.5, y + 0.5, "✓" if camada_barrou else "passou",
+                        ha="center", va="center",
+                        color="white" if camada_barrou else "black",
+                        fontsize=9 if camada_barrou else 7, fontweight="bold")
     for j, c in enumerate(COLUNAS):
-        ax.text(j + 0.5, n + 0.15, c, ha="center", va="bottom", fontsize=7.5)
+        ax.text(j + 0.5, n + 0.15, c, ha="center", va="bottom", fontsize=8)
     ax.set_xlim(0, 4)
     ax.set_ylim(0, n + 1.1)
     ax.axis("off")
