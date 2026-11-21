@@ -1,14 +1,14 @@
 \begin{tikzpicture}[x=1cm,y=1cm,
   dec/.style={caixa, cinza, text width=6.6cm}]
   \node[caixa, text width=6.6cm] (q) at (0,0) {Quadro GOOSE recebido};
-  \node[caixa, text width=6.6cm] (taxa) at (0,-1.5) {Taxa de quadros na janela de 2~s acima do limiar (20 pacotes/s)?};
-  \node[dec] (aut) at (0,-3.2) {Autenticação ativa e tag HMAC ausente ou inválida?};
-  \node[dec] (ref) at (0,-4.8) {Há referência para o \texttt{gocbRef}?};
-  \node[caixa, text width=6.6cm] (reg) at (0,-7.0) {Regras de estado\\masquerade: MAC diferente do último visto\\replay: \texttt{(stNum, sqNum)} $\leq$ último par\\suppression: salto de \texttt{stNum} $>$ 50};
-  \node[caixa, text width=6.6cm] (upd) at (0,-9.2) {Atualiza o estado: MAC sempre; \texttt{stNum} e \texttt{sqNum} só se não houve replay};
-  \node[caixa, text width=4.6cm] (fl) at (9.0,-1.5) {Alerta \texttt{flood\_start} ou \texttt{flood\_end} (só nas bordas); o quadro segue};
-  \node[caixa, text width=4.6cm] (af) at (9.0,-3.2) {Alerta \texttt{auth\_fail}; o quadro é descartado e o estado não muda};
-  \node[caixa, text width=4.6cm] (cr) at (9.0,-4.8) {Cria a referência (sem alerta) e atualiza o estado};
+  \node[caixa, text width=6.6cm] (taxa) at (0,-1.25) {Taxa de quadros na janela de 2~s acima do limiar (20 pacotes/s)?};
+  \node[dec] (aut) at (0,-2.6) {Autenticação ativa e tag HMAC ausente ou inválida?};
+  \node[dec] (ref) at (0,-3.9) {Há referência para o \texttt{gocbRef}?};
+  \node[caixa, text width=6.6cm] (reg) at (0,-5.6) {Regras de estado\\masquerade: MAC diferente do último visto\\replay: \texttt{(stNum, sqNum)} $\leq$ último par\\suppression: salto de \texttt{stNum} $>$ 50};
+  \node[caixa, text width=6.6cm] (upd) at (0,-7.5) {Atualiza o estado: MAC sempre; \texttt{stNum} e \texttt{sqNum} só se não houve replay};
+  \node[caixa, text width=5.2cm] (fl) at (8.9,-1.25) {Alerta \texttt{flood\_start} ou \texttt{flood\_end} (só nas bordas); o quadro segue};
+  \node[caixa, text width=5.2cm] (af) at (8.9,-2.6) {Alerta \texttt{auth\_fail}; o quadro é descartado e o estado não muda};
+  \node[caixa, text width=5.2cm] (cr) at (8.9,-3.9) {Cria a referência (sem alerta) e atualiza o estado};
   \draw[seta] (q) -- (taxa);
   \draw[seta] (taxa) -- (aut);
   \draw[seta] (aut) -- node[right, font=\footnotesize] {não} (ref);
