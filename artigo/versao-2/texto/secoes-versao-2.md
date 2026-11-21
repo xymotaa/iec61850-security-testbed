@@ -83,7 +83,7 @@ O IEEE 802.1X [IEEE 2020] trata do controle de acesso à rede baseado em porta: 
 
 A Tabela 1 relaciona cada ataque à propriedade comprometida e ao que as normas e os trabalhos analisados dizem sobre ele; as observações do nosso *testbed* ficam para a Seção 6.
 
-*Tabela 1. Ataques, propriedade comprometida e o que dizem as normas e a literatura analisada.*
+*Tabela 1. Ataques, propriedade comprometida e o que dizem as normas e a literatura analisada. n/c: não consta nos trechos analisados.*
 
 | Ataque | Propriedade | Previsão normativa | Resultados reportados |
 |---|---|---|---|
@@ -92,7 +92,6 @@ A Tabela 1 relaciona cada ataque à propriedade comprometida e ao que as normas 
 | Masquerade | Integridade e autenticidade | Autenticação de mensagem (IEC 62351-6) | O MAC o detecta; o IDS por regras falha, pois o quadro respeita `stNum`, `sqNum` e temporização [Herath et al. 2025] |
 | Suppression (nossa taxonomia) | Disponibilidade lógica | n/c | Classe de Zemanek et al. (2022); sem avaliação de defesas |
 
-*n/c: não consta nos trechos analisados.*
 
 ### 2.3. Trabalhos relacionados
 

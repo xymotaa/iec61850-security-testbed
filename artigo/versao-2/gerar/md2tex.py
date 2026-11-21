@@ -225,14 +225,14 @@ def table_tex(rows):
             wid[i] = max(minw[i], rest * prop[i] / ptot)
     w = [x * n / sum(wid) for x in wid]
     spec = "".join(r">{\hsize=%.3f\hsize\raggedright\arraybackslash}X" % x for x in w)
-    out = [r"\footnotesize", r"\begin{tabularx}{\linewidth}{%s}" % spec, r"\toprule"]
-    out.append(" & ".join(r"\textbf{%s}" % inline(c) for c in head) + r" \\")
-    out.append(r"\midrule")
+    out = [r"\footnotesize", r"\renewcommand{\arraystretch}{1.25}",
+           r"\begin{tabularx}{\linewidth}{|%s|}" % "|".join(
+               r">{\hsize=%.3f\hsize\raggedright\arraybackslash}X" % x for x in w), r"\hline"]
+    out.append(" & ".join(r"\textbf{%s}" % inline(c) for c in head) + r" \\ \hline")
     for r in body:
         if len(r) != n:
             problems.append("linha de tabela com %d colunas (esperado %d): %s" % (len(r), n, r[0]))
-        out.append(" & ".join(inline(c) for c in r) + r" \\")
-    out.append(r"\bottomrule")
+        out.append(" & ".join(inline(c) for c in r) + r" \\ \hline")
     out.append(r"\end{tabularx}")
     return "\n".join(out)
 

@@ -92,19 +92,17 @@ A Tabela~\ref{tab:1} relaciona cada ataque à propriedade comprometida e ao que 
 
 \begin{table}[!t]
 \centering
-\caption{Ataques, propriedade comprometida e o que dizem as normas e a literatura analisada.}\label{tab:1}
+\caption{Ataques, propriedade comprometida e o que dizem as normas e a literatura analisada. n/c: não consta nos trechos analisados.}\label{tab:1}
 \footnotesize
-\begin{tabularx}{\linewidth}{>{\hsize=0.644\hsize\raggedright\arraybackslash}X>{\hsize=0.868\hsize\raggedright\arraybackslash}X>{\hsize=1.238\hsize\raggedright\arraybackslash}X>{\hsize=1.251\hsize\raggedright\arraybackslash}X}
-\toprule
-\textbf{Ataque} & \textbf{Propriedade} & \textbf{Previsão normativa} & \textbf{Resultados reportados} \\
-\midrule
-Flooding & Disponibilidade & Proteção contra negação de serviço (IEC 62443-3-3, pelo conteúdo) & Com MAC, os quadros não autenticados são rejeitados; um IDS por regras perdeu o sincronismo sob 1000 Hz \cit{Herath et al. 2025}{herath2025evaluation} \\
-Replay & Autenticidade temporal & Etapa adicional que verifica \texttt{stNum} e \texttt{sqNum} (IEC 62351-6, segundo Herath et al. 2025) & O MAC não o detecta, pois a tag é válida; o IDS por regras o detecta \cit{Herath et al. 2025}{herath2025evaluation} \\
-Masquerade & Integridade e autenticidade & Autenticação de mensagem (IEC 62351-6) & O MAC o detecta; o IDS por regras falha, pois o quadro respeita \texttt{stNum}, \texttt{sqNum} e temporização \cit{Herath et al. 2025}{herath2025evaluation} \\
-Suppression (nossa taxonomia) & Disponibilidade lógica & n/c & Classe de \citn{Zemanek et al. (2022)}{zemanek2022powerduck}; sem avaliação de defesas \\
-\bottomrule
+\renewcommand{\arraystretch}{1.25}
+\begin{tabularx}{\linewidth}{|>{\hsize=0.644\hsize\raggedright\arraybackslash}X|>{\hsize=0.868\hsize\raggedright\arraybackslash}X|>{\hsize=1.238\hsize\raggedright\arraybackslash}X|>{\hsize=1.251\hsize\raggedright\arraybackslash}X|}
+\hline
+\textbf{Ataque} & \textbf{Propriedade} & \textbf{Previsão normativa} & \textbf{Resultados reportados} \\ \hline
+Flooding & Disponibilidade & Proteção contra negação de serviço (IEC 62443-3-3, pelo conteúdo) & Com MAC, os quadros não autenticados são rejeitados; um IDS por regras perdeu o sincronismo sob 1000 Hz \cit{Herath et al. 2025}{herath2025evaluation} \\ \hline
+Replay & Autenticidade temporal & Etapa adicional que verifica \texttt{stNum} e \texttt{sqNum} (IEC 62351-6, segundo Herath et al. 2025) & O MAC não o detecta, pois a tag é válida; o IDS por regras o detecta \cit{Herath et al. 2025}{herath2025evaluation} \\ \hline
+Masquerade & Integridade e autenticidade & Autenticação de mensagem (IEC 62351-6) & O MAC o detecta; o IDS por regras falha, pois o quadro respeita \texttt{stNum}, \texttt{sqNum} e temporização \cit{Herath et al. 2025}{herath2025evaluation} \\ \hline
+Suppression (nossa taxonomia) & Disponibilidade lógica & n/c & Classe de \citn{Zemanek et al. (2022)}{zemanek2022powerduck}; sem avaliação de defesas \\ \hline
 \end{tabularx}
-\par\vspace{2pt}{\footnotesize n/c: não consta nos trechos analisados.}
 \end{table}
 
 \subsection{Trabalhos relacionados}\label{sec:2.3}
@@ -121,19 +119,18 @@ Suppression (nossa taxonomia) & Disponibilidade lógica & n/c & Classe de \citn{
 \centering
 \caption{Trabalhos analisados e as lacunas tratadas neste artigo. n/c: não consta nos trechos analisados.}\label{tab:2}
 \footnotesize
-\begin{tabularx}{\linewidth}{>{\hsize=1.177\hsize\raggedright\arraybackslash}X>{\hsize=0.894\hsize\raggedright\arraybackslash}X>{\hsize=1.213\hsize\raggedright\arraybackslash}X>{\hsize=0.894\hsize\raggedright\arraybackslash}X>{\hsize=0.822\hsize\raggedright\arraybackslash}X}
-\toprule
-\textbf{Trabalho} & \textbf{Ambiente} & \textbf{Camadas avaliadas} & \textbf{Chave comprometida} & \textbf{MAC de origem como variável} \\
-\midrule
-\citn{Herath et al. (2025)}{herath2025evaluation} & Ciberfísico, IED simulado & IDS por regras e MAC & n/c & n/c \\
-\citn{Conceição Alberto et al. (2026)}{alberto2026gooseidrs} & HIL, relés comerciais & IDS com aprendizado & Excluída do modelo & n/c \\
-\citn{Hussain et al. (2023)}{hussain2023hybrid} & RTDS e Snort & MAC e validação de conteúdo & Citada como desafio & n/c \\
-\citn{Girdhar et al. (2024)}{girdhar2024sdn} & HIL e Mininet & IDS por regras e bloqueio de porta & n/c & n/c \\
-\citn{Moore (2026)}{moore2026anomaly} & Conjunto ERENO & Aprendizado de máquina & n/c & Descrito; campos descartados \\
-\citn{de Oliveira et al. (2023)}{oliveira2023ataques} & RTDS e IED real & Sem defesa & n/c & n/c \\
-\citn{Zemanek et al. (2022)}{zemanek2022powerduck} & \emph{Testbed} físico & Sem defesa & n/c & n/c \\
-\textbf{Este trabalho} & Emulado & IDS, HMAC simulado e 802.1X & Avaliada & C1 e C2 \\
-\bottomrule
+\renewcommand{\arraystretch}{1.25}
+\begin{tabularx}{\linewidth}{|>{\hsize=1.177\hsize\raggedright\arraybackslash}X|>{\hsize=0.894\hsize\raggedright\arraybackslash}X|>{\hsize=1.213\hsize\raggedright\arraybackslash}X|>{\hsize=0.894\hsize\raggedright\arraybackslash}X|>{\hsize=0.822\hsize\raggedright\arraybackslash}X|}
+\hline
+\textbf{Trabalho} & \textbf{Ambiente} & \textbf{Camadas avaliadas} & \textbf{Chave comprometida} & \textbf{MAC de origem como variável} \\ \hline
+\citn{Herath et al. (2025)}{herath2025evaluation} & Ciberfísico, IED simulado & IDS por regras e MAC & n/c & n/c \\ \hline
+\citn{Conceição Alberto et al. (2026)}{alberto2026gooseidrs} & HIL, relés comerciais & IDS com aprendizado & Excluída do modelo & n/c \\ \hline
+\citn{Hussain et al. (2023)}{hussain2023hybrid} & RTDS e Snort & MAC e validação de conteúdo & Citada como desafio & n/c \\ \hline
+\citn{Girdhar et al. (2024)}{girdhar2024sdn} & HIL e Mininet & IDS por regras e bloqueio de porta & n/c & n/c \\ \hline
+\citn{Moore (2026)}{moore2026anomaly} & Conjunto ERENO & Aprendizado de máquina & n/c & Descrito; campos descartados \\ \hline
+\citn{de Oliveira et al. (2023)}{oliveira2023ataques} & RTDS e IED real & Sem defesa & n/c & n/c \\ \hline
+\citn{Zemanek et al. (2022)}{zemanek2022powerduck} & \emph{Testbed} físico & Sem defesa & n/c & n/c \\ \hline
+\textbf{Este trabalho} & Emulado & IDS, HMAC simulado e 802.1X & Avaliada & C1 e C2 \\ \hline
 \end{tabularx}
 \par\vspace{2pt}{\footnotesize \citn{Roomi et al. (2025)}{roomi2025autosgcr} não aparece na Tabela~\ref{tab:2} porque tratam da geração do ambiente, e não de defesas; só parte do texto foi lida.}
 \end{table}
@@ -158,18 +155,17 @@ Duas características do \emph{testbed} condicionam a leitura dos resultados. A 
 \centering
 \caption{Componentes do testbed e seus papéis no modelo.}\label{tab:3}
 \footnotesize
-\begin{tabularx}{\linewidth}{>{\hsize=0.512\hsize\raggedright\arraybackslash}X>{\hsize=1.407\hsize\raggedright\arraybackslash}X>{\hsize=1.081\hsize\raggedright\arraybackslash}X}
-\toprule
-\textbf{Componente} & \textbf{Papel no modelo} & \textbf{Implementação} \\
-\midrule
-Publicador (emulado) & Emite os quadros GOOSE legítimos; assina, quando o HMAC está ativo & \texttt{publicador{-}1} (imagem do atacante, MAC do molde); gerador de tráfego legítimo \\
-Atacante & Forja e injeta quadros & \texttt{atacante{-}1}; gerador de tráfego de ataque \\
-IDS de estado & Observa o tráfego e emite alertas; não descarta quadros & \texttt{ids{-}1}; monitor alimentado diretamente \\
-Autenticador 802.1X & Libera ou bloqueia o encaminhamento por porta e MAC & \texttt{autenticador{-}8021x} (hostapd e nftables) \\
-PKI e inventário & Emite os certificados e vincula o CN ao MAC & \texttt{pki/\allowbreak{}}; inventário CN\ensuremath{\rightarrow}MAC \\
-IEDs simulados & Hosts que se autenticam; não geram GOOSE & \texttt{ubuntu{-}ied} \\
-Assinantes GOOSE & Não implementados & — \\
-\bottomrule
+\renewcommand{\arraystretch}{1.25}
+\begin{tabularx}{\linewidth}{|>{\hsize=0.512\hsize\raggedright\arraybackslash}X|>{\hsize=1.407\hsize\raggedright\arraybackslash}X|>{\hsize=1.081\hsize\raggedright\arraybackslash}X|}
+\hline
+\textbf{Componente} & \textbf{Papel no modelo} & \textbf{Implementação} \\ \hline
+Publicador (emulado) & Emite os quadros GOOSE legítimos; assina, quando o HMAC está ativo & \texttt{publicador{-}1} (imagem do atacante, MAC do molde); gerador de tráfego legítimo \\ \hline
+Atacante & Forja e injeta quadros & \texttt{atacante{-}1}; gerador de tráfego de ataque \\ \hline
+IDS de estado & Observa o tráfego e emite alertas; não descarta quadros & \texttt{ids{-}1}; monitor alimentado diretamente \\ \hline
+Autenticador 802.1X & Libera ou bloqueia o encaminhamento por porta e MAC & \texttt{autenticador{-}8021x} (hostapd e nftables) \\ \hline
+PKI e inventário & Emite os certificados e vincula o CN ao MAC & \texttt{pki/\allowbreak{}}; inventário CN\ensuremath{\rightarrow}MAC \\ \hline
+IEDs simulados & Hosts que se autenticam; não geram GOOSE & \texttt{ubuntu{-}ied} \\ \hline
+Assinantes GOOSE & Não implementados & — \\ \hline
 \end{tabularx}
 \end{table}
 
@@ -185,16 +181,15 @@ O adversário não dispõe da chave de autenticação por mensagem, exceto no ce
 \centering
 \caption{Níveis do atacante diante do controle de acesso 802.1X.}\label{tab:4}
 \footnotesize
-\begin{tabularx}{\linewidth}{>{\hsize=0.309\hsize\raggedright\arraybackslash}X>{\hsize=1.960\hsize\raggedright\arraybackslash}X>{\hsize=1.255\hsize\raggedright\arraybackslash}X>{\hsize=0.476\hsize\raggedright\arraybackslash}X}
-\toprule
-\textbf{Nível} & \textbf{Credencial 802.1X} & \textbf{MAC de origem} & \textbf{Cenários} \\
-\midrule
-N0 & Controle de acesso desligado & Clonado do publicador (C1) & E0 \\
-N1 & Nenhuma & Clonado do publicador & E1 \\
-N2 & Certificado revogado (ou fora do inventário, ou de CA desconhecida) & Próprio & E2; \emph{netns} \\
-N3 & Certificado válido e chave privada de um nó comprometido & De outro nó (um IED, E3; o publicador, após autenticar, E4b e E5 (iii)) & E3, E4b, E5 (iii) \\
-N4 & Certificado válido e chave privada de um nó comprometido & Próprio (C2) & E4, E5 (i) e (ii) \\
-\bottomrule
+\renewcommand{\arraystretch}{1.25}
+\begin{tabularx}{\linewidth}{|>{\hsize=0.309\hsize\raggedright\arraybackslash}X|>{\hsize=1.960\hsize\raggedright\arraybackslash}X|>{\hsize=1.255\hsize\raggedright\arraybackslash}X|>{\hsize=0.476\hsize\raggedright\arraybackslash}X|}
+\hline
+\textbf{Nível} & \textbf{Credencial 802.1X} & \textbf{MAC de origem} & \textbf{Cenários} \\ \hline
+N0 & Controle de acesso desligado & Clonado do publicador (C1) & E0 \\ \hline
+N1 & Nenhuma & Clonado do publicador & E1 \\ \hline
+N2 & Certificado revogado (ou fora do inventário, ou de CA desconhecida) & Próprio & E2; \emph{netns} \\ \hline
+N3 & Certificado válido e chave privada de um nó comprometido & De outro nó (um IED, E3; o publicador, após autenticar, E4b e E5 (iii)) & E3, E4b, E5 (iii) \\ \hline
+N4 & Certificado válido e chave privada de um nó comprometido & Próprio (C2) & E4, E5 (i) e (ii) \\ \hline
 \end{tabularx}
 \end{table}
 
@@ -214,13 +209,12 @@ A autenticação por mensagem avaliada é uma simulação (Seção~\ref{sec:5.2}
 \centering
 \caption{Variantes de masquerade e a posse da chave.}\label{tab:5}
 \footnotesize
-\begin{tabularx}{\linewidth}{>{\hsize=0.476\hsize\raggedright\arraybackslash}X>{\hsize=0.681\hsize\raggedright\arraybackslash}X>{\hsize=1.421\hsize\raggedright\arraybackslash}X>{\hsize=1.421\hsize\raggedright\arraybackslash}X}
-\toprule
-\textbf{Variante} & \textbf{MAC de origem} & \textbf{Tag HMAC no quadro forjado} & \textbf{Premissas do atacante} \\
-\midrule
-C1 & Do publicador (clonado) & Ausente, sem a chave; válida (chave-mestra), com a chave & Último \texttt{stNum} do publicador e posição do booleano; com a chave, também a chave-mestra \\
-C2 & Diferente do publicador & Ausente, sem a chave; válida (chave-mestra), com a chave & Último \texttt{stNum} do publicador e posição do booleano; com a chave, também a chave-mestra \\
-\bottomrule
+\renewcommand{\arraystretch}{1.25}
+\begin{tabularx}{\linewidth}{|>{\hsize=0.476\hsize\raggedright\arraybackslash}X|>{\hsize=0.681\hsize\raggedright\arraybackslash}X|>{\hsize=1.421\hsize\raggedright\arraybackslash}X|>{\hsize=1.421\hsize\raggedright\arraybackslash}X|}
+\hline
+\textbf{Variante} & \textbf{MAC de origem} & \textbf{Tag HMAC no quadro forjado} & \textbf{Premissas do atacante} \\ \hline
+C1 & Do publicador (clonado) & Ausente, sem a chave; válida (chave-mestra), com a chave & Último \texttt{stNum} do publicador e posição do booleano; com a chave, também a chave-mestra \\ \hline
+C2 & Diferente do publicador & Ausente, sem a chave; válida (chave-mestra), com a chave & Último \texttt{stNum} do publicador e posição do booleano; com a chave, também a chave-mestra \\ \hline
 \end{tabularx}
 \end{table}
 
@@ -232,15 +226,14 @@ Avaliamos quatro ataques sobre o mesmo quadro-molde, descritos operacionalmente 
 \centering
 \caption{Ataques avaliados.}\label{tab:6}
 \footnotesize
-\begin{tabularx}{\linewidth}{>{\hsize=0.990\hsize\raggedright\arraybackslash}X>{\hsize=1.334\hsize\raggedright\arraybackslash}X>{\hsize=1.650\hsize\raggedright\arraybackslash}X>{\hsize=0.904\hsize\raggedright\arraybackslash}X>{\hsize=0.818\hsize\raggedright\arraybackslash}X>{\hsize=0.303\hsize\raggedright\arraybackslash}X}
-\toprule
-\textbf{Ataque} & \textbf{Propriedade} & \textbf{Construção do quadro} & \textbf{Parâmetros avaliados} & \textbf{Premissa: conhece o último \texttt{stNum}} & \textbf{CU} \\
-\midrule
-Flooding (A) & Disponibilidade & Reenvia o molde em alta taxa, com \texttt{sqNum} crescente e \texttt{stNum} fixo & 50 a 2000 pacotes/s & Não & CU3 \\
-Replay (B) & Autenticidade temporal & Reenvia o quadro capturado, sem alteração & Atraso de 0,5 a 10 s & Não & CU1 \\
-Masquerade (C1, C2) & Integridade e autenticidade & Seção~\ref{sec:3.3} & MAC de origem & Sim & CU1 \\
-Suppression (D) & Disponibilidade lógica & Soma um salto ao \texttt{stNum} e zera o \texttt{sqNum} & Salto de 60 a 5000 & Sim & CU2 \\
-\bottomrule
+\renewcommand{\arraystretch}{1.25}
+\begin{tabularx}{\linewidth}{|>{\hsize=0.990\hsize\raggedright\arraybackslash}X|>{\hsize=1.334\hsize\raggedright\arraybackslash}X|>{\hsize=1.650\hsize\raggedright\arraybackslash}X|>{\hsize=0.904\hsize\raggedright\arraybackslash}X|>{\hsize=0.818\hsize\raggedright\arraybackslash}X|>{\hsize=0.303\hsize\raggedright\arraybackslash}X|}
+\hline
+\textbf{Ataque} & \textbf{Propriedade} & \textbf{Construção do quadro} & \textbf{Parâmetros avaliados} & \textbf{Premissa: conhece o último \texttt{stNum}} & \textbf{CU} \\ \hline
+Flooding (A) & Disponibilidade & Reenvia o molde em alta taxa, com \texttt{sqNum} crescente e \texttt{stNum} fixo & 50 a 2000 pacotes/s & Não & CU3 \\ \hline
+Replay (B) & Autenticidade temporal & Reenvia o quadro capturado, sem alteração & Atraso de 0,5 a 10 s & Não & CU1 \\ \hline
+Masquerade (C1, C2) & Integridade e autenticidade & Seção~\ref{sec:3.3} & MAC de origem & Sim & CU1 \\ \hline
+Suppression (D) & Disponibilidade lógica & Soma um salto ao \texttt{stNum} e zera o \texttt{sqNum} & Salto de 60 a 5000 & Sim & CU2 \\ \hline
 \end{tabularx}
 \end{table}
 
@@ -262,14 +255,13 @@ A avaliação usa \textbf{três ambientes distintos}, e os resultados de cada um
 \centering
 \caption{Ambientes de avaliação e seus cenários.}\label{tab:7}
 \footnotesize
-\begin{tabularx}{\linewidth}{>{\hsize=0.738\hsize\raggedright\arraybackslash}X>{\hsize=1.398\hsize\raggedright\arraybackslash}X>{\hsize=1.165\hsize\raggedright\arraybackslash}X>{\hsize=0.700\hsize\raggedright\arraybackslash}X}
-\toprule
-\textbf{Ambiente} & \textbf{Cenários} & \textbf{Camadas ativas} & \textbf{Execuções} \\
-\midrule
-Campanha \emph{offline} (sem GNS3, rede ou \emph{switch}) & T0 (tráfego legítimo), A, B, C1, C2 e D, nos modos sem HMAC, com HMAC e com chave comprometida; sensibilidade do limiar de flooding & IDS; IDS e HMAC & 100 por cenário e modo \\
-GNS3 com 802.1X & E0 a E5 (Tabela~\ref{tab:4}), todos masquerade & E0: IDS; E1 a E4b: 802.1X (IDS ativo apenas em E1 e E4); E5: 802.1X, HMAC e IDS & 1 por cenário \\
-\emph{Network namespaces} & Cenários equivalentes a E0 a E4b, mais revogação em operação (E2b), certificado fora do inventário, CA desconhecida e queda de link & 802.1X, sem HMAC e sem IDS & 30 verificações por execução \\
-\bottomrule
+\renewcommand{\arraystretch}{1.25}
+\begin{tabularx}{\linewidth}{|>{\hsize=0.738\hsize\raggedright\arraybackslash}X|>{\hsize=1.398\hsize\raggedright\arraybackslash}X|>{\hsize=1.165\hsize\raggedright\arraybackslash}X|>{\hsize=0.700\hsize\raggedright\arraybackslash}X|}
+\hline
+\textbf{Ambiente} & \textbf{Cenários} & \textbf{Camadas ativas} & \textbf{Execuções} \\ \hline
+Campanha \emph{offline} (sem GNS3, rede ou \emph{switch}) & T0 (tráfego legítimo), A, B, C1, C2 e D, nos modos sem HMAC, com HMAC e com chave comprometida; sensibilidade do limiar de flooding & IDS; IDS e HMAC & 100 por cenário e modo \\ \hline
+GNS3 com 802.1X & E0 a E5 (Tabela~\ref{tab:4}), todos masquerade & E0: IDS; E1 a E4b: 802.1X (IDS ativo apenas em E1 e E4); E5: 802.1X, HMAC e IDS & 1 por cenário \\ \hline
+\emph{Network namespaces} & Cenários equivalentes a E0 a E4b, mais revogação em operação (E2b), certificado fora do inventário, CA desconhecida e queda de link & 802.1X, sem HMAC e sem IDS & 30 verificações por execução \\ \hline
 \end{tabularx}
 \end{table}
 
@@ -295,14 +287,13 @@ A topologia gerada do SCD real foi validada no 4.\textordmasculine{} Marco, a qu
 \centering
 \caption{Topologias geradas pelo projeto.}\label{tab:8}
 \footnotesize
-\begin{tabularx}{\linewidth}{>{\hsize=0.542\hsize\raggedright\arraybackslash}X>{\hsize=1.229\hsize\raggedright\arraybackslash}X>{\hsize=1.229\hsize\raggedright\arraybackslash}X}
-\toprule
-\textbf{Arquivo} & \textbf{SCD de origem e nós} & \textbf{Uso neste artigo} \\
-\midrule
-\texttt{subestacao.\allowbreak{}gns3} & Sintético (2 IEDs); 10 nós: 5 \emph{switches}, 2 IEDs, Oráculo, IDS, atacante & Topologia de referência do gerador; não usada nos cenários E0 a E5 \\
-\texttt{subestacao\_\allowbreak{}real.\allowbreak{}gns3} & Real (\texttt{simpleIO}, 1 IED); 9 nós & Validação do gerador com SCD real (4.\textordmasculine{} Marco): abre sem erro, IP automático, replay detectado pelo IDS \\
-\texttt{subestacao\_\allowbreak{}8021x.\allowbreak{}gns3} & Sintético (2 IEDs); 7 nós: autenticador, 2 IEDs, Oráculo, IDS, publicador, atacante; sem \emph{switches} & Todos os cenários E0 a E5 no GNS3 \\
-\bottomrule
+\renewcommand{\arraystretch}{1.25}
+\begin{tabularx}{\linewidth}{|>{\hsize=0.542\hsize\raggedright\arraybackslash}X|>{\hsize=1.229\hsize\raggedright\arraybackslash}X|>{\hsize=1.229\hsize\raggedright\arraybackslash}X|}
+\hline
+\textbf{Arquivo} & \textbf{SCD de origem e nós} & \textbf{Uso neste artigo} \\ \hline
+\texttt{subestacao.\allowbreak{}gns3} & Sintético (2 IEDs); 10 nós: 5 \emph{switches}, 2 IEDs, Oráculo, IDS, atacante & Topologia de referência do gerador; não usada nos cenários E0 a E5 \\ \hline
+\texttt{subestacao\_\allowbreak{}real.\allowbreak{}gns3} & Real (\texttt{simpleIO}, 1 IED); 9 nós & Validação do gerador com SCD real (4.\textordmasculine{} Marco): abre sem erro, IP automático, replay detectado pelo IDS \\ \hline
+\texttt{subestacao\_\allowbreak{}8021x.\allowbreak{}gns3} & Sintético (2 IEDs); 7 nós: autenticador, 2 IEDs, Oráculo, IDS, publicador, atacante; sem \emph{switches} & Todos os cenários E0 a E5 no GNS3 \\ \hline
 \end{tabularx}
 \end{table}
 
@@ -320,19 +311,18 @@ Todos os quadros GOOSE do trabalho derivam de um único quadro, capturado de um 
 \centering
 \caption{Campos do quadro-molde.}\label{tab:9}
 \footnotesize
-\begin{tabularx}{\linewidth}{>{\hsize=0.828\hsize\raggedright\arraybackslash}X>{\hsize=1.172\hsize\raggedright\arraybackslash}X}
-\toprule
-\textbf{Campo} & \textbf{Valor} \\
-\midrule
-Tamanho do quadro & 367 bytes \\
-MAC de origem / destino & \texttt{00:30:a7:01:b3:16} / \texttt{01:0c:cd:01:00:03} \\
-APPID; marcação VLAN & \texttt{0x0003}; ausente \\
-\texttt{gocbRef} & \texttt{SEL\_\allowbreak{}351\_\allowbreak{}1CFG/\allowbreak{}LLN0\$\allowbreak{}GO\$\allowbreak{}NewGOOSEMessage} \\
-\texttt{datSet}; \texttt{goID} & \texttt{SEL\_\allowbreak{}351\_\allowbreak{}1CFG/\allowbreak{}LLN0\$\allowbreak{}three51to2411}; \texttt{SEL\_\allowbreak{}351\_\allowbreak{}1} \\
-\texttt{stNum} / \texttt{sqNum} & 23 / 521 \\
-\texttt{timeAllowedToLive}; \texttt{confRev} & 2000; 1 \\
-\texttt{allData} & 223 bytes (bloco opaco) \\
-\bottomrule
+\renewcommand{\arraystretch}{1.25}
+\begin{tabularx}{\linewidth}{|>{\hsize=0.828\hsize\raggedright\arraybackslash}X|>{\hsize=1.172\hsize\raggedright\arraybackslash}X|}
+\hline
+\textbf{Campo} & \textbf{Valor} \\ \hline
+Tamanho do quadro & 367 bytes \\ \hline
+MAC de origem / destino & \texttt{00:30:a7:01:b3:16} / \texttt{01:0c:cd:01:00:03} \\ \hline
+APPID; marcação VLAN & \texttt{0x0003}; ausente \\ \hline
+\texttt{gocbRef} & \texttt{SEL\_\allowbreak{}351\_\allowbreak{}1CFG/\allowbreak{}LLN0\$\allowbreak{}GO\$\allowbreak{}NewGOOSEMessage} \\ \hline
+\texttt{datSet}; \texttt{goID} & \texttt{SEL\_\allowbreak{}351\_\allowbreak{}1CFG/\allowbreak{}LLN0\$\allowbreak{}three51to2411}; \texttt{SEL\_\allowbreak{}351\_\allowbreak{}1} \\ \hline
+\texttt{stNum} / \texttt{sqNum} & 23 / 521 \\ \hline
+\texttt{timeAllowedToLive}; \texttt{confRev} & 2000; 1 \\ \hline
+\texttt{allData} & 223 bytes (bloco opaco) \\ \hline
 \end{tabularx}
 \end{table}
 
@@ -378,16 +368,15 @@ A Figura~\ref{fig:4} mostra o fluxo de decisão para cada quadro, e a Tabela~\re
 \centering
 \caption{Regras do IDS de estado.}\label{tab:10}
 \footnotesize
-\begin{tabularx}{\linewidth}{>{\hsize=0.700\hsize\raggedright\arraybackslash}X>{\hsize=2.027\hsize\raggedright\arraybackslash}X>{\hsize=0.532\hsize\raggedright\arraybackslash}X>{\hsize=0.741\hsize\raggedright\arraybackslash}X}
-\toprule
-\textbf{Regra} & \textbf{Condição de alerta} & \textbf{Parâmetro (padrão)} & \textbf{Alerta} \\
-\midrule
-Flooding & Taxa média na janela > limiar & Janela de 2 s; 20 pacotes/s & \texttt{flood\_\allowbreak{}start}, \texttt{flood\_\allowbreak{}end} \\
-Autenticação (opcional) & Tag HMAC ausente, malformada ou inválida & — & \texttt{auth\_\allowbreak{}fail} \\
-Masquerade & MAC de origem \ensuremath{\neq} último MAC do \texttt{gocbRef} & — & \texttt{masquerade} \\
-Replay & (\texttt{stNum}, \texttt{sqNum}) \ensuremath{\leq} último par visto & — & \texttt{replay} \\
-Suppression & \texttt{stNum} \ensuremath{-} último \texttt{stNum} > limiar & 50 & \texttt{suppression} \\
-\bottomrule
+\renewcommand{\arraystretch}{1.25}
+\begin{tabularx}{\linewidth}{|>{\hsize=0.700\hsize\raggedright\arraybackslash}X|>{\hsize=2.027\hsize\raggedright\arraybackslash}X|>{\hsize=0.532\hsize\raggedright\arraybackslash}X|>{\hsize=0.741\hsize\raggedright\arraybackslash}X|}
+\hline
+\textbf{Regra} & \textbf{Condição de alerta} & \textbf{Parâmetro (padrão)} & \textbf{Alerta} \\ \hline
+Flooding & Taxa média na janela > limiar & Janela de 2 s; 20 pacotes/s & \texttt{flood\_\allowbreak{}start}, \texttt{flood\_\allowbreak{}end} \\ \hline
+Autenticação (opcional) & Tag HMAC ausente, malformada ou inválida & — & \texttt{auth\_\allowbreak{}fail} \\ \hline
+Masquerade & MAC de origem \ensuremath{\neq} último MAC do \texttt{gocbRef} & — & \texttt{masquerade} \\ \hline
+Replay & (\texttt{stNum}, \texttt{sqNum}) \ensuremath{\leq} último par visto & — & \texttt{replay} \\ \hline
+Suppression & \texttt{stNum} \ensuremath{-} último \texttt{stNum} > limiar & 50 & \texttt{suppression} \\ \hline
 \end{tabularx}
 \end{table}
 
@@ -411,12 +400,11 @@ A tag é transportada em um trailer TLV após o APDU GOOSE: o byte \texttt{0xA0}
 \centering
 \caption{Campos do quadro GOOSE cobertos e não cobertos pela tag HMAC.}\label{tab:11}
 \footnotesize
-\begin{tabularx}{\linewidth}{>{\hsize=0.815\hsize\raggedright\arraybackslash}X>{\hsize=1.185\hsize\raggedright\arraybackslash}X}
-\toprule
-\textbf{Cobertos} & \textbf{Não cobertos} \\
-\midrule
-\texttt{gocbRef}, \texttt{stNum}, \texttt{sqNum}, \texttt{t}, \texttt{allData} & \texttt{timeAllowedToLive}, \texttt{datSet}, \texttt{goID}, \texttt{test}, \texttt{confRev}, \texttt{ndsCom}, \texttt{numDatSetEntries}; MAC de origem e de destino; APPID; marcação VLAN \\
-\bottomrule
+\renewcommand{\arraystretch}{1.25}
+\begin{tabularx}{\linewidth}{|>{\hsize=0.815\hsize\raggedright\arraybackslash}X|>{\hsize=1.185\hsize\raggedright\arraybackslash}X|}
+\hline
+\textbf{Cobertos} & \textbf{Não cobertos} \\ \hline
+\texttt{gocbRef}, \texttt{stNum}, \texttt{sqNum}, \texttt{t}, \texttt{allData} & \texttt{timeAllowedToLive}, \texttt{datSet}, \texttt{goID}, \texttt{test}, \texttt{confRev}, \texttt{ndsCom}, \texttt{numDatSetEntries}; MAC de origem e de destino; APPID; marcação VLAN \\ \hline
 \end{tabularx}
 \end{table}
 
@@ -444,17 +432,16 @@ O supervisor escreve eventos JSONL: \texttt{auth\_\allowbreak{}aceita}, \texttt{
 \centering
 \caption{Motivos de rejeição registrados pelo autenticador.}\label{tab:12}
 \footnotesize
-\begin{tabularx}{\linewidth}{>{\hsize=0.512\hsize\raggedright\arraybackslash}X>{\hsize=1.488\hsize\raggedright\arraybackslash}X}
-\toprule
-\textbf{Motivo} & \textbf{Situação} \\
-\midrule
-\texttt{sem\_\allowbreak{}certificado} & O cliente recusa o EAP-TLS (sem credencial configurada) \\
-\texttt{certificado\_\allowbreak{}invalido} & Erro de TLS na verificação do certificado, exceto revogação \\
-\texttt{certificado\_\allowbreak{}revogado} & Erro de TLS indicando revogação (código X509 23, da CRL) \\
-\texttt{cn\_\allowbreak{}fora\_\allowbreak{}do\_\allowbreak{}inventario} & CN do certificado ausente do inventário \\
-\texttt{mac\_\allowbreak{}divergente} & CN presente no inventário, mas MAC de origem fora do conjunto de MACs autorizados para esse CN \\
-\texttt{falha\_\allowbreak{}eap} & EAP termina em falha sem erro de certificado \\
-\bottomrule
+\renewcommand{\arraystretch}{1.25}
+\begin{tabularx}{\linewidth}{|>{\hsize=0.512\hsize\raggedright\arraybackslash}X|>{\hsize=1.488\hsize\raggedright\arraybackslash}X|}
+\hline
+\textbf{Motivo} & \textbf{Situação} \\ \hline
+\texttt{sem\_\allowbreak{}certificado} & O cliente recusa o EAP-TLS (sem credencial configurada) \\ \hline
+\texttt{certificado\_\allowbreak{}invalido} & Erro de TLS na verificação do certificado, exceto revogação \\ \hline
+\texttt{certificado\_\allowbreak{}revogado} & Erro de TLS indicando revogação (código X509 23, da CRL) \\ \hline
+\texttt{cn\_\allowbreak{}fora\_\allowbreak{}do\_\allowbreak{}inventario} & CN do certificado ausente do inventário \\ \hline
+\texttt{mac\_\allowbreak{}divergente} & CN presente no inventário, mas MAC de origem fora do conjunto de MACs autorizados para esse CN \\ \hline
+\texttt{falha\_\allowbreak{}eap} & EAP termina em falha sem erro de certificado \\ \hline
 \end{tabularx}
 \end{table}
 
@@ -476,17 +463,16 @@ A Tabela~\ref{tab:13} mostra as detecções por cenário e modo. Para 0/100, o i
 \centering
 \caption{Detecções por cenário e modo (N = 100 por célula); entre parênteses, os tipos de alerta observados. No cenário T0, a medida é o falso positivo (FPR).}\label{tab:13}
 \footnotesize
-\begin{tabularx}{\linewidth}{>{\hsize=1.074\hsize\raggedright\arraybackslash}X>{\hsize=0.900\hsize\raggedright\arraybackslash}X>{\hsize=1.125\hsize\raggedright\arraybackslash}X>{\hsize=0.900\hsize\raggedright\arraybackslash}X}
-\toprule
-\textbf{Cenário} & \textbf{Sem HMAC} & \textbf{HMAC, atacante sem a chave} & \textbf{HMAC, chave vazada} \\
-\midrule
-T0 (FPR) & 0/100 & 0/100 & 0/100 \\
-A (flooding) & 100/100 (\texttt{flood\_\allowbreak{}start}) & 100/100 (\texttt{auth\_\allowbreak{}fail}, \texttt{flood\_\allowbreak{}start}) & 100/100 (\texttt{flood\_\allowbreak{}start}) \\
-B (replay) & 100/100 (\texttt{replay}) & 100/100 (\texttt{replay}) & 100/100 (\texttt{replay}) \\
-C1 (masquerade, MAC do publicador) & \textbf{0/100} & 100/100 (\texttt{auth\_\allowbreak{}fail}) & \textbf{0/100} \\
-C2 (masquerade, outro MAC) & 100/100 (\texttt{masquerade}) & 100/100 (\texttt{auth\_\allowbreak{}fail}) & 100/100 (\texttt{masquerade}) \\
-D (suppression) & 100/100 (\texttt{suppression}) & 100/100 (\texttt{auth\_\allowbreak{}fail}) & 100/100 (\texttt{suppression}) \\
-\bottomrule
+\renewcommand{\arraystretch}{1.25}
+\begin{tabularx}{\linewidth}{|>{\hsize=1.074\hsize\raggedright\arraybackslash}X|>{\hsize=0.900\hsize\raggedright\arraybackslash}X|>{\hsize=1.125\hsize\raggedright\arraybackslash}X|>{\hsize=0.900\hsize\raggedright\arraybackslash}X|}
+\hline
+\textbf{Cenário} & \textbf{Sem HMAC} & \textbf{HMAC, atacante sem a chave} & \textbf{HMAC, chave vazada} \\ \hline
+T0 (FPR) & 0/100 & 0/100 & 0/100 \\ \hline
+A (flooding) & 100/100 (\texttt{flood\_\allowbreak{}start}) & 100/100 (\texttt{auth\_\allowbreak{}fail}, \texttt{flood\_\allowbreak{}start}) & 100/100 (\texttt{flood\_\allowbreak{}start}) \\ \hline
+B (replay) & 100/100 (\texttt{replay}) & 100/100 (\texttt{replay}) & 100/100 (\texttt{replay}) \\ \hline
+C1 (masquerade, MAC do publicador) & \textbf{0/100} & 100/100 (\texttt{auth\_\allowbreak{}fail}) & \textbf{0/100} \\ \hline
+C2 (masquerade, outro MAC) & 100/100 (\texttt{masquerade}) & 100/100 (\texttt{auth\_\allowbreak{}fail}) & 100/100 (\texttt{masquerade}) \\ \hline
+D (suppression) & 100/100 (\texttt{suppression}) & 100/100 (\texttt{auth\_\allowbreak{}fail}) & 100/100 (\texttt{suppression}) \\ \hline
 \end{tabularx}
 \end{table}
 
@@ -523,24 +509,22 @@ A Tabela~\ref{tab:14} resume o tempo gasto por quadro em cada etapa do processam
 \centering
 \caption{Latência por quadro na campanha \emph{offline} (\textmu{}s): faixa entre cenários das médias por repetição e microbenchmark do HMAC.}\label{tab:14}
 \footnotesize
-\begin{tabularx}{\linewidth}{>{\hsize=1.497\hsize\raggedright\arraybackslash}X>{\hsize=0.950\hsize\raggedright\arraybackslash}X>{\hsize=0.979\hsize\raggedright\arraybackslash}X>{\hsize=0.970\hsize\raggedright\arraybackslash}X>{\hsize=0.605\hsize\raggedright\arraybackslash}X}
-\toprule
-\textbf{Modo} & \textbf{\emph{Parse}} & \textbf{Verificação do HMAC} & \textbf{Processamento no IDS} & \textbf{Soma das médias} \\
-\midrule
-Sem HMAC & 29,3 a 61,1 & não se aplica & 5,6 a 11,6 & 36 a 73 \\
-HMAC, atacante sem a chave & 32,2 a 50,6 & 2,1 a 15,7 & 4,6 a 17,9 & 50 a 84 \\
-HMAC, chave vazada & 39,5 a 57,6 & 13,6 a 21,1 & 6,9 a 16,7 & 60 a 95 \\
-\bottomrule
+\renewcommand{\arraystretch}{1.25}
+\begin{tabularx}{\linewidth}{|>{\hsize=1.497\hsize\raggedright\arraybackslash}X|>{\hsize=0.950\hsize\raggedright\arraybackslash}X|>{\hsize=0.979\hsize\raggedright\arraybackslash}X|>{\hsize=0.970\hsize\raggedright\arraybackslash}X|>{\hsize=0.605\hsize\raggedright\arraybackslash}X|}
+\hline
+\textbf{Modo} & \textbf{\emph{Parse}} & \textbf{Verificação do HMAC} & \textbf{Processamento no IDS} & \textbf{Soma das médias} \\ \hline
+Sem HMAC & 29,3 a 61,1 & não se aplica & 5,6 a 11,6 & 36 a 73 \\ \hline
+HMAC, atacante sem a chave & 32,2 a 50,6 & 2,1 a 15,7 & 4,6 a 17,9 & 50 a 84 \\ \hline
+HMAC, chave vazada & 39,5 a 57,6 & 13,6 a 21,1 & 6,9 a 16,7 & 60 a 95 \\ \hline
 \end{tabularx}
 \vspace{6pt}
 \footnotesize
-\begin{tabularx}{\linewidth}{>{\hsize=2.043\hsize\raggedright\arraybackslash}X>{\hsize=0.662\hsize\raggedright\arraybackslash}X>{\hsize=0.662\hsize\raggedright\arraybackslash}X>{\hsize=0.662\hsize\raggedright\arraybackslash}X>{\hsize=0.970\hsize\raggedright\arraybackslash}X}
-\toprule
-\textbf{Microbenchmark} & \textbf{Média} & \textbf{Mediana} & \textbf{P99} & \textbf{Desvio-padrão} \\
-\midrule
-Assinatura (\texttt{sign}) & 12,08 & 11,04 & 26,26 & 18,16 \\
-Verificação (\texttt{verify}) & 12,85 & 11,53 & 35,34 & 5,50 \\
-\bottomrule
+\renewcommand{\arraystretch}{1.25}
+\begin{tabularx}{\linewidth}{|>{\hsize=2.043\hsize\raggedright\arraybackslash}X|>{\hsize=0.662\hsize\raggedright\arraybackslash}X|>{\hsize=0.662\hsize\raggedright\arraybackslash}X|>{\hsize=0.662\hsize\raggedright\arraybackslash}X|>{\hsize=0.970\hsize\raggedright\arraybackslash}X|}
+\hline
+\textbf{Microbenchmark} & \textbf{Média} & \textbf{Mediana} & \textbf{P99} & \textbf{Desvio-padrão} \\ \hline
+Assinatura (\texttt{sign}) & 12,08 & 11,04 & 26,26 & 18,16 \\ \hline
+Verificação (\texttt{verify}) & 12,85 & 11,53 & 35,34 & 5,50 \\ \hline
 \end{tabularx}
 \end{table}
 
@@ -562,20 +546,19 @@ A Tabela~\ref{tab:15} resume os cenários executados no GNS3 (Seção~4.3.2), ca
 \centering
 \caption{Cenários E0 a E5 no GNS3 (uma execução por cenário): efeito observado e evidência.}\label{tab:15}
 \footnotesize
-\begin{tabularx}{\linewidth}{>{\hsize=1.100\hsize\raggedright\arraybackslash}X>{\hsize=1.171\hsize\raggedright\arraybackslash}X>{\hsize=0.729\hsize\raggedright\arraybackslash}X}
-\toprule
-\textbf{Cenário (credencial; MAC)} & \textbf{Efeito observado} & \textbf{Evidência} \\
-\midrule
-E0: 802.1X desativado; C1 & \texttt{ping} do atacante 3/3 (RTT médio 0,468 ms); nenhum alerta do IDS registrado & Console; \texttt{alertas\_\allowbreak{}e0.\allowbreak{}jsonl} (vazio) \\
-E1: sem credencial; MAC do publicador & \texttt{ping} 0/3 (\emph{Destination Host Unreachable}); \texttt{quadro\_\allowbreak{}descartado} na porta do atacante, com o MAC do publicador (motivo \texttt{origem\_\allowbreak{}nao\_\allowbreak{}autorizada}); nenhum alerta do IDS registrado & Console; log do autenticador; \texttt{alertas\_\allowbreak{}e1.\allowbreak{}jsonl} (vazio) \\
-E2: certificado revogado & \texttt{auth\_\allowbreak{}rejeitada} com motivo \texttt{certificado\_\allowbreak{}revogado}; \emph{supplicant}: porta não autorizada após 15 s; \texttt{ping} 0/3 & Log do autenticador; console \\
-E3: certificado válido do nó comprometido (CN \texttt{atacante{-}comprometido}, vinculado ao MAC do atacante); MAC de um IED & TLS aceito (o \emph{supplicant} imprime porta autorizada), mas \texttt{auth\_\allowbreak{}rejeitada} com motivo \texttt{mac\_\allowbreak{}divergente}; \texttt{ping} 0/3 & Log do autenticador; console \\
-E4: certificado válido; MAC próprio (C2) & Autentica; o quadro forjado chega ao IDS (\texttt{tcpdump}); alerta \texttt{masquerade} & \texttt{tcpdump\_\allowbreak{}e4.\allowbreak{}txt}; \texttt{alertas\_\allowbreak{}e4.\allowbreak{}jsonl} \\
-E4b: certificado válido; MAC do publicador & Conjunto \texttt{descartados} do \texttt{nftables}: par (porta do atacante, MAC do publicador), 5 pacotes, 1760 B & Console (\texttt{nft list set}) \\
-E5 (i): HMAC; sem a chave; MAC próprio & Alerta \texttt{auth\_\allowbreak{}fail} & \texttt{alertas\_\allowbreak{}e5.\allowbreak{}jsonl} \\
-E5 (ii): HMAC; chave vazada; MAC próprio & Alerta \texttt{masquerade} & \texttt{alertas\_\allowbreak{}e5.\allowbreak{}jsonl} \\
-E5 (iii): HMAC; chave vazada; MAC do publicador & Nenhum alerta novo registrado; conjunto \texttt{descartados}: mesmo par, 5 pacotes, 1930 B & \texttt{alertas\_\allowbreak{}e5.\allowbreak{}jsonl}; console (\texttt{nft list set}) \\
-\bottomrule
+\renewcommand{\arraystretch}{1.25}
+\begin{tabularx}{\linewidth}{|>{\hsize=1.100\hsize\raggedright\arraybackslash}X|>{\hsize=1.171\hsize\raggedright\arraybackslash}X|>{\hsize=0.729\hsize\raggedright\arraybackslash}X|}
+\hline
+\textbf{Cenário (credencial; MAC)} & \textbf{Efeito observado} & \textbf{Evidência} \\ \hline
+E0: 802.1X desativado; C1 & \texttt{ping} do atacante 3/3 (RTT médio 0,468 ms); nenhum alerta do IDS registrado & Console; \texttt{alertas\_\allowbreak{}e0.\allowbreak{}jsonl} (vazio) \\ \hline
+E1: sem credencial; MAC do publicador & \texttt{ping} 0/3 (\emph{Destination Host Unreachable}); \texttt{quadro\_\allowbreak{}descartado} na porta do atacante, com o MAC do publicador (motivo \texttt{origem\_\allowbreak{}nao\_\allowbreak{}autorizada}); nenhum alerta do IDS registrado & Console; log do autenticador; \texttt{alertas\_\allowbreak{}e1.\allowbreak{}jsonl} (vazio) \\ \hline
+E2: certificado revogado & \texttt{auth\_\allowbreak{}rejeitada} com motivo \texttt{certificado\_\allowbreak{}revogado}; \emph{supplicant}: porta não autorizada após 15 s; \texttt{ping} 0/3 & Log do autenticador; console \\ \hline
+E3: certificado válido do nó comprometido (CN \texttt{atacante{-}comprometido}, vinculado ao MAC do atacante); MAC de um IED & TLS aceito (o \emph{supplicant} imprime porta autorizada), mas \texttt{auth\_\allowbreak{}rejeitada} com motivo \texttt{mac\_\allowbreak{}divergente}; \texttt{ping} 0/3 & Log do autenticador; console \\ \hline
+E4: certificado válido; MAC próprio (C2) & Autentica; o quadro forjado chega ao IDS (\texttt{tcpdump}); alerta \texttt{masquerade} & \texttt{tcpdump\_\allowbreak{}e4.\allowbreak{}txt}; \texttt{alertas\_\allowbreak{}e4.\allowbreak{}jsonl} \\ \hline
+E4b: certificado válido; MAC do publicador & Conjunto \texttt{descartados} do \texttt{nftables}: par (porta do atacante, MAC do publicador), 5 pacotes, 1760 B & Console (\texttt{nft list set}) \\ \hline
+E5 (i): HMAC; sem a chave; MAC próprio & Alerta \texttt{auth\_\allowbreak{}fail} & \texttt{alertas\_\allowbreak{}e5.\allowbreak{}jsonl} \\ \hline
+E5 (ii): HMAC; chave vazada; MAC próprio & Alerta \texttt{masquerade} & \texttt{alertas\_\allowbreak{}e5.\allowbreak{}jsonl} \\ \hline
+E5 (iii): HMAC; chave vazada; MAC do publicador & Nenhum alerta novo registrado; conjunto \texttt{descartados}: mesmo par, 5 pacotes, 1930 B & \texttt{alertas\_\allowbreak{}e5.\allowbreak{}jsonl}; console (\texttt{nft list set}) \\ \hline
 \end{tabularx}
 \end{table}
 

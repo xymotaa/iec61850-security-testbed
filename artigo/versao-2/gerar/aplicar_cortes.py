@@ -55,6 +55,12 @@ def set_table_rows(caption_prefix, rows):
              ["|" + "---|" * len(rows[0])] + ["| " + " | ".join(r) + " |" for r in rows[1:]]
 
 
+# ---------------------------------------------------------------- Tabela 1: a nota n/c vai para a legenda
+_i = idx_start("*n/c: não consta nos trechos analisados.*")
+del L[_i]
+replace_line("*Tabela 1. ", "*Tabela 1. Ataques, propriedade comprometida e o que dizem as normas e a literatura "
+             "analisada. n/c: não consta nos trechos analisados.*")
+
 # ---------------------------------------------------------------- 1. Tabela 3
 remove_table("*Tabela 3. ")
 replace_in_line(
