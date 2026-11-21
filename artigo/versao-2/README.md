@@ -35,7 +35,7 @@ Tabelas 3 e 11 removidas (duas frases na 2.4 e a lista de evidências na 4.5 as 
 
 ## Pendências (não mascaradas no PDF)
 
-- Seção 4.5: URL do repositório informada; o hash do commit de referência continua como `[COMMIT DE REFERÊNCIA: a informar na entrega]` (em vermelho), a preencher depois do commit final.
+- Seção 4.5: URL do repositório e commit de referência `e813f70` (último commit que altera código e evidências; os posteriores só alteram `artigo/`), já publicado em `origin/main`.
 - `referencias.bib` (revisado em 21/11/2026): Oliveira e Gurjão com páginas 293–298 (SOL e Crossref); Girdhar citado pela versão publicada (PESGM 2024, p. 1–5; chave `girdhar2024sdn`; citações da Introdução, da 2.3 e da Tabela 2 atualizadas para 2024); Herath com o evento do cabeçalho do PDF e do arXiv (data e local não confirmados); libiec61850 com "Acesso em 21/11/2026". `iec61850-8-1` não é citada no texto e não entra na lista. Ainda em aberto: `MZ Automation (s.d.)` sem ano e a leitura só parcial de Roomi et al.
 - Afiliação e e-mails dos autores: o PDF traz só a Unifesspa, sem e-mails; nomes só com o primeiro nome, como definido.
 - O modelo SBC não exige o título em inglês; ele não aparece no PDF.

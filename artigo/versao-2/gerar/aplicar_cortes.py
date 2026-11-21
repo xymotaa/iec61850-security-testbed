@@ -78,7 +78,7 @@ replace_in_line(
     "O código, os scripts da campanha, as evidências",
     "estão no repositório do projeto [COMMIT DE REFERÊNCIA: a informar na entrega].",
     "estão no repositório do projeto (<https://github.com/xymotaa/iec61850-security-testbed>), no commit "
-    "[COMMIT DE REFERÊNCIA: a informar na entrega]. As evidências estão em `benchmark/resultados/` "
+    "`e813f70` (o último a alterar o código e as evidências; os posteriores só alteram o artigo). As evidências estão em `benchmark/resultados/` "
     "(campanha *offline*), `autenticador-8021x/evidencias/gns3/` (GNS3), `autenticador-8021x/evidencias/` "
     "(logs `teste_netns-*.log` dos *network namespaces*) e `autenticador-8021x/evidencias/tls/` (medição de TLS).")
 
