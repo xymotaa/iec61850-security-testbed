@@ -58,3 +58,16 @@ Pendências restantes:
 - [ ] Autores: sobrenome de Matheus e Youri, afiliação completa e e-mails.
 - [ ] Limite de páginas SBC (meta 6–8): conferir após compilar com o template oficial (o artigo cresceu bastante com o 802.1X: nova figura grande, 3 tabelas novas e mais texto; provável estouro). Se estourar, sugestão de cortes, em ordem: (1) Tabela de sensibilidade do limiar (manter só o texto/figura); (2) Tabela anterior do 4º Marco (resumir em uma frase, já que a reproduzida coincide); (3) (feito: a Tabela de pendências do GNS3 foi removida; se faltar espaço, enxugar as linhas só-netns da `tab:8021x`); (4) encurtar a lista de decisões de projeto do 802.1X; (5) mover limitações (xii)–(xv) para o repositório. NÃO cortar a tabela E0–E5, a figura 802.1X nem a tabela de camadas, que sustentam a tese.
 Observações sobre a bibliografia: Hussain et al. (Scientific Reports) consta no Crossref como vol. 13, art. 1857, **2023** (o DOI `s41598-022-...` é de submissão em 2022); Auto-SGCR é de 2025; o artigo do SBSeg 2023 (`sol.sbc.org.br/.../27230`) tem DOI `10.5753/sbseg.2023.233109`. Falha de rede impediu abrir a página SOL do artigo SBSeg 2025 (o DOI foi apenas informado, não reconferido).
+
+## Figuras (inventário)
+
+| Figura | Arquivo | Origem |
+|---|---|---|
+| Gráficos do benchmark (TPR, latência, sensibilidade) | `figuras/tpr_por_cenario.pdf`, `latencia_por_cenario.pdf`, `sensibilidade_limiar.pdf` | cópia de `benchmark/figuras/` (gerados por `benchmark/gerar_graficos.py`) |
+| Camada que barra cada cenário (E0–E5) | `figuras/camadas_por_cenario.pdf` | `figuras/gerar_figuras_gns3.py` (dados de `autenticador-8021x/evidencias/gns3/RESULTADOS_GNS3.md`) |
+| Topologia `subestacao_8021x` no GNS3 | `figuras/gns3_topologia_8021x.png` | print real do GNS3 (20/11/2026), recortado (aviso do xterm removido) |
+| Evidência do E1 (consoles do atacante e do autenticador) | `figuras/gns3_e1_atacante.png`, `gns3_e1_autenticador.png` | prints reais, recortados por `gerar_figuras_gns3.py` a partir dos `*_full.png` |
+| Diagramas (arquitetura, árvore de ataques, máquina de estados, 802.1X) | TikZ no próprio `main.tex` | — |
+
+Para regerar: `benchmark/.venv/bin/python artigo/figuras/gerar_figuras_gns3.py`.
+No Overleaf, suba `main.tex`, `referencias.bib`, `sbc-template.sty`, `sbc.bst` e a pasta `figuras/`.
