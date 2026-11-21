@@ -72,7 +72,7 @@ def esc_text(s):
     return "".join(out)
 
 
-def esc_code(s):
+def esc_code(s, mono=True):
     out = []
     for i, ch in enumerate(s):
         if ch in UNI:
@@ -101,7 +101,11 @@ def esc_code(s):
             out.append(r"\textquotedbl{}")
         else:
             out.append(ch)
-    return r"\texttt{" + "".join(out) + "}"
+    body = "".join(out)
+    if mono:
+        return r"\texttt{" + body + "}"
+    # texto corrido: fonte normal; hifen simples volta a ser normal e "--" fica "-{}-"
+    return body.replace("{-}{-}", "-{}-").replace("{-}", "-")
 
 
 # rotulos conhecidos (preenchidos numa primeira passada)
@@ -137,7 +141,7 @@ def do_refs(s):
     return REF_RE.sub(repl, s)
 
 
-def inline(s, caption=False):
+def inline(s, caption=False, mono=True):
     toks = []
 
     def keep(tex):
@@ -145,7 +149,7 @@ def inline(s, caption=False):
         return "\x00%d\x00" % (len(toks) - 1)
 
     # codigo
-    s = re.sub(r"`([^`]+)`", lambda m: keep(esc_code(m.group(1))), s)
+    s = re.sub(r"`([^`]+)`", lambda m: keep(esc_code(m.group(1), mono)), s)
     # enderecos
     s = re.sub(r"<(https?://[^>\s]+)>", lambda m: keep(r"\url{%s}" % m.group(1)), s)
     # placeholder de pendencia (visivel de proposito)
@@ -280,7 +284,7 @@ def body(lines):
 
     def flush():
         if para:
-            out.append(inline(" ".join(para)) + "\n")
+            out.append(inline(" ".join(para), mono=False) + "\n")
             para.clear()
 
     pending_tab = None
@@ -294,7 +298,7 @@ def body(lines):
         if m:
             flush()
             cmd = "section" if len(m.group(1)) == 2 else "subsection"
-            out.append("\\%s{%s}\\label{sec:%s}\n" % (cmd, inline(m.group(3)), m.group(2)))
+            out.append("\\%s{%s}\\label{sec:%s}\n" % (cmd, inline(m.group(3), mono=False), m.group(2)))
             i += 1
             continue
         m = CAP_TAB.match(ln)
@@ -356,7 +360,7 @@ def body(lines):
             while i < len(lines) and re.match(r"^\d+\. ", lines[i]):
                 items.append(re.sub(r"^\d+\. ", "", lines[i].rstrip()))
                 i += 1
-            out.append("\\begin{enumerate}\n" + "\n".join("\\item " + inline(x) for x in items)
+            out.append("\\begin{enumerate}\n" + "\n".join("\\item " + inline(x, mono=False) for x in items)
                        + "\n\\end{enumerate}\n")
             continue
         if ln.startswith("- "):
@@ -365,7 +369,7 @@ def body(lines):
             while i < len(lines) and lines[i].startswith("- "):
                 items.append(lines[i][2:].rstrip())
                 i += 1
-            out.append("\\begin{itemize}\n" + "\n".join("\\item " + inline(x) for x in items)
+            out.append("\\begin{itemize}\n" + "\n".join("\\item " + inline(x, mono=False) for x in items)
                        + "\n\\end{itemize}\n")
             continue
         para.append(ln.strip())
@@ -421,6 +425,7 @@ PRE = r"""\documentclass[12pt]{article}
 \usepackage{pgfplots}
 \pgfplotsset{compat=1.17}
 
+\urlstyle{same}
 \sloppy
 
 % Estilos comuns das figuras (TikZ)

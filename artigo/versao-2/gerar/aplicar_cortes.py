@@ -58,8 +58,18 @@ def set_table_rows(caption_prefix, rows):
 # ---------------------------------------------------------------- Tabela 1: a nota n/c vai para a legenda
 _i = idx_start("*n/c: não consta nos trechos analisados.*")
 del L[_i]
-replace_line("*Tabela 1. ", "*Tabela 1. Ataques, propriedade comprometida e o que dizem as normas e a literatura "
-             "analisada. n/c: não consta nos trechos analisados.*")
+replace_in_line("| Suppression (nossa taxonomia)", "| n/c |", "| Não localizada nas fontes consultadas |")
+
+# ---------------------------------------------------------------- Tabela 2: células verificadas no texto completo
+replace_line("*Tabela 2. ", "*Tabela 2. Trabalhos analisados e as lacunas tratadas neste artigo. Não: não tratada no trabalho.*")
+replace_line("| Herath et al. (2025) |", "| Herath et al. (2025) | Ciberfísico, IED simulado | IDS por regras e MAC | Não | Não |")
+replace_line("| Conceição Alberto et al. (2026) |", "| Conceição Alberto et al. (2026) | HIL, relés comerciais | IDS com aprendizado | Excluída do modelo | Não |")
+replace_line("| Hussain et al. (2023) |", "| Hussain et al. (2023) | RTDS e Snort | MAC e validação de conteúdo | Citada como desafio; IED comprometido simulado | Não |")
+replace_line("| Girdhar et al. (2023) |", "| Girdhar et al. (2023) | HIL e Mininet | IDS por regras e bloqueio de porta | Não | Não |")
+replace_line("| Moore (2026) |", "| Moore (2026) | Conjunto ERENO | Aprendizado de máquina | Não | Descrito; campos descartados |")
+replace_line("| de Oliveira et al. (2023) |", "| de Oliveira et al. (2023) | RTDS e IED real | Sem defesa | Não | Visível na captura; não é variável |")
+replace_line("| Zemanek et al. (2022) |", "| Zemanek et al. (2022) | *Testbed* físico | Sem defesa | Não | Não |")
+replace_line("*Roomi et al. (2025) não aparece na Tabela 2", "*Roomi et al. (2025) não aparece na Tabela 2 porque tratam da geração do ambiente; o estudo de caso de injeção de comandos falsos não avalia defesas.*")
 
 # ---------------------------------------------------------------- 1. Tabela 3
 remove_table("*Tabela 3. ")
@@ -198,7 +208,8 @@ replace_line(
     "replay. Hussain et al. (2023) combinam o MAC com chave pré-compartilhada e a validação do conteúdo "
     "junto a IEDs vizinhos. Nos trabalhos analisados, a possibilidade de comprometimento da chave não é "
     "avaliada: Herath et al. (2025) não a tratam, e Conceição Alberto et al. (2026) a excluem do modelo "
-    "de ameaças. A autenticação avaliada aqui é uma simulação baseada em HMAC (Seção 5.2), que representa "
+    "de ameaças. Hussain et al. (2023) simulam um IED comprometido, sem avaliar explicitamente o vazamento "
+    "da chave. A autenticação avaliada aqui é uma simulação baseada em HMAC (Seção 5.2), que representa "
     "a ideia da IEC 62351-6 sem implementar o seu mecanismo normativo, e seus resultados não são "
     "comparáveis aos de Herath et al. (2025).")
 replace_line(

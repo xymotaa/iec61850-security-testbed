@@ -31,7 +31,7 @@ pdftotext -layout main.pdf /tmp/texto.txt && python3 gerar/verificar.py texto/se
 
 ## Cortes aplicados (decisão do autor)
 
-Tabelas 3 e 11 removidas (duas frases na 2.4 e a lista de evidências na 4.5 as substituem; versão do `wpa_supplicant` na 4.3.3); Tabela 6 reduzida a C1 e C2; Tabela 9 com as colunas "SCD de origem" e "Nós" unidas; Tabela 4 sem a coluna "Ambiente"; Seções 3.1 e 3.2 condensadas; Tabela 15 substituída por texto na 5.4; Seção 2.3 condensada (≈10%); Figuras 4 e 6 compactadas na vertical; Resumo e Abstract em 10 linhas. As tabelas foram renumeradas (agora são 15). Tabelas com bordas fechadas (linhas verticais e horizontais); nota "n/c" da Tabela 1 movida para a legenda. Figura 3 mantida em 0,8 da largura: em 0,6 os rótulos do print ficam ilegíveis.
+Tabelas 3 e 11 removidas (duas frases na 2.4 e a lista de evidências na 4.5 as substituem; versão do `wpa_supplicant` na 4.3.3); Tabela 6 reduzida a C1 e C2; Tabela 9 com as colunas "SCD de origem" e "Nós" unidas; Tabela 4 sem a coluna "Ambiente"; Seções 3.1 e 3.2 condensadas; Tabela 15 substituída por texto na 5.4; Seção 2.3 condensada (≈10%); Figuras 4 e 6 compactadas na vertical; Resumo e Abstract em 10 linhas. As tabelas foram renumeradas (agora são 15). Tabelas com bordas fechadas (linhas verticais e horizontais); nota "n/c" da Tabela 1 movida para a legenda. Código (identificadores, caminhos, opções) em fonte normal no texto corrido e em fonte monoespaçada só em tabelas e figuras; células "n/c" da Tabela 2 substituídas por valores verificados no texto completo dos trabalhos; nota de Roomi reescrita. Figura 3 mantida em 0,8 da largura: em 0,6 os rótulos do print ficam ilegíveis.
 
 ## Pendências (não mascaradas no PDF)
 

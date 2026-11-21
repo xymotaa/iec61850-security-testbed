@@ -83,40 +83,40 @@ O IEEE 802.1X [IEEE 2020] trata do controle de acesso à rede baseado em porta: 
 
 A Tabela 1 relaciona cada ataque à propriedade comprometida e ao que as normas e os trabalhos analisados dizem sobre ele; as observações do nosso *testbed* ficam para a Seção 6.
 
-*Tabela 1. Ataques, propriedade comprometida e o que dizem as normas e a literatura analisada. n/c: não consta nos trechos analisados.*
+*Tabela 1. Ataques, propriedade comprometida e o que dizem as normas e a literatura analisada.*
 
 | Ataque | Propriedade | Previsão normativa | Resultados reportados |
 |---|---|---|---|
 | Flooding | Disponibilidade | Proteção contra negação de serviço (IEC 62443-3-3, pelo conteúdo) | Com MAC, os quadros não autenticados são rejeitados; um IDS por regras perdeu o sincronismo sob 1000 Hz [Herath et al. 2025] |
 | Replay | Autenticidade temporal | Etapa adicional que verifica `stNum` e `sqNum` (IEC 62351-6, segundo Herath et al. 2025) | O MAC não o detecta, pois a tag é válida; o IDS por regras o detecta [Herath et al. 2025] |
 | Masquerade | Integridade e autenticidade | Autenticação de mensagem (IEC 62351-6) | O MAC o detecta; o IDS por regras falha, pois o quadro respeita `stNum`, `sqNum` e temporização [Herath et al. 2025] |
-| Suppression (nossa taxonomia) | Disponibilidade lógica | n/c | Classe de Zemanek et al. (2022); sem avaliação de defesas |
+| Suppression (nossa taxonomia) | Disponibilidade lógica | Não localizada nas fontes consultadas | Classe de Zemanek et al. (2022); sem avaliação de defesas |
 
 
 ### 2.3. Trabalhos relacionados
 
 *Detecção de intrusão.* Herath et al. (2025) implementam um IDS por regras sobre `stNum`, `sqNum` e temporização, executado em linha no caminho de encaminhamento, que descarta os quadros reprovados. Conceição Alberto et al. (2026) propõem um IDS sobre tráfego espelhado, com LightGBM e atributos derivados de `stNum`, `sqNum` e temporização, e uma resposta que injeta quadros corretivos; os autores excluem do modelo de ameaças o comprometimento de dispositivos e o acesso a chaves. Moore (2026) compara modelos supervisionados e não supervisionados sobre o conjunto ERENO e relata a latência por predição; nesse trabalho, o masquerade é descrito como falsificação do MAC de origem e dos identificadores GOOSE, mas os campos de MAC são descartados, entre outras colunas de alta cardinalidade, do conjunto de atributos. O IDS deste trabalho é baseado em regras e passivo (emite alertas e não descarta quadros); por isso, não equivale aos IDS em linha e não é comparado, em desempenho, às abordagens de aprendizado de máquina.
 
-*Autenticação por mensagem.* Herath et al. (2025) implementam a verificação de MAC com AES-GMAC-128 no formato da IEC 62351-6:2020 e mostram que ela detecta o masquerade e o flooding, mas não o replay de um quadro legítimo, cuja tag permanece válida; a combinação com o IDS por regras cobre o replay. Hussain et al. (2023) combinam o MAC com chave pré-compartilhada e a validação do conteúdo junto a IEDs vizinhos. Nos trabalhos analisados, a possibilidade de comprometimento da chave não é avaliada: Herath et al. (2025) não a tratam, e Conceição Alberto et al. (2026) a excluem do modelo de ameaças. A autenticação avaliada aqui é uma simulação baseada em HMAC (Seção 5.2), que representa a ideia da IEC 62351-6 sem implementar o seu mecanismo normativo, e seus resultados não são comparáveis aos de Herath et al. (2025).
+*Autenticação por mensagem.* Herath et al. (2025) implementam a verificação de MAC com AES-GMAC-128 no formato da IEC 62351-6:2020 e mostram que ela detecta o masquerade e o flooding, mas não o replay de um quadro legítimo, cuja tag permanece válida; a combinação com o IDS por regras cobre o replay. Hussain et al. (2023) combinam o MAC com chave pré-compartilhada e a validação do conteúdo junto a IEDs vizinhos. Nos trabalhos analisados, a possibilidade de comprometimento da chave não é avaliada: Herath et al. (2025) não a tratam, e Conceição Alberto et al. (2026) a excluem do modelo de ameaças. Hussain et al. (2023) simulam um IED comprometido, sem avaliar explicitamente o vazamento da chave. A autenticação avaliada aqui é uma simulação baseada em HMAC (Seção 5.2), que representa a ideia da IEC 62351-6 sem implementar o seu mecanismo normativo, e seus resultados não são comparáveis aos de Herath et al. (2025).
 
 *Controle de rede e de acesso.* Moore (2026) observa que o protocolo foi concebido para redes isoladas, nas quais o controle de acesso físico bastava, e que essa premissa deixa de valer em redes Ethernet maiores, onde qualquer dispositivo do segmento pode receber, reproduzir ou forjar quadros sem autenticação. Girdhar et al. (2024) integram um IDS por regras a *switches* definidos por software, que localizam o dispositivo atacante e desativam a sua porta, ação que ocorre depois da detecção. Herath et al. (2025) concluem que o descarte de pacotes exige, além da detecção, mecanismos de controle de tráfego, como SDN, ou redundância (PRP e HSR). Nos trabalhos analisados, não identificamos a avaliação de um controle de acesso à porta baseado em autenticação do dispositivo, como o 802.1X. Nossas buscas por esse tema em subestações foram limitadas e não permitem afirmar que ele nunca tenha sido estudado.
 
 *Ambientes e conjuntos de dados.* Herath et al. (2025) usam um *testbed* ciberfísico, com simulador em tempo real e IEDs comerciais, no qual as defesas rodam em um IED simulado; Conceição Alberto et al. (2026) e de Oliveira et al. (2023) usam *hardware-in-the-loop* com relés ou IEDs comerciais. Zemanek et al. (2022) publicam um conjunto de dados gravado em um *testbed* físico com três IEDs, sem avaliar defesas. Roomi et al. (2025) geram um *cyber range* a partir de arquivos SCL, com Mininet e simulação elétrica, e o artigo base [Oliveira e Gurjão 2025] gera a topologia no GNS3 a partir do SCD. O ambiente deste trabalho é emulado (GNS3 e Docker), sem hardware real, e usa como molde um único quadro GOOSE capturado de um relé SEL-351; seus resultados não são comparáveis, em desempenho, aos dos ambientes com hardware.
 
-*Tabela 2. Trabalhos analisados e as lacunas tratadas neste artigo. n/c: não consta nos trechos analisados.*
+*Tabela 2. Trabalhos analisados e as lacunas tratadas neste artigo. Não: não tratada no trabalho.*
 
 | Trabalho | Ambiente | Camadas avaliadas | Chave comprometida | MAC de origem como variável |
 |---|---|---|---|---|
-| Herath et al. (2025) | Ciberfísico, IED simulado | IDS por regras e MAC | n/c | n/c |
-| Conceição Alberto et al. (2026) | HIL, relés comerciais | IDS com aprendizado | Excluída do modelo | n/c |
-| Hussain et al. (2023) | RTDS e Snort | MAC e validação de conteúdo | Citada como desafio | n/c |
-| Girdhar et al. (2024) | HIL e Mininet | IDS por regras e bloqueio de porta | n/c | n/c |
-| Moore (2026) | Conjunto ERENO | Aprendizado de máquina | n/c | Descrito; campos descartados |
-| de Oliveira et al. (2023) | RTDS e IED real | Sem defesa | n/c | n/c |
-| Zemanek et al. (2022) | *Testbed* físico | Sem defesa | n/c | n/c |
+| Herath et al. (2025) | Ciberfísico, IED simulado | IDS por regras e MAC | Não | Não |
+| Conceição Alberto et al. (2026) | HIL, relés comerciais | IDS com aprendizado | Excluída do modelo | Não |
+| Hussain et al. (2023) | RTDS e Snort | MAC e validação de conteúdo | Citada como desafio; IED comprometido simulado | Não |
+| Girdhar et al. (2024) | HIL e Mininet | IDS por regras e bloqueio de porta | Não | Não |
+| Moore (2026) | Conjunto ERENO | Aprendizado de máquina | Não | Descrito; campos descartados |
+| de Oliveira et al. (2023) | RTDS e IED real | Sem defesa | Não | Visível na captura; não é variável |
+| Zemanek et al. (2022) | *Testbed* físico | Sem defesa | Não | Não |
 | **Este trabalho** | Emulado | IDS, HMAC simulado e 802.1X | Avaliada | C1 e C2 |
 
-*Roomi et al. (2025) não aparece na Tabela 2 porque tratam da geração do ambiente, e não de defesas; só parte do texto foi lida.*
+*Roomi et al. (2025) não aparece na Tabela 2 porque tratam da geração do ambiente; o estudo de caso de injeção de comandos falsos não avalia defesas.*
 
 ### 2.4. Relação com o artigo base
 
